@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <RootNamespace>ProjectSeal</RootNamespace>
+    <RootNamespace>weave</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
