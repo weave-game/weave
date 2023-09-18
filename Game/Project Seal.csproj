@@ -4,4 +4,10 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>ProjectSeal</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="GodotSharper">
+        <HintPath>Libraries/GodotSharper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
