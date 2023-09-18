@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Seal", "Project Seal.csproj", "{77082760-BAE2-43EB-9C8D-54736BB60437}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "weave", "weave.csproj", "{77082760-BAE2-43EB-9C8D-54736BB60437}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
