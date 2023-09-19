@@ -1,10 +1,52 @@
-[gd_scene load_steps=2 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=8 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_fem3w"]
+[ext_resource type="Script" path="res://Scripts/Player.cs" id="2_joiyy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7fgxr"]
+size = Vector2(198, 227)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_35sop"]
+size = Vector2(127, 127)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x0qlq"]
+radius = 119.08
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_37q0l"]
+size = Vector2(157, 471)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
 
-[node name="Label" type="Label" parent="."]
+[node name="MegaCoolLabel" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="Player" type="RigidBody2D" parent="."]
+position = Vector2(321, 222)
+gravity_scale = 0.0
+script = ExtResource("2_joiyy")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("2_fem3w")
+
+[node name="HitArea" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/HitArea"]
+position = Vector2(2, -1)
+shape = SubResource("RectangleShape2D_7fgxr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_35sop")
+
+[node name="KillArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillArea"]
+shape = SubResource("CircleShape2D_x0qlq")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="KillArea"]
+position = Vector2(108, 380)
+scale = Vector2(1.1842, 1.49054)
+shape = SubResource("RectangleShape2D_37q0l")
