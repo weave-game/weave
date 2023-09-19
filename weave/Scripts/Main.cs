@@ -9,8 +9,8 @@ namespace weave;
 
 public partial class Main : Node2D
 {
-    private int _nPlayers = 3;
     private readonly ISet<Player> _players = new HashSet<Player>();
+    private int _nPlayers = 3;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -61,14 +61,16 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Spawn new goals
-        _players.ToList().ForEach(player =>
-        {
-            var goal = Instanter.Instantiate<Goal>();
-            CallDeferred("add_child", goal);
-            goal.GlobalPosition = GetRandomCoordinateInView(100);
-            goal.PlayerReachedGoal += OnPlayerReachedGoal;
-            goal.CallDeferred("set", nameof(Player.PlayerId), player.PlayerId);
-        });
+        _players
+            .ToList()
+            .ForEach(player =>
+            {
+                var goal = Instanter.Instantiate<Goal>();
+                CallDeferred("add_child", goal);
+                goal.GlobalPosition = GetRandomCoordinateInView(100);
+                goal.PlayerReachedGoal += OnPlayerReachedGoal;
+                goal.CallDeferred("set", nameof(Player.PlayerId), player.PlayerId);
+            });
     }
 
     private Vector2 GetRandomCoordinateInView(float margin)

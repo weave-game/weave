@@ -9,8 +9,8 @@ namespace weave;
 public partial class Goal : Node2D
 {
     /// <summary>
-    ///   This is the signal that will be emitted when a player reaches the goal.
-    ///   Will only be emitted once.
+    ///     This is the signal that will be emitted when a player reaches the goal.
+    ///     Will only be emitted once.
     /// </summary>
     [Signal]
     public delegate void PlayerReachedGoalEventHandler(Player player);
