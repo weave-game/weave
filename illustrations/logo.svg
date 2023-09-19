@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="2.1847651"
-     inkscape:cx="179.88204"
-     inkscape:cy="615.62683"
+     inkscape:zoom="1.0103862"
+     inkscape:cx="126.68423"
+     inkscape:cy="411.72376"
      inkscape:window-width="1920"
      inkscape:window-height="1080"
      inkscape:window-x="0"
@@ -400,7 +400,7 @@
     <g
        id="g3-0"
        inkscape:label="line"
-       transform="matrix(1.2113057,0,0,0.89076871,-32.6972,46.284965)">
+       transform="matrix(1.2113057,0,-0.01713234,0.97987104,-22.506726,3.1830874)">
       <path
          d="m 84.27776,417.47295 c 7.6418,-6.16304 16.90559,-10.37187 26.86007,-12.42682 3.06608,-0.63295 6.20409,-0.9309 9.30611,-1.39635 12.88235,-1.24238 25.85066,-0.47201 38.43683,2.31574 7.81093,1.73005 10.10659,2.69969 17.52164,5.16644 13.28434,4.88685 25.61445,11.59986 38.5421,17.17216 2.72448,1.17436 5.49706,2.25384 8.24559,3.38075 11.07114,4.15017 21.34369,7.28269 33.4631,4.74866 8.09691,-1.693 10.22781,-3.5478 17.35741,-7.39836 3.09437,-2.45948 6.35758,-4.75314 9.28307,-7.37845 7.63018,-6.84726 13.65248,-13.91868 20.0097,-21.79421 8.86801,-10.98596 12.76496,-16.78375 20.99533,-28.27177 1.34005,-1.83079 -1.50289,-3.5567 -2.84295,-1.72592 v 0 c -8.21171,11.46596 -12.00028,17.11106 -20.83732,28.07332 -6.28889,7.80127 -12.04831,14.57266 -19.55898,21.3644 -2.77043,2.50523 -5.85751,4.70222 -8.78625,7.05331 -6.5469,3.5957 -8.58337,5.36699 -16.01701,6.9871 -11.4857,2.50319 -21.17478,-0.58516 -31.67701,-4.50097 -2.70942,-1.11024 -5.44275,-2.17328 -8.12824,-3.33074 -13.04117,-5.6208 -25.47709,-12.39897 -38.8892,-17.30632 -7.6101,-2.52338 -9.99586,-3.52628 -18.01274,-5.29096 -12.98995,-2.85938 -26.37072,-3.63847 -39.65945,-2.33459 -3.23861,0.49386 -6.51583,0.81084 -9.71588,1.48158 -10.43411,2.18699 -20.14411,6.6198 -28.16132,13.08265 -1.80856,1.45888 0.45685,3.78821 2.2654,2.32935 z"
          id="path3-9-2"
@@ -419,15 +419,15 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.3333px;font-family:'Tilt Warp';-inkscape-font-specification:'Tilt Warp';text-align:center;text-anchor:middle;fill:#23a964;fill-opacity:1;stroke:#23a964;stroke-width:2.51339;stroke-dasharray:none;stroke-opacity:1"
-       x="137.92168"
-       y="421.62924"
+       x="144.51361"
+       y="421.79861"
        id="text12-9-6-7"
        inkscape:label="We"><tspan
          sodipodi:role="line"
          id="tspan12-8-0-5"
-         x="137.92168"
-         y="421.62924"
-         style="fill:#3f6a8a;fill-opacity:1;stroke:none">We</tspan></text>
+         x="144.51361"
+         y="421.79861"
+         style="fill:#3f6a8a;fill-opacity:1;stroke:none">we</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:85.3333px;font-family:'Noto Color Emoji';-inkscape-font-specification:'Noto Color Emoji';text-align:center;text-anchor:middle;display:inline;fill:#6c6cc4;stroke-width:2.51339;stroke-dasharray:none"
