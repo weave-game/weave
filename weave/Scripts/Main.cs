@@ -12,27 +12,29 @@ public partial class Main : Node2D
     [GetNode("Player")]
     private Player _player;
 
+    [GetNode("Goal")]
+    private Goal _goal;
+
     public override void _Ready()
     {
         this.GetNodes();
         _label.Text = "Hello World!";
 
         _area2D.BodyEntered += OnAreaEntered;
-        _player.PlayerShotBullet += OnPlayerShotBullet;
+        _goal.PlayerReachedGoal += OnPlayerReachedGoal;
     }
+    
 
-    private void OnPlayerShotBullet(Node2D bullet, Vector2 globalPosition)
+    private void OnPlayerReachedGoal(Player player)
     {
-        AddChild(bullet);
-        bullet.GlobalPosition = globalPosition;
+        GD.Print("Player has reached the goal");
     }
 
     private void OnAreaEntered(Node2D node)
     {
-        if (node is Player player)
-        {
-            GD.Print("player entered the area");
-            player.QueueFree();
-        }
+        if (node is not Player player) return;
+
+        GD.Print("player entered the area");
+        player.QueueFree();
     }
 }

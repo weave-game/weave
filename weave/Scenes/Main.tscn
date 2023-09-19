@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=6 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cydglrjfdxyu2" path="res://Objects/Player.tscn" id="2_2dbpa"]
+[ext_resource type="PackedScene" uid="uid://bgkqcvg1417tp" path="res://Objects/Goal.tscn" id="3_0fu73"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x0qlq"]
 radius = 119.08
@@ -28,3 +29,6 @@ shape = SubResource("CircleShape2D_x0qlq")
 position = Vector2(108, 380)
 scale = Vector2(1.1842, 1.49054)
 shape = SubResource("RectangleShape2D_37q0l")
+
+[node name="Goal" parent="." instance=ExtResource("3_0fu73")]
+position = Vector2(958, 282)
