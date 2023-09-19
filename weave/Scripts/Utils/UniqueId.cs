@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace weave.Scripts.Utils;
+﻿namespace weave.Utils;
 
 public static class UniqueId
 {

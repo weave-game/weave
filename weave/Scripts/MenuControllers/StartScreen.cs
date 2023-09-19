@@ -1,6 +1,8 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 
+namespace weave.MenuControllers;
+
 public partial class StartScreen : Node2D
 {
     [GetNode("CanvasLayer/CenterContainer/VBoxContainer/Button")]

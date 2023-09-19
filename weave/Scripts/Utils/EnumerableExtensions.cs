@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace weave.Scripts.Utils;
+namespace weave.Utils;
 
 /// <summary>
 /// Provides extension methods for working with enumerables.

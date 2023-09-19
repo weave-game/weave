@@ -1,4 +1,4 @@
-﻿namespace weave.Scripts.Utils;
+﻿namespace weave.Utils;
 
 public static class ObjectResources
 {

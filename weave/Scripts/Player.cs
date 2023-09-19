@@ -1,7 +1,9 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Scripts.Utils;
+using weave.Utils;
+
+namespace weave;
 
 [Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : RigidBody2D
@@ -39,15 +41,10 @@ public partial class Player : RigidBody2D
     private static Vector2 GetInput()
     {
         var input = new Vector2();
-
-        if (Input.IsActionPressed("move_right"))
-            input.X += 1;
-        if (Input.IsActionPressed("move_left"))
-            input.X -= 1;
-        if (Input.IsActionPressed("move_down"))
-            input.Y += 1;
-        if (Input.IsActionPressed("move_up"))
-            input.Y -= 1;
+        if (Input.IsActionPressed("move_right")) input.X += 1;
+        if (Input.IsActionPressed("move_left")) input.X -= 1;
+        if (Input.IsActionPressed("move_down")) input.Y += 1;
+        if (Input.IsActionPressed("move_up")) input.Y -= 1;
 
         return input.Normalized();
     }

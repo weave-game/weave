@@ -1,7 +1,9 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Scripts.Utils;
+using weave.Utils;
+
+namespace weave;
 
 [Instantiable(ObjectResources.GoalScene)]
 public partial class Goal : Node2D
