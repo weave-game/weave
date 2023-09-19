@@ -1,14 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=5 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
-[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_fem3w"]
-[ext_resource type="Script" path="res://Scripts/Player.cs" id="2_joiyy"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7fgxr"]
-size = Vector2(198, 227)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_35sop"]
-size = Vector2(127, 127)
+[ext_resource type="PackedScene" uid="uid://cydglrjfdxyu2" path="res://Objects/Player.tscn" id="2_2dbpa"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x0qlq"]
 radius = 119.08
@@ -23,23 +16,8 @@ script = ExtResource("1_x7cvk")
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="Player" type="RigidBody2D" parent="."]
-position = Vector2(321, 222)
-gravity_scale = 0.0
-script = ExtResource("2_joiyy")
-
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("2_fem3w")
-
-[node name="HitArea" type="Area2D" parent="Player"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/HitArea"]
-position = Vector2(2, -1)
-shape = SubResource("RectangleShape2D_7fgxr")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_35sop")
+[node name="Player" parent="." instance=ExtResource("2_2dbpa")]
+position = Vector2(416, 238)
 
 [node name="KillArea" type="Area2D" parent="."]
 
