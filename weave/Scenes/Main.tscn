@@ -1,34 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=2 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
-[ext_resource type="PackedScene" uid="uid://cydglrjfdxyu2" path="res://Objects/Player.tscn" id="2_2dbpa"]
-[ext_resource type="PackedScene" uid="uid://bgkqcvg1417tp" path="res://Objects/Goal.tscn" id="3_0fu73"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_x0qlq"]
-radius = 119.08
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_37q0l"]
-size = Vector2(157, 471)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
-
-[node name="MegaCoolLabel" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="Player" parent="." instance=ExtResource("2_2dbpa")]
-position = Vector2(416, 238)
-
-[node name="KillArea" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="KillArea"]
-shape = SubResource("CircleShape2D_x0qlq")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="KillArea"]
-position = Vector2(108, 380)
-scale = Vector2(1.1842, 1.49054)
-shape = SubResource("RectangleShape2D_37q0l")
-
-[node name="Goal" parent="." instance=ExtResource("3_0fu73")]
-position = Vector2(958, 282)

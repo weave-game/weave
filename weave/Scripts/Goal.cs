@@ -1,5 +1,9 @@
 using Godot;
+using GodotSharper.AutoGetNode;
+using GodotSharper.Instancing;
+using weave.Scripts.Utils;
 
+[Instantiable(ObjectResources.GoalScene)]
 public partial class Goal : Node2D
 {
     /// <summary>
@@ -7,19 +11,33 @@ public partial class Goal : Node2D
     ///   Will only be emitted once.
     /// </summary>
     [Signal]
-    private delegate void PlayerReachedGoalEventHandler(Player player);
+    public delegate void PlayerReachedGoalEventHandler(Player player);
+
+    [GetNode("Label")]
+    private Label _label;
+
+    public string PlayerId
+    {
+        get => _label.Text;
+        set => _label.Text = value;
+    }
 
     public override void _Ready()
     {
+        this.GetNodes();
         var area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
     }
 
     private void OnBodyEntered(Node2D body)
     {
-        if (body is not Player player) return;
+        if (body is not Player player)
+            return;
 
-        // TODO: Check if flag is associated with this goal...
+        if (player.PlayerId != PlayerId)
+            return;
+
+        _label.Text = "Goal!";
         EmitSignal(SignalName.PlayerReachedGoal, player);
     }
 }

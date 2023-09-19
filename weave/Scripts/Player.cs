@@ -1,11 +1,29 @@
 using Godot;
+using GodotSharper.AutoGetNode;
+using GodotSharper.Instancing;
+using weave.Scripts.Utils;
 
+[Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : RigidBody2D
 {
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
 
-    private const int MovementSpeed = 100;
+    [GetNode("Label")]
+    private Label _label;
+
+    private const int MovementSpeed = 500;
+
+    public string PlayerId
+    {
+        get => _label.Text;
+        set => _label.Text = value;
+    }
+
+    public override void _Ready()
+    {
+        this.GetNodes();
+    }
 
     public override void _PhysicsProcess(double delta)
     {
