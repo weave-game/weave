@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -36,6 +37,8 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        if (_keybindings.Count < _nPlayers)
+            throw new ArgumentException("More players than available keybindings", nameof(_nPlayers));
         SpawnPlayers();
         ClearAndSpawnGoals();
     }
