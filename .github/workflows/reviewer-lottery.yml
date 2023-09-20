@@ -1,8 +1,9 @@
 name: "Reviewer Lottery"
 
 on:
-  pull_request_target:
-    types: [opened, ready_for_review, reopened]
+  push:
+    branches:
+      - lottery
 
 jobs:
   test:
