@@ -1,38 +1,59 @@
+using System;
 using Godot;
 using GodotSharper.AutoGetNode;
 
 public partial class Main : Node2D
 {
-    [GetNode("MegaCoolLabel")]
-    private Label _label;
+    private Vector2 start;
+    private Vector2 end;
+    private bool drawing = false;
 
-    [GetNode("KillArea")]
-    private Area2D _area2D;
-
-    [GetNode("Player")]
-    private Player _player;
-
-    public override void _Ready()
+    public override void _Input(InputEvent @event)
     {
-        this.GetNodes();
-        _label.Text = "Hello World!";
-
-        _area2D.BodyEntered += OnAreaEntered;
-        _player.PlayerShotBullet += OnPlayerShotBullet;
-    }
-
-    private void OnPlayerShotBullet(Node2D bullet, Vector2 globalPosition)
-    {
-        AddChild(bullet);
-        bullet.GlobalPosition = globalPosition;
-    }
-
-    private void OnAreaEntered(Node2D node)
-    {
-        if (node is Player player)
+        if (@event is InputEventMouseButton mouseButton && mouseButton.ButtonIndex == MouseButton.Left)
         {
-            GD.Print("player entered the area");
-            player.QueueFree();
+            if (mouseButton.Pressed)
+            {
+                start = mouseButton.Position;
+                drawing = true;
+            }
+            else
+            {
+                drawing = false;
+            }
         }
+        else if (@event is InputEventMouseMotion mouseEvent && drawing)
+        {
+            end = mouseEvent.Position;
+            DrawCollisionLine(start, end);
+            start = end;
+        }
+    }
+
+    private void DrawCollisionLine(Vector2 from, Vector2 to)
+    {
+        // Draw line
+        var line = new Line2D();
+        line.AddPoint(from);
+        line.AddPoint(to);
+        AddChild(line);
+
+        // Add collision to line
+        var collisionShape = new CollisionShape2D
+        {
+            DebugColor = new(1,0,0,0),
+            Shape = new SegmentShape2D
+            {
+                A = from,
+                B = to
+            }
+        };
+
+        line.AddChild(collisionShape);
+    }
+
+    private void HandleCollision(Node2D body)
+    {
+        GD.Print("Body entered collision shape");
     }
 }
