@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 type Score = {
   name: string
@@ -14,8 +14,9 @@ type ScoresDTO = {
   }
 }
 
-const count = ref(0)
 const scores = ref([] as Score[])
+const fetchIntervalSeconds = 10 // fetch every 10 seconds
+const countdown = ref(fetchIntervalSeconds)
 
 // Fetch scores from the server
 const fetchScores = async () => {
@@ -26,25 +27,38 @@ const fetchScores = async () => {
       throw new Error('Failed to fetch scores')
     }
 
-    console.log('response', response)
-
     const data: ScoresDTO = await response.json()
-    console.log('data', data)
     scores.value = data.scores
-    console.log('scores', scores)
   } catch (error) {
     console.error('Error fetching scores:', error)
   }
 }
 
-// Fetch scores when the component is mounted
-onMounted(fetchScores)
+// Fetch scores when the component is mounted and every X seconds
+let fetchInterval: number
+let countdownInterval: number
+
+onMounted(() => {
+  fetchScores()
+  fetchInterval = setInterval(fetchScores, fetchIntervalSeconds * 1000)
+  countdownInterval = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) {
+      countdown.value = fetchIntervalSeconds
+    }
+  }, 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(fetchInterval)
+  clearInterval(countdownInterval)
+})
 
 </script>
 
 <template>
   <div class="card">
-    <button type="button" @click="count++">{{ count }}</button>
+    <p>Fetching scores in: {{ countdown }} seconds</p>
   </div>
 
   <ul>
