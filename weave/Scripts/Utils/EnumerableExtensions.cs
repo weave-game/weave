@@ -15,6 +15,9 @@ public static class EnumerableExtensions
     /// <param name="action">The action to execute.</param>
     public static void TimesDo(this int count, Action action)
     {
+        if (count < 0)
+            throw new ArgumentException("Count must be greater than or equal to 0", nameof(count));
+
         for (var i = 0; i < count; i++)
             action();
     }

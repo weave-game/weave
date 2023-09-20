@@ -20,13 +20,13 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        SpawnPlayers(_nPlayers);
+        SpawnPlayers();
         ClearAndSpawnGoals();
     }
 
-    private void SpawnPlayers(int amount)
+    private void SpawnPlayers()
     {
-        amount.TimesDo(() =>
+        _nPlayers.TimesDo(() =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();

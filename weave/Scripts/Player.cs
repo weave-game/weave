@@ -16,10 +16,16 @@ public partial class Player : RigidBody2D
     [GetNode("Label")]
     private Label _label;
 
+    private string _playerId;
+
     public string PlayerId
     {
-        get => _label.Text;
-        set => _label.Text = value;
+        get => _playerId;
+        set
+        {
+            _label.Text = _playerId;
+            _playerId = value;
+        }
     }
 
     public override void _Ready()
