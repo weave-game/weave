@@ -7,7 +7,7 @@ using weave.InputHandlers;
 namespace weave;
 
 [Instantiable(ObjectResources.PlayerScene)]
-public partial class Player : RigidBody2D
+public partial class Player : CharacterBody2D
 {
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
@@ -16,7 +16,6 @@ public partial class Player : RigidBody2D
 
     [GetNode("Label")]
     private Label _label;
-
 
     public IController Controller { get; set; }
 
@@ -52,7 +51,7 @@ public partial class Player : RigidBody2D
     {
         if (Controller.IsTurningRight())
             RotationDegrees += 120 * (float)delta;
-        
+
         if (Controller.IsTurningLeft())
             RotationDegrees -= 120 * (float)delta;
     }
