@@ -1,13 +1,13 @@
 <Project Sdk="Godot.NET.Sdk/4.1.1">
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
-    <RootNamespace>weave</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <RootNamespace>weave</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="GodotSharper">
-        <HintPath>Libraries/GodotSharper.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="GodotSharper">
+            <HintPath>Libraries/GodotSharper.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

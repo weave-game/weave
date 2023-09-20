@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgkqcvg1417tp"]
+
+[ext_resource type="Script" path="res://Scripts/Goal.cs" id="1_6mak8"]
+[ext_resource type="Texture2D" uid="uid://b41l3ovmk6emo" path="res://Assets/Sprites/Temporary/flag.png" id="1_vmnc5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6xac3"]
+size = Vector2(128, 128)
+
+[node name="Goal" type="Node2D" groups=["goal"]]
+script = ExtResource("1_6mak8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 4.76837e-07)
+scale = Vector2(0.16125, 0.16125)
+texture = ExtResource("1_vmnc5")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_6xac3")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -9.0
+offset_top = -101.0
+offset_right = 48.0
+offset_bottom = -54.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 31
+text = "X"
