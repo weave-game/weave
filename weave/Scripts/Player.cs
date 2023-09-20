@@ -17,7 +17,8 @@ public partial class Player : RigidBody2D
     [GetNode("Label")]
     private Label _label;
 
-    private KeyboardController _keyboardController = new();
+
+    public IController Controller { get; set; }
 
     private string _playerId;
 
@@ -49,10 +50,10 @@ public partial class Player : RigidBody2D
 
     private void Rotate(double delta)
     {
-        if (_keyboardController.IsTurningRight())
+        if (Controller.IsTurningRight())
             RotationDegrees += 120 * (float)delta;
         
-        if (_keyboardController.IsTurningLeft())
+        if (Controller.IsTurningLeft())
             RotationDegrees -= 120 * (float)delta;
     }
 }
