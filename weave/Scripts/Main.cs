@@ -36,12 +36,10 @@ public partial class Main : Node2D
         var line = new Line2D();
         line.AddPoint(from);
         line.AddPoint(to);
-        AddChild(line);
 
         // Add collision to line
         var collisionShape = new CollisionShape2D
         {
-            DebugColor = new(1,0,0,0),
             Shape = new SegmentShape2D
             {
                 A = from,
@@ -49,7 +47,12 @@ public partial class Main : Node2D
             }
         };
 
-        line.AddChild(collisionShape);
+        var area = new Area2D();
+        area.AddChild(collisionShape);
+        line.AddChild(area);
+        AddChild(line);
+
+        area.BodyEntered += HandleCollision;
     }
 
     private void HandleCollision(Node2D body)
