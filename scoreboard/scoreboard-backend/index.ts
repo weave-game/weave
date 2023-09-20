@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import fs from "fs";
 import csv from "csv-parser";
 
 const app = express();
 const PORT = 3000;
+app.use(cors());
 
 type Score = {
   name: string;

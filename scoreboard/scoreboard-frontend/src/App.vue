@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import ListView from './components/ListView.vue'
 </script>
 
 <template>
-  <h1>Hello World</h1>
+  <h1>Scoreboard</h1>
 
-  <HelloWorld msg="im an argument" />
+  <ListView />
 </template>
 
 <style scoped></style>
