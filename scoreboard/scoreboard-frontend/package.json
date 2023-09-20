@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
     "vue": "^3.3.4"
   },
   "devDependencies": {
