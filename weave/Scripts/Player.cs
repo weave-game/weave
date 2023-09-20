@@ -23,7 +23,7 @@ public partial class Player : RigidBody2D
         get => _playerId;
         set
         {
-            _label.Text = _playerId;
+            _label.Text = value;
             _playerId = value;
         }
     }
