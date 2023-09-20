@@ -11,7 +11,7 @@ public partial class Player : RigidBody2D
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
 
-    private const int MovementSpeed = 500;
+    private const int MovementSpeed = 200;
 
     [GetNode("Label")]
     private Label _label;
@@ -40,22 +40,15 @@ public partial class Player : RigidBody2D
 
     private void Move(double delta)
     {
-        var input = GetInput();
-        Translate(input * MovementSpeed * (float)delta);
+        Rotate(delta);
+        Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
     }
 
-    private static Vector2 GetInput()
+    private void Rotate(double delta)
     {
-        var input = new Vector2();
-        if (Input.IsActionPressed("move_right"))
-            input.X += 1;
-        if (Input.IsActionPressed("move_left"))
-            input.X -= 1;
-        if (Input.IsActionPressed("move_down"))
-            input.Y += 1;
-        if (Input.IsActionPressed("move_up"))
-            input.Y -= 1;
-
-        return input.Normalized();
+        if (Input.IsActionPressed("turn_right"))
+            RotationDegrees += 120 * (float)delta;
+        if (Input.IsActionPressed("turn_left"))
+            RotationDegrees -= 120 * (float)delta;
     }
 }
