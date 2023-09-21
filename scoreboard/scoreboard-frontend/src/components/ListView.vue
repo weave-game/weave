@@ -65,7 +65,7 @@ onUnmounted(() => {
     <div class="flex flex-row">
       <div>
         <h2 class="text-7xl font-black text-white">{{ index + 1 }}. {{ score.name }}</h2>
-        <h3 class="text-5xl my-mono font-bold text-neutral-500">{{ score.score }}</h3>
+        <h3 class="text-6xl my-mono font-bold text-neutral-500">{{ score.score }}</h3>
       </div>
 
       <img v-if="index === 0"

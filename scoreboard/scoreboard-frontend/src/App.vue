@@ -4,7 +4,7 @@ import ListView from './components/ListView.vue'
 
 <template>
   <div class="container mx-auto px-5 pt-16">
-    <h1 class="text-8xl font-bold text-white catcher-font">Scoreboard</h1>
+    <h1 class="text-9xl text-neutral-400 font-black uppercase catcher-font tracking-wider">Scoreboard</h1>
     <ListView />
   </div>
 </template>
