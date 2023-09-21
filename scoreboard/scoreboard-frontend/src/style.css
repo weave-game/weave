@@ -15,9 +15,9 @@ body {
 }
 
 .catcher-font {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Bebas Neue', sans-serif !important;
 }
 
 .my-mono {
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Roboto Mono', monospace !important;
 }

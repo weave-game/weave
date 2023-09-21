@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import fs from "fs";
 import csv from "csv-parser";
+import bodyParser from "body-parser";
 
 const app = express();
 const PORT = 3000;
@@ -12,6 +13,8 @@ type Score = {
   score: number;
 };
 
+const jsonParser = bodyParser.json();
+let filePath = "scores.csv";
 let cachedScores: Score[] = [];
 let lastSuccessfulReadTimestamp: string | null = null;
 
@@ -23,7 +26,7 @@ const readScoresFromFile = async (): Promise<Score[]> => {
   const scores: Score[] = [];
 
   return new Promise<Score[]>((resolve, reject) => {
-    fs.createReadStream("scores.csv")
+    fs.createReadStream(filePath)
       .pipe(csv())
       .on("data", (data) => {
         const teamName = data["team"];
@@ -66,6 +69,31 @@ app.get("/scores", async (_: Request, res: Response) => {
     error: errorDetail,
   });
 });
+
+app.get("/settings/file-path", async (_: Request, res: Response) => {
+  res.json({
+    filePath,
+  });
+});
+
+app.put(
+  "/settings/file-path",
+  jsonParser,
+  async (req: Request, res: Response) => {
+    const newFilePath = req.body.filePath;
+
+    if (typeof newFilePath === "string") {
+      filePath = newFilePath;
+      res.json({
+        filePath,
+      });
+    } else {
+      res.status(400).json({
+        message: "File path must be a string",
+      });
+    }
+  }
+);
 
 /*********
  * START *
