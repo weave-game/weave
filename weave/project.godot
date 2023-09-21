@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="weave"
-run/main_scene="res://Scenes/Main.tscn"
+run/main_scene="res://Menus/StartScreen.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/mode=3
+window/stretch/mode="viewport"
 
 [dotnet]
 
