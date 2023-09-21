@@ -31,9 +31,9 @@ function updateFilePath() {
 </script>
 
 <template>
-  <div class="mt-32">
+  <div class="my-32">
     <button @click="showSettings = !showSettings" class="text-white my-mono">
-      {{ showSettings ? "Hide" : "Show" }} Settings
+      {{ showSettings ? "Hide" : "Show" }} settings
     </button>
 
     <div v-show="showSettings" class="mt-5">

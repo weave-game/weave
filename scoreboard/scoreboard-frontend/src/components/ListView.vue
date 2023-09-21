@@ -17,6 +17,8 @@ type ScoresDTO = {
 const scores = ref([] as Score[])
 const fetchIntervalSeconds = 10 // fetch every 10 seconds
 const countdown = ref(fetchIntervalSeconds)
+const crownSrc = 'https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png';
+const lSrc = 'https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif'
 
 // Fetch scores from the server
 const fetchScores = async () => {
@@ -61,50 +63,33 @@ onUnmounted(() => {
     <p>Fetching scores in: {{ countdown }} seconds</p>
   </div>
 
-  <table class="text-white w-full text-3xl font-black my-32">
+  <table class="text-white w-full text-3xl font-black my-32 border-solid border-2 border-neutral-800">
     <thead>
       <tr>
         <th></th>
         <th class="text-left">Name</th>
         <th class="text-left">Score</th>
-        <th></th>
+        <!-- <th></th> -->
       </tr>
     </thead>
 
     <tbody>
-      <tr v-for="(score, index) in scores" :key="score.name">
-        <td>{{ index + 1 }}.</td>
-        <td class="">{{ score.name }}</td>
-        <td class="">{{ score.score }}</td>
+      <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px"
+        :class="{ 'bg-neutral-800': index % 2 === 0, 'bg-neutral-900': index % 2 === 1 }">
+        <td class="pl-8">{{ index + 1 }}.</td>
+        <td>{{ score.name }}</td>
         <td>
-          <img v-if="index === 0"
-            src="https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png"
-            alt="crown" class="crown ml-7">
+          <div class="flex items-center">
+            {{ score.score }}
 
-          <img v-if="score.name.toLowerCase() === 'monkey'"
-            src="https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif" alt="crown"
-            class="crown ml-7">
+            <img v-if="index === 0" :src="crownSrc" alt="crown" class="crown ml-7">
+
+            <img v-if="score.name.toLowerCase() === 'monkey'" :src="lSrc" alt="crown" class="crown ml-7">
+          </div>
         </td>
       </tr>
     </tbody>
   </table>
-
-  <!-- <div v-for="(score, index) in scores" :key="score.name" class="mt-16">
-    <div class="flex flex-row">
-      <div>
-        <h2 class="text-7xl font-black text-white">{{ index + 1 }}. {{ score.name }}</h2>
-        <h3 class="text-6xl my-mono font-bold text-neutral-500">{{ score.score }}</h3>
-      </div>
-
-      <img v-if="index === 0"
-        src="https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png"
-        alt="crown" class="crown ml-7">
-
-      <img v-if="score.name.toLowerCase() === 'monkey'"
-        src="https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif" alt="crown"
-        class="crown ml-7">
-    </div>
-  </div> -->
 </template>
 
 <style scoped>
