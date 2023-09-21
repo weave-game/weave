@@ -4,6 +4,7 @@ import axios from "axios";
 
 const filePath = ref("");
 const newFilePath = ref("");
+const showSettings = ref(false);
 
 axios
   .get("http://localhost:3000/settings/file-path")
@@ -30,17 +31,23 @@ function updateFilePath() {
 </script>
 
 <template>
-  <div class=" mt-32">
-    <h2 class="text-white my-mono font-bold">Settings</h2>
-    <p class="text-white my-mono ">Current file path: {{ filePath }}</p>
+  <div class="mt-32">
+    <button @click="showSettings = !showSettings" class="text-white my-mono">
+      {{ showSettings ? "Hide" : "Show" }} Settings
+    </button>
 
-    <br>
+    <div v-show="showSettings" class="mt-5">
+      <!-- <h2 class="text-white my-mono font-bold">Settings</h2> -->
+      <p class="text-white my-mono">Current file path: {{ filePath }}</p>
 
-    <form @submit.prevent="updateFilePath">
-      <label for="file-path" class="text-white my-mono">Enter file path:</label>
-      <input type="text" id="file-path" v-model="newFilePath" class="my-mono mx-3" />
-      <button type="submit" class="text-white my-mono">Save</button>
-    </form>
+      <br />
+
+      <form @submit.prevent="updateFilePath">
+        <label for="file-path" class="text-white my-mono">Enter file path:</label>
+        <input type="text" id="file-path" v-model="newFilePath" class="my-mono mx-3" />
+        <button type="submit" class="text-white my-mono">Save</button>
+      </form>
+    </div>
   </div>
 </template>
 
