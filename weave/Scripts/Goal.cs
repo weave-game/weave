@@ -19,6 +19,7 @@ public partial class Goal : Node2D
     private Label _label;
 
     private string _playerId;
+    private bool _reached;
 
     public string PlayerId
     {
@@ -39,6 +40,9 @@ public partial class Goal : Node2D
 
     private void OnBodyEntered(Node2D body)
     {
+        if (_reached)
+            return;
+
         if (body is not Player player)
             return;
 
@@ -46,6 +50,7 @@ public partial class Goal : Node2D
             return;
 
         _label.Text = "Goal!";
+        _reached = true;
         EmitSignal(SignalName.PlayerReachedGoal, player);
     }
 }
