@@ -28,7 +28,7 @@ const fetchScores = async () => {
     }
 
     const data: ScoresDTO = await response.json()
-    scores.value = data.scores
+    scores.value = data.scores.sort((a, b) => b.score - a.score)
   } catch (error) {
     console.error('Error fetching scores:', error)
   }
@@ -61,7 +61,35 @@ onUnmounted(() => {
     <p>Fetching scores in: {{ countdown }} seconds</p>
   </div>
 
-  <div v-for="(score, index) in scores" :key="score.name" class="mt-16">
+  <table class="text-white w-full text-3xl font-black my-32">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="text-left">Name</th>
+        <th class="text-left">Score</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr v-for="(score, index) in scores" :key="score.name">
+        <td>{{ index + 1 }}.</td>
+        <td class="">{{ score.name }}</td>
+        <td class="">{{ score.score }}</td>
+        <td>
+          <img v-if="index === 0"
+            src="https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png"
+            alt="crown" class="crown ml-7">
+
+          <img v-if="score.name.toLowerCase() === 'monkey'"
+            src="https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif" alt="crown"
+            class="crown ml-7">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- <div v-for="(score, index) in scores" :key="score.name" class="mt-16">
     <div class="flex flex-row">
       <div>
         <h2 class="text-7xl font-black text-white">{{ index + 1 }}. {{ score.name }}</h2>
@@ -71,8 +99,12 @@ onUnmounted(() => {
       <img v-if="index === 0"
         src="https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png"
         alt="crown" class="crown ml-7">
+
+      <img v-if="score.name.toLowerCase() === 'monkey'"
+        src="https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif" alt="crown"
+        class="crown ml-7">
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
