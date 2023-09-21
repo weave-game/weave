@@ -16,6 +16,7 @@ type ScoresDTO = {
 
 const scores = ref([] as Score[])
 const fetchIntervalSeconds = 10 // fetch every 10 seconds
+const scoresToDisplay = 13;
 const countdown = ref(fetchIntervalSeconds)
 const crownSrc = 'https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png';
 const lSrc = 'https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif'
@@ -30,10 +31,25 @@ const fetchScores = async () => {
     }
 
     const data: ScoresDTO = await response.json()
-    scores.value = data.scores.sort((a, b) => b.score - a.score)
+    scores.value = filter(data.scores);
   } catch (error) {
     console.error('Error fetching scores:', error)
   }
+}
+
+const filter = (scores: Score[]) => {
+  const things = scores.sort((a, b) => b.score - a.score).slice(0, scoresToDisplay)
+
+  // Insert a score with the name "..." at the next last position if there are items in the array
+  const fakeScore: Score = {
+    name: '...',
+  } as Score
+
+  if (things.length > 0) {
+    things.splice(things.length - 1, 0, fakeScore)
+  }
+
+  return things;
 }
 
 // Fetch scores when the component is mounted and every X seconds
@@ -84,7 +100,7 @@ onUnmounted(() => {
 
             <img v-if="index === 0" :src="crownSrc" alt="crown" class="crown ml-7">
 
-            <img v-if="score.name.toLowerCase() === 'monkey'" :src="lSrc" alt="crown" class="crown ml-7">
+            <img v-if="index + 1 === scores.length" :src="lSrc" alt="crown" class="crown ml-7">
           </div>
         </td>
       </tr>
