@@ -1,11 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=3 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
+[ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_bb43u")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.733333, 0.847059, 0.933333, 1)
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
 anchors_preset = 15
@@ -17,12 +26,21 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
-text = "weave"
+texture = ExtResource("2_gitg2")
+expand_mode = 5
 
-[node name="Button" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+[node name="StartButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
 layout_mode = 2
-text = "play"
+text = "Play :D"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 40)
+layout_mode = 2
+text = "Quit :("
