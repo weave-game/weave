@@ -8,12 +8,12 @@ using weave;
 public partial class CurveSpawner : Node2D
 {
     public Player Player { get; set; }
-    public List<SegmentShape2D> Segments { get; set; } = new();
+    public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     public int LineWidth { get; set; }
-    private readonly float curveSpawnOffset = 4f; 
-    private Vector2 lastPoint;
-    private bool hasStarted = false;
-    private Color lineColor = new(1, 0, 0);
+    private readonly float _curveSpawnOffset = 4f;
+    private Vector2 _lastPoint;
+    private bool _hasStarted = false;
+    private Color _lineColor = new(1, 0, 0);
 
     public override void _Process(double delta)
     {
@@ -23,25 +23,25 @@ public partial class CurveSpawner : Node2D
             var angleBehind = Player.Rotation + (float)(Math.PI / 2);
             var pointBehind = CalculatePointOnCircle(
                 Player.GlobalPosition,
-                playerShape.Radius + curveSpawnOffset,
+                playerShape.Radius + _curveSpawnOffset,
                 angleBehind
             );
-            if (hasStarted) // Don't draw line on first iteration (will otherwise originate from (0,0))
+            if (_hasStarted) // Don't draw line on first iteration (will otherwise originate from (0,0))
             {
-                DrawLine(lastPoint, pointBehind);
+                DrawLine(_lastPoint, pointBehind);
             }
             else
             {
-                hasStarted = true;
+                _hasStarted = true;
             }
-            lastPoint = pointBehind;
+            _lastPoint = pointBehind;
         }
     }
 
     private void DrawLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = lineColor, Width = LineWidth, };
+        var line = new Line2D { DefaultColor = _lineColor, Width = LineWidth, };
         line.AddPoint(from);
         line.AddPoint(to);
         AddChild(line);
