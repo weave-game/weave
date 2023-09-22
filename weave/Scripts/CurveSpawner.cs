@@ -8,16 +8,16 @@ using weave;
 public partial class CurveSpawner : Node2D
 {
     public Player Player { get; set; }
-    public List<SegmentShape2D> Segments { get; set; } = new();
+    public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     public int LineWidth { get; set; }
-    private readonly float curveSpawnOffset = 4f;
-    private Vector2 lastPoint;
-    private bool isDrawing;
-    private ulong gapTime;
-    private readonly ulong timeBetweenGaps = 5000;
-    private readonly ulong timeForGaps = 500;
-    private bool hasStarted = false; // Don't draw line on first iteration (will otherwise originate from (0,0))
-    private Color lineColor = new(1, 0, 0);
+    private Vector2 _lastPoint;
+    private bool _hasStarted = false; // Don't draw line on first iteration (will otherwise curve originates from (0,0))
+    private bool _isDrawing;
+    private ulong _gapTime;
+    private readonly ulong _timeBetweenGaps = 5000;
+    private readonly ulong _timeForGaps = 500;
+    private Color _lineColor = new(1, 0, 0);
+    private readonly float _curveSpawnOffset = 4f;
 
     public override void _Process(double delta)
     {
@@ -27,48 +27,46 @@ public partial class CurveSpawner : Node2D
             var angleBehind = Player.Rotation + (float)(Math.PI / 2);
             var pointBehind = CalculatePointOnCircle(
                 Player.GlobalPosition,
-                playerShape.Radius + curveSpawnOffset,
+                playerShape.Radius + _curveSpawnOffset,
                 angleBehind
             );
 
-            // Periodically leave gaps in the trail
-            CheckShouldDraw();
+            // Periodically toggle isDrawing to leave gaps in the trail
+            CheckToggleIsDrawing();
 
-            GD.Print(isDrawing);
-
-            if (hasStarted && isDrawing)
+            if (_hasStarted && _isDrawing)
             {
-                DrawLine(lastPoint, pointBehind);
+                DrawLine(_lastPoint, pointBehind);
             }
             else
             {
-                hasStarted = true;
+                _hasStarted = true;
             }
-            lastPoint = pointBehind;
+            _lastPoint = pointBehind;
         }
     }
 
-    private void CheckShouldDraw()
+    private void CheckToggleIsDrawing()
     {
         var currentTime = Time.GetTicksMsec();
-        var elapsedTime = currentTime - gapTime;
+        var elapsedTime = currentTime - _gapTime;
 
-        if (isDrawing && elapsedTime >= timeBetweenGaps)
+        if (_isDrawing && elapsedTime >= _timeBetweenGaps)
         {
-            isDrawing = false;
-            gapTime = currentTime;
+            _isDrawing = false;
+            _gapTime = currentTime;
         }
-        else if (!isDrawing && elapsedTime >= timeForGaps)
+        else if (!_isDrawing && elapsedTime >= _timeForGaps)
         {
-            isDrawing = true;
-            gapTime = currentTime;
+            _isDrawing = true;
+            _gapTime = currentTime;
         }
     }
 
     private void DrawLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = lineColor, Width = LineWidth, };
+        var line = new Line2D { DefaultColor = _lineColor, Width = LineWidth, };
         line.AddPoint(from);
         line.AddPoint(to);
         AddChild(line);
