@@ -10,9 +10,13 @@ public partial class CurveSpawner : Node2D
     public Player Player { get; set; }
     public List<SegmentShape2D> Segments { get; set; } = new();
     public int LineWidth { get; set; }
-    private readonly float curveSpawnOffset = 4f; 
+    private readonly float curveSpawnOffset = 4f;
     private Vector2 lastPoint;
-    private bool hasStarted = false;
+    private bool isDrawing;
+    private ulong gapTime;
+    private readonly ulong timeBetweenGaps = 5000;
+    private readonly ulong timeForGaps = 500;
+    private bool hasStarted = false; // Don't draw line on first iteration (will otherwise originate from (0,0))
     private Color lineColor = new(1, 0, 0);
 
     public override void _Process(double delta)
@@ -26,7 +30,13 @@ public partial class CurveSpawner : Node2D
                 playerShape.Radius + curveSpawnOffset,
                 angleBehind
             );
-            if (hasStarted) // Don't draw line on first iteration (will otherwise originate from (0,0))
+
+            // Periodically leave gaps in the trail
+            CheckShouldDraw();
+
+            GD.Print(isDrawing);
+
+            if (hasStarted && isDrawing)
             {
                 DrawLine(lastPoint, pointBehind);
             }
@@ -35,6 +45,23 @@ public partial class CurveSpawner : Node2D
                 hasStarted = true;
             }
             lastPoint = pointBehind;
+        }
+    }
+
+    private void CheckShouldDraw()
+    {
+        var currentTime = Time.GetTicksMsec();
+        var elapsedTime = currentTime - gapTime;
+
+        if (isDrawing && elapsedTime >= timeBetweenGaps)
+        {
+            isDrawing = false;
+            gapTime = currentTime;
+        }
+        else if (!isDrawing && elapsedTime >= timeForGaps)
+        {
+            isDrawing = true;
+            gapTime = currentTime;
         }
     }
 
