@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bgkqcvg1417tp"]
+[gd_scene load_steps=4 format=3 uid="uid://cwkcn26tiyvom"]
 
 [ext_resource type="Script" path="res://Scripts/Goal.cs" id="1_6mak8"]
 [ext_resource type="Texture2D" uid="uid://b41l3ovmk6emo" path="res://Assets/Sprites/Temporary/flag.png" id="1_vmnc5"]

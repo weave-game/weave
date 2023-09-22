@@ -12,10 +12,13 @@ public partial class Player : CharacterBody2D
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
 
-    private const int MovementSpeed = 200;
+    private const int MovementSpeed = 100;
 
     [GetNode("Label")]
     private Label _label;
+
+    [GetNode("CollisionShape2D")]
+    public CollisionShape2D collisionShape2D { get; set; }
 
     public IController Controller { get; set; }
 
