@@ -1,6 +1,7 @@
 using Godot;
 
 namespace weave.InputHandlers;
+
 public class KeyboardController : IController
 {
     private readonly Key _left;
