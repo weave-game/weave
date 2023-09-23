@@ -102,7 +102,8 @@ public partial class Main : Node2D
         var radius = circleShape.Radius + _lineWidth / 2;
 
         return segments.Any(
-            segment => Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
+            segment =>
+                Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
     }
 

@@ -12,6 +12,7 @@ public partial class StartScreen : Node2D
 
     [GetNode("CanvasLayer/CenterContainer/VBoxContainer/QuitButton")]
     private Button _quitButton;
+
     public override void _Ready()
     {
         this.GetNodes();
