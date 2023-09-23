@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using Godot;
 using GodotSharper.Instancing;
 using weave;
@@ -11,13 +12,19 @@ public partial class CurveSpawner : Node2D
     public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     public int LineWidth { get; set; }
     private Vector2 _lastPoint;
-    private bool _hasStarted = false; // Don't draw line on first iteration (will otherwise curve originates from (0,0))
-    private bool _isDrawing;
-    private ulong _gapTime;
-    private readonly ulong _timeBetweenGaps = 5000;
-    private readonly ulong _timeForGaps = 500;
+    private bool _hasStarted = false; 
+    private bool _isDrawing = true;
+    private Timer _drawTimer;
+    private Timer _gapTimer;
+    private readonly float _timeBetweenGaps = 5;
+    private readonly float _timeForGaps = 0.5f;
     private Color _lineColor = new(1, 0, 0);
     private readonly float _curveSpawnOffset = 4f;
+
+    public override void _Ready()
+    {
+        InitializeTimers();
+    }
 
     public override void _Process(double delta)
     {
@@ -31,9 +38,7 @@ public partial class CurveSpawner : Node2D
                 angleBehind
             );
 
-            // Periodically toggle isDrawing to leave gaps in the trail
-            CheckToggleIsDrawing();
-
+            // Don't draw line on first iteration (first line will otherwise originate from (0,0))
             if (_hasStarted && _isDrawing)
             {
                 DrawLine(_lastPoint, pointBehind);
@@ -46,21 +51,39 @@ public partial class CurveSpawner : Node2D
         }
     }
 
-    private void CheckToggleIsDrawing()
+    private void InitializeTimers()
     {
-        var currentTime = Time.GetTicksMsec();
-        var elapsedTime = currentTime - _gapTime;
+        _drawTimer = new Timer
+        {
+            WaitTime = _timeBetweenGaps,
+            OneShot = true
+        };
+        _drawTimer.Timeout += HandleDrawTimerTimeout;
+        AddChild(_drawTimer);
 
-        if (_isDrawing && elapsedTime >= _timeBetweenGaps)
+        _gapTimer = new Timer
         {
-            _isDrawing = false;
-            _gapTime = currentTime;
-        }
-        else if (!_isDrawing && elapsedTime >= _timeForGaps)
-        {
-            _isDrawing = true;
-            _gapTime = currentTime;
-        }
+            WaitTime = _timeForGaps,
+            OneShot = true
+        };
+        _gapTimer.Timeout += HandleGapTimerTimeout;
+        AddChild(_gapTimer);
+
+        _drawTimer.Start();
+    }
+
+    private void HandleDrawTimerTimeout()
+    {
+        _isDrawing = false;
+        _drawTimer.Stop();
+        _gapTimer.Start();
+    }
+
+    private void HandleGapTimerTimeout()
+    {
+        _isDrawing = true;
+        _gapTimer.Stop();
+        _drawTimer.Start();
     }
 
     private void DrawLine(Vector2 from, Vector2 to)
