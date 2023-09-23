@@ -9,7 +9,6 @@ public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line);
-    public Player Player { get; set; }
     public bool IsDrawing { get; set; } = true;
     public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     private Vector2 _lastPoint;
@@ -26,14 +25,11 @@ public partial class CurveSpawner : Node2D
         InitializeTimers();
     }
 
-    public override void _Process(double delta)
+    public void Step(CircleShape2D playerShape, float playerRotation, Vector2 playerPosition)
     {
-        if (Player != null)
-        {
-            var playerShape = (CircleShape2D)Player.CollisionShape2D.Shape;
-            var angleBehind = Player.Rotation + (float)(Math.PI / 2);
+            var angleBehind = playerRotation + (float)(Math.PI / 2);
             var pointBehind = CalculatePointOnCircle(
-                Player.GlobalPosition,
+                playerPosition,
                 playerShape.Radius + _curveSpawnOffset,
                 angleBehind
             );
@@ -48,7 +44,6 @@ public partial class CurveSpawner : Node2D
                 _hasStarted = true;
             }
             _lastPoint = pointBehind;
-        }
     }
 
     private void InitializeTimers()

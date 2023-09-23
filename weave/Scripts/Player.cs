@@ -43,12 +43,12 @@ public partial class Player : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         Move(delta);
+        CurveSpawner.Step((CircleShape2D) CollisionShape2D.Shape, Rotation, GlobalPosition);
     }
 
     private void InitiateCurveSpawner()
     {
         CurveSpawner = Instanter.Instantiate<CurveSpawner>();
-        CurveSpawner.Player = this;
         AddChild(CurveSpawner);
     }
 
