@@ -19,7 +19,7 @@ public partial class Main : Node2D
 {
     private readonly ISet<Player> _players = new HashSet<Player>();
     private readonly int _nPlayers = 1;
-    private readonly int _lineWidth = 6;
+    private const int LineWidth = 6;
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
     private readonly List<(Key, Key)> _keybindings =
@@ -71,7 +71,7 @@ public partial class Main : Node2D
         {
             var curveSpawner = Instanter.Instantiate<CurveSpawner>();
             curveSpawner.Player = player;
-            curveSpawner.LineWidth = _lineWidth;
+            curveSpawner.LineWidth = LineWidth;
             _curveSpawners.Add(curveSpawner);
             AddChild(curveSpawner);
         }
@@ -95,29 +95,25 @@ public partial class Main : Node2D
         });
     }
 
-    private bool IsIntersecting(Player player, ISet<SegmentShape2D> segments)
+    private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.GlobalPosition;
-        var circleShape = (CircleShape2D)player.collisionShape2D.Shape;
-        var radius = circleShape.Radius + _lineWidth / 2;
+        var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
+        var radius = circleShape.Radius + LineWidth / 2f;
 
         return segments.Any(
-            segment => Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
+            segment =>
+                Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
     }
 
     private void OnPlayerReachedGoal(Player player)
     {
-        GD.Print($"Player {player.PlayerId} has reached the goal");
-        _roundCompletions++;
+        if (++_roundCompletions != _nPlayers)
+            return;
 
-        if (_roundCompletions == _nPlayers)
-        {
-            GD.Print("All players have reached the goal");
-
-            _roundCompletions = 0;
-            ClearAndSpawnGoals();
-        }
+        _roundCompletions = 0;
+        ClearAndSpawnGoals();
     }
 
     private void ClearAndSpawnGoals()
