@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build and analyze
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: weave
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
