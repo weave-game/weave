@@ -12,7 +12,7 @@ public partial class CurveSpawner : Node2D
     public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     public int LineWidth { get; set; }
     private Vector2 _lastPoint;
-    private bool _hasStarted = false; 
+    private bool _hasStarted = false;
     private bool _isDrawing = true;
     private Timer _drawTimer;
     private Timer _gapTimer;
@@ -53,19 +53,11 @@ public partial class CurveSpawner : Node2D
 
     private void InitializeTimers()
     {
-        _drawTimer = new Timer
-        {
-            WaitTime = _timeBetweenGaps,
-            OneShot = true
-        };
+        _drawTimer = new Timer { WaitTime = _timeBetweenGaps, OneShot = true };
         _drawTimer.Timeout += HandleDrawTimerTimeout;
         AddChild(_drawTimer);
 
-        _gapTimer = new Timer
-        {
-            WaitTime = _timeForGaps,
-            OneShot = true
-        };
+        _gapTimer = new Timer { WaitTime = _timeForGaps, OneShot = true };
         _gapTimer.Timeout += HandleGapTimerTimeout;
         AddChild(_gapTimer);
 
