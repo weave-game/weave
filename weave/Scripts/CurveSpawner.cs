@@ -11,7 +11,6 @@ public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line);
-    public bool IsDrawing { get; set; } = true;
     private const float CurveSpawnOffset = 4f;
     private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
@@ -20,6 +19,7 @@ public partial class CurveSpawner : Node2D
     private bool _hasStarted;
     private Vector2 _lastPoint;
     private Color _lineColor = new(1, 0, 0);
+    public bool IsDrawing { get; private set; } = true;
     public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
@@ -74,7 +74,7 @@ public partial class CurveSpawner : Node2D
     private void DrawLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth, };
+        var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
         EmitSignal(SignalName.CreatedLine, line);
@@ -89,8 +89,8 @@ public partial class CurveSpawner : Node2D
         float angleInRadians
     )
     {
-        float x = center.X + (radius * Mathf.Cos(angleInRadians));
-        float y = center.Y + (radius * Mathf.Sin(angleInRadians));
+        var x = center.X + radius * Mathf.Cos(angleInRadians);
+        var y = center.Y + radius * Mathf.Sin(angleInRadians);
         return new Vector2(x, y);
     }
 }

@@ -17,10 +17,11 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
+    private const int NPlayers = 1;
+
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
 
-    private const int NPlayers = 1;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
@@ -53,12 +54,8 @@ public partial class Main : Node2D
         // Players that are not drawing should not be able to collide
         var drawingPlayers = _players.Where(player => player.CurveSpawner.IsDrawing);
         foreach (var player in drawingPlayers)
-        {
             if (IsIntersecting(player, allSegments))
-            {
                 GD.Print("Player has collided");
-            }
-        }
     }
 
     private void SpawnPlayers()
@@ -84,7 +81,7 @@ public partial class Main : Node2D
     {
         var position = player.GlobalPosition;
         var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
-        var radius = circleShape.Radius + (Constants.LineWidth / 2f);
+        var radius = circleShape.Radius + Constants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
