@@ -4,21 +4,23 @@ using Godot;
 using GodotSharper.Instancing;
 using weave.Utils;
 
-[Instantiable("res://Objects/CurveSpawner.tscn")]
+namespace weave;
+
+[Instantiable(ObjectResources.CurveSpawnerScene)]
 public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line);
     public bool IsDrawing { get; set; } = true;
-    public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
-    private Vector2 _lastPoint;
-    private bool _hasStarted;
+    private const float CurveSpawnOffset = 4f;
+    private const float TimeBetweenGaps = 5;
+    private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
     private Timer _gapTimer;
-    private readonly float _timeBetweenGaps = 5;
-    private readonly float _timeForGaps = 0.5f;
+    private bool _hasStarted;
+    private Vector2 _lastPoint;
     private Color _lineColor = new(1, 0, 0);
-    private readonly float _curveSpawnOffset = 4f;
+    public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
     {
@@ -27,32 +29,28 @@ public partial class CurveSpawner : Node2D
 
     public void Step(CircleShape2D playerShape, float playerRotation, Vector2 playerPosition)
     {
-            var angleBehind = playerRotation + (float)(Math.PI / 2);
-            var pointBehind = CalculatePointOnCircle(
-                playerPosition,
-                playerShape.Radius + _curveSpawnOffset,
-                angleBehind
-            );
+        var angleBehind = playerRotation + (float)(Math.PI / 2);
+        var pointBehind = CalculatePointOnCircle(
+            playerPosition,
+            playerShape.Radius + CurveSpawnOffset,
+            angleBehind
+        );
 
-            // Don't draw line on first iteration (first line will otherwise originate from (0,0))
-            if (_hasStarted && IsDrawing)
-            {
-                DrawLine(_lastPoint, pointBehind);
-            }
-            else
-            {
-                _hasStarted = true;
-            }
-            _lastPoint = pointBehind;
+        // Don't draw line on first iteration (first line will otherwise originate from (0,0))
+        if (_hasStarted && IsDrawing)
+            DrawLine(_lastPoint, pointBehind);
+        else
+            _hasStarted = true;
+        _lastPoint = pointBehind;
     }
 
     private void InitializeTimers()
     {
-        _drawTimer = new Timer { WaitTime = _timeBetweenGaps, OneShot = true };
+        _drawTimer = new Timer { WaitTime = TimeBetweenGaps, OneShot = true };
         _drawTimer.Timeout += HandleDrawTimerTimeout;
         AddChild(_drawTimer);
 
-        _gapTimer = new Timer { WaitTime = _timeForGaps, OneShot = true };
+        _gapTimer = new Timer { WaitTime = TimeForGaps, OneShot = true };
         _gapTimer.Timeout += HandleGapTimerTimeout;
         AddChild(_gapTimer);
 

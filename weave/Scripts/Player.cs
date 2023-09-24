@@ -1,8 +1,8 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Utils;
 using weave.InputHandlers;
+using weave.Utils;
 
 namespace weave;
 
@@ -18,13 +18,12 @@ public partial class Player : CharacterBody2D
 
     [GetNode("CurveSpawner")]
     public CurveSpawner CurveSpawner {get; set;}
+    private string _playerId;
 
     [GetNode("CollisionShape2D")]
-    public CollisionShape2D CollisionShape2D { get; set; }
+    public CollisionShape2D CollisionShape2D { get; private set; }
 
     public IController Controller { get; set; }
-
-    private string _playerId;
 
     public string PlayerId
     {
