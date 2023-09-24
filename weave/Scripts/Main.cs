@@ -50,10 +50,11 @@ public partial class Main : Node2D
 
     private void CheckPlayerCollisions()
     {
-        foreach (var player in _players)
-            foreach (var curveSpawner in _curveSpawners)
-                if (IsIntersecting(player, curveSpawner.Segments))
-                    GD.Print("Player has collided");
+        var collidingPlayers = _players.Where(
+            player => _curveSpawners.Any(spawner => IsIntersecting(player, spawner.Segments))
+        );
+
+        collidingPlayers.ToList().ForEach(p => GD.Print("Player has collided", p));
     }
 
     private void InitiateCurveSpawners()
