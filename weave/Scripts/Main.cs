@@ -17,17 +17,13 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private readonly ISet<Player> _players = new HashSet<Player>();
-    private readonly int _nPlayers = 1;
-    private readonly int _nrGridColumns = 10;
-    private readonly int _nrGridRows = 10;
-    private readonly int _width = 1280;
-    private readonly int _height = 720;
     private Grid _grid;
-    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
-
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
+
+    private const int NPlayers = 1;
+    private readonly ISet<Player> _players = new HashSet<Player>();
+    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -37,13 +33,8 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        if (_keybindings.Count < _nPlayers)
-        {
-            throw new ArgumentException(
-                "More players than available keybindings",
-                nameof(_nPlayers)
-            );
-        }
+        if (_keybindings.Count < NPlayers)
+            throw new ArgumentException("More players than available keybindings");
 
         CreateMapGrid();
         SpawnPlayers();
@@ -57,7 +48,9 @@ public partial class Main : Node2D
 
     private void CreateMapGrid()
     {
-        _grid = new Grid(_nrGridRows, _nrGridColumns, _width, _height);
+        var width = (int)GetViewportRect().Size.X;
+        var height = (int)GetViewportRect().Size.X;
+        _grid = new Grid(10, 10, width, height);
     }
 
     private void DetectPlayerCollision()
@@ -79,7 +72,7 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var i = 0;
-        _nPlayers.TimesDo(() =>
+        NPlayers.TimesDo(() =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
@@ -116,16 +109,11 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        GD.Print($"Player {player.PlayerId} has reached the goal");
-        _roundCompletions++;
+        if (++_roundCompletions != NPlayers)
+            return;
 
-        if (_roundCompletions == _nPlayers)
-        {
-            GD.Print("All players have reached the goal");
-
-            _roundCompletions = 0;
-            ClearAndSpawnGoals();
-        }
+        _roundCompletions = 0;
+        ClearAndSpawnGoals();
     }
 
     private void ClearAndSpawnGoals()

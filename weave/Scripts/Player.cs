@@ -1,8 +1,8 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Utils;
 using weave.InputHandlers;
+using weave.Utils;
 
 namespace weave;
 
@@ -11,18 +11,19 @@ public partial class Player : CharacterBody2D
 {
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
-    public CurveSpawner CurveSpawner { get; set; }
     private const int MovementSpeed = 100;
 
     [GetNode("Label")]
     private Label _label;
 
+    [GetNode("CurveSpawner")]
+    public CurveSpawner CurveSpawner { get; set; }
+    private string _playerId;
+
     [GetNode("CollisionShape2D")]
     private CollisionShape2D _collisionShape2D;
 
     public IController Controller { get; set; }
-
-    private string _playerId;
 
     public string PlayerId
     {
@@ -37,19 +38,12 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         this.GetNodes();
-        InitiateCurveSpawner();
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Move(delta);
         CurveSpawner.Step(GlobalPosition, Rotation, GetRadius());
-    }
-
-    private void InitiateCurveSpawner()
-    {
-        CurveSpawner = Instanter.Instantiate<CurveSpawner>();
-        AddChild(CurveSpawner);
     }
 
     private void Move(double delta)

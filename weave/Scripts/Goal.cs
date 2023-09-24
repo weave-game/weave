@@ -21,6 +21,7 @@ public partial class Goal : Node2D
     private string _playerId;
     private bool _reached;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public string PlayerId
     {
         get => _playerId;

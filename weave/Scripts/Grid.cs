@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
+namespace weave;
+
 public class Grid
 {
     private readonly int _nrRows;
