@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
@@ -11,16 +12,16 @@ namespace weave;
 
 internal enum ControllerTypes
 {
-    Keyboard,
-    Controller // TODO: implement
+    Keyboard
 }
 
 public partial class Main : Node2D
 {
+    private const int NPlayers = 1;
+
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
 
-    private const int NPlayers = 1;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
@@ -32,6 +33,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+
         if (_keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
@@ -51,20 +53,15 @@ public partial class Main : Node2D
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
-        var drawingPlayers = _players.Where(player => player.CurveSpawner.IsDrawing);
-        foreach (var player in drawingPlayers)
-        {
-            if (IsIntersecting(player, allSegments))
-            {
-                GD.Print("Player has collided");
-            }
-        }
+        _players
+            .Where(p => p.CurveSpawner.IsDrawing)
+            .Where(p => IsIntersecting(p, allSegments))
+            .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
     }
 
     private void SpawnPlayers()
     {
-        var i = 0;
-        NPlayers.TimesDo(() =>
+        NPlayers.TimesDo(i =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
@@ -73,28 +70,22 @@ public partial class Main : Node2D
             _players.Add(player);
 
             AddChild(player);
-            player.CurveSpawner.CreatedLine += HandleDrawLine;
+            player.CurveSpawner.CreatedLine += line => AddChild(line);
             player.GlobalPosition = GetRandomCoordinateInView(100);
             player.PlayerId = playerId;
-            i++;
         });
     }
 
     private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
-        var position = player.GlobalPosition;
-        var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
-        var radius = circleShape.Radius + (Constants.LineWidth / 2f);
+        var position = player.CollisionShape2D.GlobalPosition;
+        var radius = player.CircleShape.Radius + Constants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
-    }
-
-    private void HandleDrawLine(Line2D line)
-    {
-        AddChild(line);
     }
 
     private void OnPlayerReachedGoal(Player player)
