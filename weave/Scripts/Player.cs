@@ -19,6 +19,8 @@ public partial class Player : CharacterBody2D
 
     private string _playerId;
 
+    public CircleShape2D CircleShape { get; private set; }
+
     [GetNode("CurveSpawner")]
     public CurveSpawner CurveSpawner { get; private set; }
 
@@ -40,12 +42,12 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         this.GetNodes();
+        CircleShape = CollisionShape2D.Shape as CircleShape2D;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Move(delta);
-        CurveSpawner.Step((CircleShape2D)CollisionShape2D.Shape, Rotation, GlobalPosition);
     }
 
     private void Move(double delta)

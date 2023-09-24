@@ -33,6 +33,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+
         if (_keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
@@ -53,6 +54,7 @@ public partial class Main : Node2D
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
         var drawingPlayers = _players.Where(player => player.CurveSpawner.IsDrawing);
+
         foreach (var player in drawingPlayers)
             if (IsIntersecting(player, allSegments))
                 GD.Print("Player has collided");
@@ -79,9 +81,8 @@ public partial class Main : Node2D
 
     private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
-        var position = player.GlobalPosition;
-        var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
-        var radius = circleShape.Radius + Constants.LineWidth / 2f;
+        var position = player.CollisionShape2D.GlobalPosition;
+        var radius = player.CircleShape.Radius + Constants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
@@ -89,7 +90,7 @@ public partial class Main : Node2D
         );
     }
 
-    private void HandleDrawLine(Line2D line)
+    private void HandleDrawLine(Node2D line)
     {
         AddChild(line);
     }

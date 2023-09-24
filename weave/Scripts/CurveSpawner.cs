@@ -1,17 +1,13 @@
-using System;
 using System.Collections.Generic;
 using Godot;
-using GodotSharper.Instancing;
 using weave.Utils;
 
 namespace weave;
 
-[Instantiable(ObjectResources.CurveSpawnerScene)]
 public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line);
-    private const float CurveSpawnOffset = 4f;
     private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
@@ -27,21 +23,20 @@ public partial class CurveSpawner : Node2D
         InitializeTimers();
     }
 
-    public void Step(CircleShape2D playerShape, float playerRotation, Vector2 playerPosition)
+    public override void _Process(double delta)
     {
-        var angleBehind = playerRotation + (float)(Math.PI / 2);
-        var pointBehind = CalculatePointOnCircle(
-            playerPosition,
-            playerShape.Radius + CurveSpawnOffset,
-            angleBehind
-        );
+        Step();
+    }
 
+    private void Step()
+    {
         // Don't draw line on first iteration (first line will otherwise originate from (0,0))
         if (_hasStarted && IsDrawing)
-            DrawLine(_lastPoint, pointBehind);
+            SpawnLine(_lastPoint, GlobalPosition);
         else
             _hasStarted = true;
-        _lastPoint = pointBehind;
+
+        _lastPoint = GlobalPosition;
     }
 
     private void InitializeTimers()
@@ -71,7 +66,7 @@ public partial class CurveSpawner : Node2D
         _drawTimer.Start();
     }
 
-    private void DrawLine(Vector2 from, Vector2 to)
+    private void SpawnLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
         var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth };
@@ -81,16 +76,5 @@ public partial class CurveSpawner : Node2D
 
         // Create segment that is used to check for intersections
         Segments.Add(new SegmentShape2D { A = from, B = to });
-    }
-
-    private static Vector2 CalculatePointOnCircle(
-        Vector2 center,
-        float radius,
-        float angleInRadians
-    )
-    {
-        var x = center.X + radius * Mathf.Cos(angleInRadians);
-        var y = center.Y + radius * Mathf.Sin(angleInRadians);
-        return new Vector2(x, y);
     }
 }
