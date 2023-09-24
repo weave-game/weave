@@ -16,12 +16,12 @@ public class Grid
 
     public class Cell
     {
-        public Rect2 Rect2;
-        public ISet<SegmentShape2D> Segments = new HashSet<SegmentShape2D>();
+        public Rect2 Rect { get; set; }
+        public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
 
         public Cell(Rect2 rect2)
         {
-            Rect2 = rect2;
+            Rect = rect2;
         }
     }
 
@@ -32,8 +32,8 @@ public class Grid
         _width = width;
         _height = height;
 
-        _cellWidth = width / nrRows;
-        _cellHeight = height / nrCols;
+        _cellWidth = (float)width / nrRows;
+        _cellHeight = (float)height / nrCols;
 
         // Populate grid with empty cells
         for (var i = 0; i < _nrCols; i++)
@@ -62,7 +62,7 @@ public class Grid
         {
             for (var j = 0; j < _nrRows; j++)
             {
-                if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect2))
+                if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
                 {
                     playerSegments.UnionWith(_cells[i][j].Segments);
                 }

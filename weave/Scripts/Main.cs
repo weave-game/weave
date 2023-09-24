@@ -88,7 +88,7 @@ public partial class Main : Node2D
         });
     }
 
-    private bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
+    private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
     {
         var position = player.GlobalPosition;
         var radius = player.GetRadius() + (Constants.LineWidth / 2);
