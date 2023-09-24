@@ -52,11 +52,7 @@ public partial class Main : Node2D
     private void DetectPlayerCollision()
     {
         // Collect all segments
-        var allSegments = new HashSet<SegmentShape2D>();
-        foreach (var player in _players)
-        {
-            allSegments.UnionWith(player.CurveSpawner.Segments);
-        }
+        var allSegments = _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
