@@ -18,7 +18,7 @@ public partial class Player : CharacterBody2D
     private Label _label;
 
     [GetNode("CollisionShape2D")]
-    public CollisionShape2D CollisionShape2D { get; set; }
+    private CollisionShape2D _collisionShape2D;
 
     public IController Controller { get; set; }
 
@@ -43,7 +43,7 @@ public partial class Player : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         Move(delta);
-        CurveSpawner.Step((CircleShape2D) CollisionShape2D.Shape, Rotation, GlobalPosition);
+        CurveSpawner.Step(GlobalPosition, Rotation, GetRadius());
     }
 
     private void InitiateCurveSpawner()
@@ -65,5 +65,11 @@ public partial class Player : CharacterBody2D
 
         if (Controller.IsTurningLeft())
             RotationDegrees -= 120 * (float)delta;
+    }
+
+    public float GetRadius()
+    {
+        var shape = (CircleShape2D)_collisionShape2D.Shape;
+        return shape.Radius;
     }
 }

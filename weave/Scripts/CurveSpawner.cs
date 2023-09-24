@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using Godot;
 using GodotSharper.Instancing;
-using weave;
 
 [Instantiable("res://Objects/CurveSpawner.tscn")]
 public partial class CurveSpawner : Node2D
 {
     [Signal]
-    public delegate void CreatedLineEventHandler(Line2D line);
+    public delegate void CreatedLineEventHandler(Line2D line, SegmentShape2D segment);
     public bool IsDrawing { get; set; } = true;
-    public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
     private Vector2 _lastPoint;
     private bool _hasStarted;
     private Timer _drawTimer;
@@ -25,25 +22,25 @@ public partial class CurveSpawner : Node2D
         InitializeTimers();
     }
 
-    public void Step(CircleShape2D playerShape, float playerRotation, Vector2 playerPosition)
+    public void Step(Vector2 playerPosition, float playerRotation, float playerRadius)
     {
-            var angleBehind = playerRotation + (float)(Math.PI / 2);
-            var pointBehind = CalculatePointOnCircle(
-                playerPosition,
-                playerShape.Radius + _curveSpawnOffset,
-                angleBehind
-            );
+        var angleBehind = playerRotation + (float)(Math.PI / 2);
+        var pointBehind = CalculatePointOnCircle(
+            playerPosition,
+            playerRadius + _curveSpawnOffset,
+            angleBehind
+        );
 
-            // Don't draw line on first iteration (first line will otherwise originate from (0,0))
-            if (_hasStarted && IsDrawing)
-            {
-                DrawLine(_lastPoint, pointBehind);
-            }
-            else
-            {
-                _hasStarted = true;
-            }
-            _lastPoint = pointBehind;
+        // Don't draw line on first iteration (first line will otherwise originate from (0,0))
+        if (_hasStarted && IsDrawing)
+        {
+            DrawLine(_lastPoint, pointBehind);
+        }
+        else
+        {
+            _hasStarted = true;
+        }
+        _lastPoint = pointBehind;
     }
 
     private void InitializeTimers()
@@ -79,10 +76,12 @@ public partial class CurveSpawner : Node2D
         var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth, };
         line.AddPoint(from);
         line.AddPoint(to);
-        EmitSignal(SignalName.CreatedLine, line);
 
-        // Create segment that is used to check for intersections
-        Segments.Add(new SegmentShape2D { A = from, B = to });
+        // Segment that is used to test for intersections
+        var segment = new SegmentShape2D { A = from, B = to };
+
+        // Pass information to Main
+        EmitSignal(SignalName.CreatedLine, line, segment);
     }
 
     private static Vector2 CalculatePointOnCircle(
