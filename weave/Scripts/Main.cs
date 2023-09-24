@@ -17,9 +17,6 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int LineWidth = 6;
-    private readonly IList<CurveSpawner> _curveSpawners = new List<CurveSpawner>();
-
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
 
@@ -39,33 +36,28 @@ public partial class Main : Node2D
             throw new ArgumentException("More players than available keybindings");
 
         SpawnPlayers();
-        InitiateCurveSpawners();
         ClearAndSpawnGoals();
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        CheckPlayerCollisions();
+        DetectPlayerCollision();
     }
 
-    private void CheckPlayerCollisions()
+    private void DetectPlayerCollision()
     {
-        var collidingPlayers = _players.Where(
-            player => _curveSpawners.Any(spawner => IsIntersecting(player, spawner.Segments))
-        );
+        // Collect all segments
+        var allSegments = _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
 
-        collidingPlayers.ToList().ForEach(p => GD.Print("Player has collided", p));
-    }
-
-    private void InitiateCurveSpawners()
-    {
-        foreach (var player in _players)
+        // Perform collision detection for all players that are drawing
+        // Players that are not drawing should not be able to collide
+        var drawingPlayers = _players.Where(player => player.CurveSpawner.IsDrawing);
+        foreach (var player in drawingPlayers)
         {
-            var curveSpawner = Instanter.Instantiate<CurveSpawner>();
-            curveSpawner.Player = player;
-            curveSpawner.LineWidth = LineWidth;
-            _curveSpawners.Add(curveSpawner);
-            AddChild(curveSpawner);
+            if (IsIntersecting(player, allSegments))
+            {
+                GD.Print("Player has collided");
+            }
         }
     }
 
@@ -81,6 +73,7 @@ public partial class Main : Node2D
             _players.Add(player);
 
             AddChild(player);
+            player.CurveSpawner.CreatedLine += HandleDrawLine;
             player.GlobalPosition = GetRandomCoordinateInView(100);
             player.PlayerId = playerId;
             i++;
@@ -91,12 +84,17 @@ public partial class Main : Node2D
     {
         var position = player.GlobalPosition;
         var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
-        var radius = circleShape.Radius + LineWidth / 2f;
+        var radius = circleShape.Radius + (Constants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
                 Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
+    }
+
+    private void HandleDrawLine(Line2D line)
+    {
+        AddChild(line);
     }
 
     private void OnPlayerReachedGoal(Player player)
