@@ -12,8 +12,7 @@ namespace weave;
 
 internal enum ControllerTypes
 {
-    Keyboard,
-    Controller // TODO: implement
+    Keyboard
 }
 
 public partial class Main : Node2D
