@@ -53,17 +53,15 @@ public partial class Main : Node2D
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
-        var drawingPlayers = _players.Where(player => player.CurveSpawner.IsDrawing);
-
-        foreach (var player in drawingPlayers)
-            if (IsIntersecting(player, allSegments))
-                GD.Print("Player has collided");
+        _players
+            .Where(p => p.CurveSpawner.IsDrawing)
+            .Where(p => IsIntersecting(p, allSegments))
+            .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
     }
 
     private void SpawnPlayers()
     {
-        var i = 0;
-        NPlayers.TimesDo(() =>
+        NPlayers.TimesDo(i =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
@@ -72,10 +70,9 @@ public partial class Main : Node2D
             _players.Add(player);
 
             AddChild(player);
-            player.CurveSpawner.CreatedLine += HandleDrawLine;
+            player.CurveSpawner.CreatedLine += line => AddChild(line);
             player.GlobalPosition = GetRandomCoordinateInView(100);
             player.PlayerId = playerId;
-            i++;
         });
     }
 
@@ -86,13 +83,9 @@ public partial class Main : Node2D
 
         return segments.Any(
             segment =>
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
-    }
-
-    private void HandleDrawLine(Node2D line)
-    {
-        AddChild(line);
     }
 
     private void OnPlayerReachedGoal(Player player)

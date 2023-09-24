@@ -8,6 +8,7 @@ public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line);
+
     private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
