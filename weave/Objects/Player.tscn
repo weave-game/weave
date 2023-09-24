@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cydglrjfdxyu2"]
+[gd_scene load_steps=5 format=3 uid="uid://cydglrjfdxyu2"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_j6e2d"]
 [ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_kadug"]
+[ext_resource type="PackedScene" uid="uid://d06r865jec3j6" path="res://Objects/CurveSpawner.tscn" id="3_lixod"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nrd2o"]
 radius = 18.5607
@@ -27,3 +28,5 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 25
 theme_override_font_sizes/font_size = 25
 text = "X"
+
+[node name="CurveSpawner" parent="." instance=ExtResource("3_lixod")]
