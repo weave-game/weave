@@ -17,29 +17,26 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private readonly ISet<Player> _players = new HashSet<Player>();
-    private readonly int _nPlayers = 1;
-    private readonly int _lineWidth = 6;
-    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
+    private const int LineWidth = 6;
+    private readonly IList<CurveSpawner> _curveSpawners = new List<CurveSpawner>();
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
+
+    private const int NPlayers = 1;
+    private readonly ISet<Player> _players = new HashSet<Player>();
+    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
 
-    private readonly IList<CurveSpawner> _curveSpawners = new List<CurveSpawner>();
-
     public override void _Ready()
     {
         this.GetNodes();
-        if (_keybindings.Count < _nPlayers)
-            throw new ArgumentException(
-                "More players than available keybindings",
-                nameof(_nPlayers)
-            );
+        if (_keybindings.Count < NPlayers)
+            throw new ArgumentException("More players than available keybindings");
 
         SpawnPlayers();
         InitiateCurveSpawners();
@@ -53,16 +50,11 @@ public partial class Main : Node2D
 
     private void CheckPlayerCollisions()
     {
-        foreach (var player in _players)
-        {
-            foreach (var curveSpawner in _curveSpawners)
-            {
-                if (IsIntersecting(player, curveSpawner.Segments))
-                {
-                    GD.Print("Player has collided");
-                }
-            }
-        }
+        var collidingPlayers = _players.Where(
+            player => _curveSpawners.Any(spawner => IsIntersecting(player, spawner.Segments))
+        );
+
+        collidingPlayers.ToList().ForEach(p => GD.Print("Player has collided", p));
     }
 
     private void InitiateCurveSpawners()
@@ -71,7 +63,7 @@ public partial class Main : Node2D
         {
             var curveSpawner = Instanter.Instantiate<CurveSpawner>();
             curveSpawner.Player = player;
-            curveSpawner.LineWidth = _lineWidth;
+            curveSpawner.LineWidth = LineWidth;
             _curveSpawners.Add(curveSpawner);
             AddChild(curveSpawner);
         }
@@ -80,7 +72,7 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var i = 0;
-        _nPlayers.TimesDo(() =>
+        NPlayers.TimesDo(() =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
@@ -95,11 +87,11 @@ public partial class Main : Node2D
         });
     }
 
-    private bool IsIntersecting(Player player, ISet<SegmentShape2D> segments)
+    private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.GlobalPosition;
-        var circleShape = (CircleShape2D)player.collisionShape2D.Shape;
-        var radius = circleShape.Radius + _lineWidth / 2;
+        var circleShape = (CircleShape2D)player.CollisionShape2D.Shape;
+        var radius = circleShape.Radius + LineWidth / 2f;
 
         return segments.Any(
             segment =>
@@ -109,16 +101,11 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        GD.Print($"Player {player.PlayerId} has reached the goal");
-        _roundCompletions++;
+        if (++_roundCompletions != NPlayers)
+            return;
 
-        if (_roundCompletions == _nPlayers)
-        {
-            GD.Print("All players have reached the goal");
-
-            _roundCompletions = 0;
-            ClearAndSpawnGoals();
-        }
+        _roundCompletions = 0;
+        ClearAndSpawnGoals();
     }
 
     private void ClearAndSpawnGoals()
