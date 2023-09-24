@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using GodotSharper.Instancing;
-using weave;
+using weave.Utils;
 
 [Instantiable("res://Objects/CurveSpawner.tscn")]
 public partial class CurveSpawner : Node2D
