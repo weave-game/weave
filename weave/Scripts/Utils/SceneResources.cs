@@ -2,5 +2,5 @@
 
 public static class SceneResources
 {
-    public static string MainScene = "res://Scenes/Main.tscn";
+    public const string MainScene = "res://Scenes/Main.tscn";
 }
