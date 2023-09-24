@@ -1,25 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 using Godot;
 using GodotSharper.Instancing;
-using weave;
+using weave.Utils;
 
-[Instantiable("res://Objects/CurveSpawner.tscn")]
+namespace weave;
+
+[Instantiable(ObjectResources.CurveSpawnerScene)]
 public partial class CurveSpawner : Node2D
 {
-    public Player Player { get; set; }
-    public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
-    public int LineWidth { get; set; }
-    private Vector2 _lastPoint;
-    private bool _hasStarted = false;
-    private bool _isDrawing = true;
+    private const float CurveSpawnOffset = 4f;
+    private const float TimeBetweenGaps = 5;
+    private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
     private Timer _gapTimer;
-    private readonly float _timeBetweenGaps = 5;
-    private readonly float _timeForGaps = 0.5f;
+    private bool _hasStarted;
+    private bool _isDrawing = true;
+    private Vector2 _lastPoint;
     private Color _lineColor = new(1, 0, 0);
-    private readonly float _curveSpawnOffset = 4f;
+    public Player Player { get; set; }
+    public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
+    public int LineWidth { get; set; }
 
     public override void _Ready()
     {
@@ -28,36 +29,32 @@ public partial class CurveSpawner : Node2D
 
     public override void _Process(double delta)
     {
-        if (Player != null)
-        {
-            var playerShape = (CircleShape2D)Player.collisionShape2D.Shape;
-            var angleBehind = Player.Rotation + (float)(Math.PI / 2);
-            var pointBehind = CalculatePointOnCircle(
-                Player.GlobalPosition,
-                playerShape.Radius + _curveSpawnOffset,
-                angleBehind
-            );
+        if (Player == null)
+            return;
 
-            // Don't draw line on first iteration (first line will otherwise originate from (0,0))
-            if (_hasStarted && _isDrawing)
-            {
-                DrawLine(_lastPoint, pointBehind);
-            }
-            else
-            {
-                _hasStarted = true;
-            }
-            _lastPoint = pointBehind;
-        }
+        var playerShape = (CircleShape2D)Player.CollisionShape2D.Shape;
+        var angleBehind = Player.Rotation + (float)(Math.PI / 2);
+        var pointBehind = CalculatePointOnCircle(
+            Player.GlobalPosition,
+            playerShape.Radius + CurveSpawnOffset,
+            angleBehind
+        );
+
+        // Don't draw line on first iteration (first line will otherwise originate from (0,0))
+        if (_hasStarted && _isDrawing)
+            DrawLine(_lastPoint, pointBehind);
+        else
+            _hasStarted = true;
+        _lastPoint = pointBehind;
     }
 
     private void InitializeTimers()
     {
-        _drawTimer = new Timer { WaitTime = _timeBetweenGaps, OneShot = true };
+        _drawTimer = new Timer { WaitTime = TimeBetweenGaps, OneShot = true };
         _drawTimer.Timeout += HandleDrawTimerTimeout;
         AddChild(_drawTimer);
 
-        _gapTimer = new Timer { WaitTime = _timeForGaps, OneShot = true };
+        _gapTimer = new Timer { WaitTime = TimeForGaps, OneShot = true };
         _gapTimer.Timeout += HandleGapTimerTimeout;
         AddChild(_gapTimer);
 
@@ -81,7 +78,7 @@ public partial class CurveSpawner : Node2D
     private void DrawLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = _lineColor, Width = LineWidth, };
+        var line = new Line2D { DefaultColor = _lineColor, Width = LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
         AddChild(line);
@@ -90,10 +87,14 @@ public partial class CurveSpawner : Node2D
         Segments.Add(new SegmentShape2D { A = from, B = to });
     }
 
-    private Vector2 CalculatePointOnCircle(Vector2 center, float radius, float angleInRadians)
+    private static Vector2 CalculatePointOnCircle(
+        Vector2 center,
+        float radius,
+        float angleInRadians
+    )
     {
-        float x = center.X + radius * Mathf.Cos(angleInRadians);
-        float y = center.Y + radius * Mathf.Sin(angleInRadians);
+        var x = center.X + radius * Mathf.Cos(angleInRadians);
+        var y = center.Y + radius * Mathf.Sin(angleInRadians);
         return new Vector2(x, y);
     }
 }
