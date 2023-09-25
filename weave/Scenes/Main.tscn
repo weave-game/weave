@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=4 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
+[ext_resource type="PackedScene" uid="uid://4nc7omeqyir" path="res://UI/GameOverOverlay.tscn" id="3_fn3bt"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
 
 [node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
+
+[node name="GameOverOverlay" parent="." instance=ExtResource("3_fn3bt")]
+visible = false
