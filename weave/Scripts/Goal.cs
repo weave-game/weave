@@ -15,11 +15,12 @@ public partial class Goal : Node2D
     [Signal]
     public delegate void PlayerReachedGoalEventHandler(Player player);
 
-    [GetNode("Sprite2D")]
-    private Sprite2D _sprite;
+    private Color _color;
 
     private bool _reached;
-    private Color _color;
+
+    [GetNode("Sprite2D")]
+    private Sprite2D _sprite;
 
     public Color Color
     {
@@ -28,8 +29,6 @@ public partial class Goal : Node2D
         {
             _color = value;
             Modulate = value;
-            GD.Print($"Goal color set to {value}");
-            GD.Print("And turqouise is a nice color", Colors.Turquoise);
         }
     }
 
