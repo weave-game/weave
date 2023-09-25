@@ -9,8 +9,6 @@ namespace weave.Utils;
 /// </summary>
 public static class Unique
 {
-    private static int _counter = 1;
-
     /// <summary>
     ///     Some nice looking colors : )
     /// </summary>
@@ -27,15 +25,6 @@ public static class Unique
     };
 
     private static readonly ISet<Color> UsedColors = new HashSet<Color>();
-
-    /// <summary>
-    ///     Generates a new unique identifier represented as a string.
-    /// </summary>
-    /// <returns>A string representation of a unique identifier.</returns>
-    public static string NewId()
-    {
-        return _counter++.ToString();
-    }
 
     /// <summary>
     ///     Provides a new unique color that has not been used before.
