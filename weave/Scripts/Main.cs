@@ -8,6 +8,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
 using weave.Logger;
+using weave.MenuControllers;
 using weave.Utils;
 
 namespace weave;
@@ -26,6 +27,9 @@ public partial class Main : Node2D
 
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
+
+    [GetNode("GameOverOverlay")]
+    private GameOverOverlay _gameOverOverlay;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -54,12 +58,19 @@ public partial class Main : Node2D
         // Collect all segments
         var allSegments = GetAllSegments();
 
-        // Perform collision detection for all players that are drawing
-        // Players that are not drawing should not be able to collide
-        _players
+        // Perform collision detection only for drawing players
+        var hasCollided = _players
             .Where(p => p.CurveSpawner.IsDrawing)
-            .Where(p => IsIntersecting(p, allSegments))
-            .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
+            .Any(p => IsIntersecting(p, allSegments));
+
+        if (hasCollided)
+            GameOver();
+    }
+
+    private void GameOver()
+    {
+        _gameOverOverlay.Visible = true;
+        ProcessMode = ProcessModeEnum.Disabled;
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
