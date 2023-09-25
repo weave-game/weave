@@ -15,12 +15,13 @@ public partial class CurveSpawner : Node2D
     private Timer _gapTimer;
     private bool _hasStarted;
     private Vector2 _lastPoint;
-    private Color _lineColor = new(1, 0, 0);
+    private Color _lineColor;
     public bool IsDrawing { get; private set; } = true;
     public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
     {
+        _lineColor = Unique.NewColor();
         InitializeTimers();
     }
 

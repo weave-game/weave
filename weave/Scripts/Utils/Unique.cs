@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -10,7 +9,6 @@ namespace weave.Utils;
 /// </summary>
 public static class Unique
 {
-    // Holds the counter for generating unique IDs.
     private static int _counter = 1;
 
     /// <summary>
@@ -18,11 +16,16 @@ public static class Unique
     /// </summary>
     private static readonly ISet<Color> Colors = new HashSet<Color>
     {
-        Godot.Colors.Aqua,
-        Godot.Colors.Coral
+        Godot.Colors.Turquoise,
+        Godot.Colors.Magenta,
+        Godot.Colors.SpringGreen,
+        Godot.Colors.OrangeRed,
+        Godot.Colors.Gold,
+        Godot.Colors.BlueViolet,
+        Godot.Colors.HotPink,
+        Godot.Colors.DarkOrange
     };
 
-    // Holds the colors that have been used.
     private static readonly ISet<Color> UsedColors = new HashSet<Color>();
 
     /// <summary>
@@ -45,24 +48,12 @@ public static class Unique
         var unusedColor = Colors.Except(UsedColors).FirstOrDefault();
 
         if (unusedColor == default)
-            while (UsedColors.Contains(unusedColor))
-                unusedColor = RandomColor();
+            do
+            {
+                unusedColor = new Color(GD.Randf(), GD.Randf(), GD.Randf());
+            } while (UsedColors.Contains(unusedColor));
 
         UsedColors.Add(unusedColor);
         return unusedColor;
-    }
-
-    /// <summary>
-    ///     Generates a random color.
-    /// </summary>
-    /// <returns>A <see cref="Color" /> object representing a random color.</returns>
-    private static Color RandomColor()
-    {
-        var random = new Random();
-        return new Color(
-            (float)random.NextDouble(),
-            (float)random.NextDouble(),
-            (float)random.NextDouble()
-        );
     }
 }

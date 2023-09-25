@@ -19,7 +19,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 1;
+    private const int NPlayers = 3;
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
