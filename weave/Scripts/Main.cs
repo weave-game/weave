@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
+using weave.Logger;
 using weave.Utils;
 
 namespace weave;
@@ -39,6 +41,7 @@ public partial class Main : Node2D
 
         SpawnPlayers();
         ClearAndSpawnGoals();
+        SetupLogger();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -49,7 +52,7 @@ public partial class Main : Node2D
     private void DetectPlayerCollision()
     {
         // Collect all segments
-        var allSegments = _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
+        var allSegments = GetAllSegments();
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
@@ -57,6 +60,11 @@ public partial class Main : Node2D
             .Where(p => p.CurveSpawner.IsDrawing)
             .Where(p => IsIntersecting(p, allSegments))
             .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
+    }
+
+    private ISet<SegmentShape2D> GetAllSegments()
+    {
+        return _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
     }
 
     private void SpawnPlayers()
@@ -123,5 +131,31 @@ public partial class Main : Node2D
         var x = (float)GD.RandRange(margin, GetViewportRect().Size.X - margin);
         var y = (float)GD.RandRange(margin, GetViewportRect().Size.Y - margin);
         return new Vector2(x, y);
+    }
+
+    private void SetupLogger()
+    {
+        var logger = new Logger.Logger(
+            DevConstants.LogFilePath,
+            new[] { FpsLogger, LineCountLogger }
+        );
+
+        // Log every half second
+        AddChild(TimerFactory.StartedRepeating(0.5f, () => logger.Log()));
+
+        // Save to file every 5 seconds
+        AddChild(TimerFactory.StartedRepeating(5f, () => logger.Persist()));
+
+        Log FpsLogger()
+        {
+            var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
+            return new Log("fps", value);
+        }
+
+        Log LineCountLogger()
+        {
+            var value = GetAllSegments().Count.ToString();
+            return new Log("lines", value);
+        }
     }
 }
