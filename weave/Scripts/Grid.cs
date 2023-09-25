@@ -16,14 +16,12 @@ public class Grid
 
     public class Cell
     {
-        public string id;
         public Rect2 Rect { get; set; }
         public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
 
-        public Cell(Rect2 rect2, int x, int y)
+        public Cell(Rect2 rect2)
         {
             Rect = rect2;
-            id = $"{x}-{y}";
         }
     }
 
@@ -38,15 +36,14 @@ public class Grid
         _cellHeight = (float)height / nrCols;
 
         // Populate grid with empty cells
-        for (var i = 0; i < _nrCols; i++)
+        for (var rowIndex = 0; rowIndex < _nrRows; rowIndex++)
         {
             List<Cell> rowList = new();
-            for (var j = 0; j < _nrRows; j++)
+            for (var colIndex = 0; colIndex < _nrCols; colIndex++)
             {
-                var p1 = new Vector2(j * _cellWidth, i * _cellHeight);
-                var p2 = new Vector2((j + 1) * _cellWidth, (i + 1) * _cellHeight);
-                var rect = new Rect2(p1, p2);
-                var cell = new Cell(rect, j, i);
+                var position = new Vector2(colIndex * _cellWidth, rowIndex * _cellHeight);
+                var rect = new Rect2(position, new Vector2(_cellWidth, _cellHeight));
+                var cell = new Cell(rect);
                 rowList.Add(cell);
             }
             _cells.Add(rowList);
@@ -67,12 +64,10 @@ public class Grid
                 if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
                 {
                     playerSegments.UnionWith(_cells[i][j].Segments);
-                    GD.Print("Cell indices: " + _cells[i][j].id);
                 }
             }
         }
 
-        GD.Print("Nr segments in your cell: " + playerSegments.Count);
         return playerSegments;
     }
 

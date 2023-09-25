@@ -53,18 +53,6 @@ public partial class Main : Node2D
         var width = (int)GetViewportRect().Size.X;
         var height = (int)GetViewportRect().Size.Y;
         _grid = new Grid(10, 10, width, height);
-        QueueRedraw();
-    }
-
-    public override void _Draw()
-    {
-        for (var i = 0; i < 10; i++)
-        {
-            for (var j = 0; j < 10; j++)
-            {
-                DrawRect(_grid._cells[i][j].Rect, new(1,0,0), filled: false);
-            }
-        }
     }
 
     private void DetectPlayerCollision()
