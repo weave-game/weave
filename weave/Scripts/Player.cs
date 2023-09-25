@@ -9,9 +9,6 @@ namespace weave;
 [Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : CharacterBody2D
 {
-    [Signal]
-    public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
-
     private const int MovementSpeed = 100;
 
     [GetNode("Label")]

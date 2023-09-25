@@ -71,7 +71,7 @@ public partial class Main : Node2D
     {
         NPlayers.TimesDo(i =>
         {
-            var playerId = UniqueId.Generate();
+            var playerId = Unique.NewId();
             var player = Instanter.Instantiate<Player>();
             if (_controllerType == ControllerTypes.Keyboard)
                 player.Controller = new KeyboardController(_keybindings[i]);
