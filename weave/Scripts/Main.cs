@@ -56,10 +56,19 @@ public partial class Main : Node2D
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
-        _players
+        
+        var hasCollided = _players
             .Where(p => p.CurveSpawner.IsDrawing)
-            .Where(p => IsIntersecting(p, allSegments))
-            .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
+            .Any(p => IsIntersecting(p, allSegments));
+
+        if (hasCollided)
+            GameOver();
+    }
+
+    private void GameOver()
+    {
+        
+        throw new NotImplementedException();
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
@@ -69,19 +78,21 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        NPlayers.TimesDo(i =>
-        {
-            var playerId = UniqueId.Generate();
-            var player = Instanter.Instantiate<Player>();
-            if (_controllerType == ControllerTypes.Keyboard)
-                player.Controller = new KeyboardController(_keybindings[i]);
-            _players.Add(player);
+        NPlayers.TimesDo(
+            i =>
+            {
+                var playerId = UniqueId.Generate();
+                var player = Instanter.Instantiate<Player>();
+                if (_controllerType == ControllerTypes.Keyboard)
+                    player.Controller = new KeyboardController(_keybindings[i]);
+                _players.Add(player);
 
-            AddChild(player);
-            player.CurveSpawner.CreatedLine += line => AddChild(line);
-            player.GlobalPosition = GetRandomCoordinateInView(100);
-            player.PlayerId = playerId;
-        });
+                AddChild(player);
+                player.CurveSpawner.CreatedLine += line => AddChild(line);
+                player.GlobalPosition = GetRandomCoordinateInView(100);
+                player.PlayerId = playerId;
+            }
+        );
     }
 
     private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -116,14 +127,16 @@ public partial class Main : Node2D
         // Spawn new goals
         _players
             .ToList()
-            .ForEach(player =>
-            {
-                var goal = Instanter.Instantiate<Goal>();
-                CallDeferred("add_child", goal);
-                goal.GlobalPosition = GetRandomCoordinateInView(100);
-                goal.PlayerReachedGoal += OnPlayerReachedGoal;
-                goal.CallDeferred("set", nameof(Player.PlayerId), player.PlayerId);
-            });
+            .ForEach(
+                player =>
+                {
+                    var goal = Instanter.Instantiate<Goal>();
+                    CallDeferred("add_child", goal);
+                    goal.GlobalPosition = GetRandomCoordinateInView(100);
+                    goal.PlayerReachedGoal += OnPlayerReachedGoal;
+                    goal.CallDeferred("set", nameof(Player.PlayerId), player.PlayerId);
+                }
+            );
     }
 
     private Vector2 GetRandomCoordinateInView(float margin)
