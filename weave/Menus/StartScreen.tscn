@@ -1,7 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=9 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
+[ext_resource type="Script" path="res://Scripts/FlyingLight.cs" id="3_yii4x"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="4_u7cw0"]
+
+[sub_resource type="Curve2D" id="Curve2D_33qe8"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -48, 483, -151.361, 109.317, 151.361, -109.317, 217, 168, -146.316, -102.589, 146.316, 102.589, 571, 147, -42.0448, -77.3625, 42.0448, 77.3625, 833, 352, -241.09, -80.9313, 241.09, 80.9313, 865, 592, 0, 0, 0, 0, 1294, 547)
+}
+point_count = 6
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bv5u7"]
+size = Vector2(58.3506, 61.5321)
+
+[sub_resource type="Curve2D" id="Curve2D_o37lg"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 955, -52, 144.891, -166.31, -144.891, 166.31, 803, 139, 183.948, -125.992, -183.948, 125.992, 349, 287, -162.757, 62.8579, 162.757, -62.8579, 342, 494, 0, 0, 0, 0, 367, 713)
+}
+point_count = 5
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eegbt"]
+size = Vector2(71, 66)
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_bb43u")
@@ -44,3 +64,42 @@ text = "Play :D"
 custom_minimum_size = Vector2(2.08165e-12, 40)
 layout_mode = 2
 text = "Quit :("
+
+[node name="FlyingLightLayer" type="CanvasLayer" parent="."]
+
+[node name="Path2D" type="Path2D" parent="FlyingLightLayer"]
+curve = SubResource("Curve2D_33qe8")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="FlyingLightLayer/Path2D"]
+position = Vector2(-48, 483)
+rotation = -0.871392
+
+[node name="FlyingLight" type="Area2D" parent="FlyingLightLayer/Path2D/PathFollow2D"]
+script = ExtResource("3_yii4x")
+
+[node name="Sprite2D" type="Sprite2D" parent="FlyingLightLayer/Path2D/PathFollow2D/FlyingLight"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_u7cw0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlyingLightLayer/Path2D/PathFollow2D/FlyingLight"]
+position = Vector2(-0.643768, -0.765259)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_bv5u7")
+
+[node name="Path2D2" type="Path2D" parent="FlyingLightLayer"]
+curve = SubResource("Curve2D_o37lg")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="FlyingLightLayer/Path2D2"]
+position = Vector2(955, -52)
+rotation = 2.24298
+
+[node name="FlyingLight" type="Area2D" parent="FlyingLightLayer/Path2D2/PathFollow2D"]
+script = ExtResource("3_yii4x")
+
+[node name="Sprite2D" type="Sprite2D" parent="FlyingLightLayer/Path2D2/PathFollow2D/FlyingLight"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_u7cw0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlyingLightLayer/Path2D2/PathFollow2D/FlyingLight"]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_eegbt")
