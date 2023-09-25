@@ -15,20 +15,21 @@ public partial class Goal : Node2D
     [Signal]
     public delegate void PlayerReachedGoalEventHandler(Player player);
 
-    [GetNode("Label")]
-    private Label _label;
+    [GetNode("Sprite2D")]
+    private Sprite2D _sprite;
 
-    private string _playerId;
     private bool _reached;
+    private Color _color;
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public string PlayerId
+    public Color Color
     {
-        get => _playerId;
+        get => _color;
         set
         {
-            _playerId = value;
-            _label.Text = value;
+            _color = value;
+            Modulate = value;
+            GD.Print($"Goal color set to {value}");
+            GD.Print("And turqouise is a nice color", Colors.Turquoise);
         }
     }
 
@@ -47,11 +48,11 @@ public partial class Goal : Node2D
         if (body is not Player player)
             return;
 
-        if (player.PlayerId != PlayerId)
+        if (player.Color != Color)
             return;
 
-        _label.Text = "Goal!";
         _reached = true;
+        _sprite.Modulate = Colors.Black;
         EmitSignal(SignalName.PlayerReachedGoal, player);
     }
 }

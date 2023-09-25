@@ -15,13 +15,12 @@ public partial class CurveSpawner : Node2D
     private Timer _gapTimer;
     private bool _hasStarted;
     private Vector2 _lastPoint;
-    private Color _lineColor;
+    public Color Color { get; set; }
     public bool IsDrawing { get; private set; } = true;
     public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
     {
-        _lineColor = Unique.NewColor();
         InitializeTimers();
     }
 
@@ -71,7 +70,7 @@ public partial class CurveSpawner : Node2D
     private void SpawnLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth };
+        var line = new Line2D { DefaultColor = Color, Width = Constants.LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
         EmitSignal(SignalName.CreatedLine, line);
