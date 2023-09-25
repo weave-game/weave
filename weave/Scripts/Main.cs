@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
+using weave.Logger;
 using weave.Utils;
 
 namespace weave;
@@ -39,6 +41,7 @@ public partial class Main : Node2D
 
         SpawnPlayers();
         ClearAndSpawnGoals();
+        SetupLogger();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -123,5 +126,24 @@ public partial class Main : Node2D
         var x = (float)GD.RandRange(margin, GetViewportRect().Size.X - margin);
         var y = (float)GD.RandRange(margin, GetViewportRect().Size.Y - margin);
         return new Vector2(x, y);
+    }
+
+    private void SetupLogger()
+    {
+        var fpsLogger = () =>
+        {
+            var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
+            return new Log("fps", value);
+        };
+
+        var logger = new Logger.Logger("log.csv", new[] { fpsLogger });
+
+        AddChild(
+            TimerFactory.StartedRepeating(1, () => logger.Log())
+        );
+
+        AddChild(
+            TimerFactory.StartedRepeating(1.5f, () => logger.Persist())
+        );
     }
 }
