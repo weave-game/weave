@@ -9,15 +9,7 @@ namespace weave;
 [Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : CharacterBody2D
 {
-    [Signal]
-    public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
-
     private const int MovementSpeed = 100;
-
-    [GetNode("Label")]
-    private Label _label;
-
-    private string _playerId;
 
     public CircleShape2D CircleShape { get; private set; }
 
@@ -29,20 +21,13 @@ public partial class Player : CharacterBody2D
 
     public IController Controller { get; set; }
 
-    public string PlayerId
-    {
-        get => _playerId;
-        set
-        {
-            _label.Text = value;
-            _playerId = value;
-        }
-    }
+    public Color Color { get; set; }
 
     public override void _Ready()
     {
         this.GetNodes();
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
+        CurveSpawner.Color = Color;
     }
 
     public override void _PhysicsProcess(double delta)

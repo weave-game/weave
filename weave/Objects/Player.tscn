@@ -5,29 +5,19 @@
 [ext_resource type="Script" path="res://Scripts/CurveSpawner.cs" id="3_1y1di"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nrd2o"]
-radius = 18.5607
+radius = 3.0
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_j6e2d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -25)
-scale = Vector2(0.25, 0.25)
+position = Vector2(0, -8)
+scale = Vector2(0.03125, 0.03125)
 texture = ExtResource("2_kadug")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -25)
+position = Vector2(0, -8)
 shape = SubResource("CircleShape2D_nrd2o")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -8.0
-offset_top = -44.0
-offset_right = 8.0
-offset_bottom = -6.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 25
-theme_override_font_sizes/font_size = 25
-text = "X"
 
 [node name="CurveSpawner" type="Marker2D" parent="."]
 script = ExtResource("3_1y1di")

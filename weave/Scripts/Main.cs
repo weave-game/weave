@@ -20,7 +20,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 1;
+    private const int NPlayers = 3;
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
@@ -61,6 +61,7 @@ public partial class Main : Node2D
         // Perform collision detection only for drawing players
         var hasCollided = _players
             .Where(p => p.CurveSpawner.IsDrawing)
+            .Where(p => IsIntersecting(p, allSegments))
             .Any(p => IsIntersecting(p, allSegments));
 
         if (hasCollided)
@@ -82,16 +83,17 @@ public partial class Main : Node2D
     {
         NPlayers.TimesDo(i =>
         {
-            var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
+            player.Color = Unique.NewColor();
+
             if (_controllerType == ControllerTypes.Keyboard)
                 player.Controller = new KeyboardController(_keybindings[i]);
-            _players.Add(player);
 
             AddChild(player);
-            player.CurveSpawner.CreatedLine += line => AddChild(line);
             player.GlobalPosition = GetRandomCoordinateInView(100);
-            player.PlayerId = playerId;
+            player.CurveSpawner.CreatedLine += line => AddChild(line);
+
+            _players.Add(player);
         });
     }
 
@@ -125,16 +127,14 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Spawn new goals
-        _players
-            .ToList()
-            .ForEach(player =>
-            {
-                var goal = Instanter.Instantiate<Goal>();
-                CallDeferred("add_child", goal);
-                goal.GlobalPosition = GetRandomCoordinateInView(100);
-                goal.PlayerReachedGoal += OnPlayerReachedGoal;
-                goal.CallDeferred("set", nameof(Player.PlayerId), player.PlayerId);
-            });
+        _players.ForEach(player =>
+        {
+            var goal = Instanter.Instantiate<Goal>();
+            CallDeferred("add_child", goal);
+            goal.GlobalPosition = GetRandomCoordinateInView(100);
+            goal.PlayerReachedGoal += OnPlayerReachedGoal;
+            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+        });
     }
 
     private Vector2 GetRandomCoordinateInView(float margin)

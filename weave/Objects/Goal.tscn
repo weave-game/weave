@@ -18,13 +18,3 @@ texture = ExtResource("1_vmnc5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("RectangleShape2D_6xac3")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -9.0
-offset_top = -101.0
-offset_right = 48.0
-offset_bottom = -54.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 20
-theme_override_font_sizes/font_size = 31
-text = "X"
