@@ -146,8 +146,6 @@ public partial class Main : Node2D
         // Save to file every 5 seconds
         AddChild(TimerFactory.StartedRepeating(5f, () => logger.Persist()));
 
-        return;
-
         Log FpsLogger()
         {
             var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
