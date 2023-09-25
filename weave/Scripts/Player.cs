@@ -12,7 +12,7 @@ public partial class Player : CharacterBody2D
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
 
-    private const int MovementSpeed = 100;
+    private float MovementSpeed = 100f;
 
     [GetNode("Label")]
     private Label _label;
