@@ -10,13 +10,14 @@ public class Logger
 {
     private readonly string _filePath;
     private readonly IEnumerable<Func<Log>> _loggers;
-    private bool _firstPersist = true;
 
     /// <summary>
     ///     A list of logs to log. Each list of logs represents a single log event.
     ///     Cached in memory until <see cref="Persist" /> is called to not write to disk too often.
     /// </summary>
     private readonly IList<IList<Log>> _logsToLog;
+
+    private bool _firstPersist = true;
 
     public Logger(string filePath, IEnumerable<Func<Log>> loggers)
     {
@@ -36,14 +37,21 @@ public class Logger
         {
             ClearFile();
             WriteHeaders();
+            _firstPersist = false;
         }
 
         var rows = _logsToLog.Select(logs => string.Join(",", logs.Select(log => log.Value)));
-        rows.ForEach(row => { File.AppendAllText(_filePath, row + Environment.NewLine); });
+        rows.ForEach(row =>
+        {
+            File.AppendAllText(_filePath, row + Environment.NewLine);
+        });
         _logsToLog.Clear();
     }
-    
-    private void ClearFile() => File.WriteAllText(_filePath, string.Empty);
+
+    private void ClearFile()
+    {
+        File.WriteAllText(_filePath, string.Empty);
+    }
 
     private void WriteHeaders()
     {

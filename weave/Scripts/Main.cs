@@ -52,7 +52,7 @@ public partial class Main : Node2D
     private void DetectPlayerCollision()
     {
         // Collect all segments
-        var allSegments = _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
+        var allSegments = GetAllSegments();
 
         // Perform collision detection for all players that are drawing
         // Players that are not drawing should not be able to collide
@@ -60,6 +60,11 @@ public partial class Main : Node2D
             .Where(p => p.CurveSpawner.IsDrawing)
             .Where(p => IsIntersecting(p, allSegments))
             .ForEach(p => GD.Print($"Player {p.PlayerId} has collided"));
+    }
+
+    private ISet<SegmentShape2D> GetAllSegments()
+    {
+        return _players.SelectMany(player => player.CurveSpawner.Segments).ToHashSet();
     }
 
     private void SpawnPlayers()
@@ -130,20 +135,29 @@ public partial class Main : Node2D
 
     private void SetupLogger()
     {
-        var fpsLogger = () =>
+        var logger = new Logger.Logger(
+            DevConstants.LogFilePath,
+            new[] { FpsLogger, LineCountLogger }
+        );
+
+        // Log every half second
+        AddChild(TimerFactory.StartedRepeating(0.5f, () => logger.Log()));
+
+        // Save to file every 5 seconds
+        AddChild(TimerFactory.StartedRepeating(5f, () => logger.Persist()));
+
+        return;
+
+        Log FpsLogger()
         {
             var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
             return new Log("fps", value);
-        };
+        }
 
-        var logger = new Logger.Logger("log.csv", new[] { fpsLogger });
-
-        AddChild(
-            TimerFactory.StartedRepeating(1, () => logger.Log())
-        );
-
-        AddChild(
-            TimerFactory.StartedRepeating(1.5f, () => logger.Persist())
-        );
+        Log LineCountLogger()
+        {
+            var value = GetAllSegments().Count.ToString();
+            return new Log("lines", value);
+        }
     }
 }
