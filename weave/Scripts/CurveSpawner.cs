@@ -13,7 +13,7 @@ public partial class CurveSpawner : Node2D
     public delegate void CreatedLineEventHandler(Line2D line, SegmentShape2D segment);
     public bool IsDrawing { get; set; } = true;
     private const float CurveSpawnOffset = 4f;
-    private const float TimeBetweenGaps = 5;
+    private const float TimeBetweenGaps = 500;
     private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
     private Timer _gapTimer;

@@ -16,12 +16,14 @@ public class Grid
 
     public class Cell
     {
+        public string id;
         public Rect2 Rect { get; set; }
         public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
 
-        public Cell(Rect2 rect2)
+        public Cell(Rect2 rect2, int x, int y)
         {
             Rect = rect2;
+            id = $"{x}-{y}";
         }
     }
 
@@ -44,7 +46,7 @@ public class Grid
                 var p1 = new Vector2(j * _cellWidth, i * _cellHeight);
                 var p2 = new Vector2((j + 1) * _cellWidth, (i + 1) * _cellHeight);
                 var rect = new Rect2(p1, p2);
-                var cell = new Cell(rect);
+                var cell = new Cell(rect, j, i);
                 rowList.Add(cell);
             }
             _cells.Add(rowList);
@@ -65,10 +67,12 @@ public class Grid
                 if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
                 {
                     playerSegments.UnionWith(_cells[i][j].Segments);
+                    GD.Print("Cell indices: " + _cells[i][j].id);
                 }
             }
         }
 
+        GD.Print("Nr segments in your cell: " + playerSegments.Count);
         return playerSegments;
     }
 

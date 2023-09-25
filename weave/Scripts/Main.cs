@@ -50,7 +50,7 @@ public partial class Main : Node2D
     {
         var width = (int)GetViewportRect().Size.X;
         var height = (int)GetViewportRect().Size.X;
-        _grid = new Grid(10, 10, width, height);
+        _grid = new Grid(2, 2, width, height);
     }
 
     private void DetectPlayerCollision()
