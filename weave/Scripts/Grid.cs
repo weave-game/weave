@@ -12,7 +12,7 @@ public class Grid
     private readonly int _height;
     private readonly float _cellWidth;
     private readonly float _cellHeight;
-    private readonly List<List<Cell>> _cells = new();
+    public readonly List<List<Cell>> _cells = new();
 
     public class Cell
     {

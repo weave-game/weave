@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
@@ -11,17 +12,17 @@ namespace weave;
 
 internal enum ControllerTypes
 {
-    Keyboard,
-    Controller // TODO: implement
+    Keyboard
 }
 
 public partial class Main : Node2D
 {
     private Grid _grid;
+    private const int NPlayers = 1;
+
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
 
-    private const int NPlayers = 1;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
@@ -33,6 +34,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+
         if (_keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
@@ -49,8 +51,20 @@ public partial class Main : Node2D
     private void CreateMapGrid()
     {
         var width = (int)GetViewportRect().Size.X;
-        var height = (int)GetViewportRect().Size.X;
-        _grid = new Grid(2, 2, width, height);
+        var height = (int)GetViewportRect().Size.Y;
+        _grid = new Grid(10, 10, width, height);
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            for (var j = 0; j < 10; j++)
+            {
+                DrawRect(_grid._cells[i][j].Rect, new(1,0,0), filled: false);
+            }
+        }
     }
 
     private void DetectPlayerCollision()
@@ -71,8 +85,7 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        var i = 0;
-        NPlayers.TimesDo(() =>
+        NPlayers.TimesDo(i =>
         {
             var playerId = UniqueId.Generate();
             var player = Instanter.Instantiate<Player>();
@@ -84,17 +97,17 @@ public partial class Main : Node2D
             player.CurveSpawner.CreatedLine += HandleCreateLine;
             player.GlobalPosition = GetRandomCoordinateInView(100);
             player.PlayerId = playerId;
-            i++;
         });
     }
 
     private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
     {
-        var position = player.GlobalPosition;
+        var position = player.CollisionShape2D.GlobalPosition;
         var radius = player.GetRadius() + (Constants.LineWidth / 2);
 
         return segments.Any(
             segment =>
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
     }

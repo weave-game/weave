@@ -1,11 +1,12 @@
 using Godot;
 using GodotSharper.AutoGetNode;
+using weave.Utils;
 
 namespace weave.MenuControllers;
 
 public partial class StartScreen : Node2D
 {
-    private PackedScene _gameScene = GD.Load<PackedScene>("res://Scenes/Main.tscn");
+    private PackedScene _gameScene = GD.Load<PackedScene>(SceneResources.MainScene);
 
     [GetNode("CanvasLayer/CenterContainer/VBoxContainer/QuitButton")]
     private Button _quitButton;

@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://d06r865jec3j6"]
+[gd_scene load_steps=2 format=3 uid="uid://bc6jqse1kuixs"]
 
 [ext_resource type="Script" path="res://Scripts/CurveSpawner.cs" id="1_ebjl0"]
 

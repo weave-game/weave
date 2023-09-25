@@ -11,17 +11,21 @@ public partial class Player : CharacterBody2D
 {
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
+
     private const int MovementSpeed = 100;
 
     [GetNode("Label")]
     private Label _label;
 
-    [GetNode("CurveSpawner")]
-    public CurveSpawner CurveSpawner { get; set; }
     private string _playerId;
 
+    public CircleShape2D CircleShape { get; private set; }
+
+    [GetNode("CurveSpawner")]
+    public CurveSpawner CurveSpawner { get; private set; }
+
     [GetNode("CollisionShape2D")]
-    private CollisionShape2D _collisionShape2D;
+    public CollisionShape2D CollisionShape2D;
 
     public IController Controller { get; set; }
 
@@ -38,12 +42,12 @@ public partial class Player : CharacterBody2D
     public override void _Ready()
     {
         this.GetNodes();
+        CircleShape = CollisionShape2D.Shape as CircleShape2D;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Move(delta);
-        CurveSpawner.Step(GlobalPosition, Rotation, GetRadius());
     }
 
     private void Move(double delta)
@@ -63,7 +67,7 @@ public partial class Player : CharacterBody2D
 
     public float GetRadius()
     {
-        var shape = (CircleShape2D)_collisionShape2D.Shape;
+        var shape = (CircleShape2D)CollisionShape2D.Shape;
         return shape.Radius;
     }
 }

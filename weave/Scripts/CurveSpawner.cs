@@ -1,25 +1,22 @@
-using System;
-using Godot;
-using GodotSharper.Instancing;
 using System.Collections.Generic;
+using Godot;
 using weave.Utils;
 
 namespace weave;
 
-[Instantiable(ObjectResources.CurveSpawnerScene)]
 public partial class CurveSpawner : Node2D
 {
     [Signal]
     public delegate void CreatedLineEventHandler(Line2D line, SegmentShape2D segment);
-    public bool IsDrawing { get; set; } = true;
-    private const float CurveSpawnOffset = 4f;
-    private const float TimeBetweenGaps = 500;
+
+    private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
     private Timer _drawTimer;
     private Timer _gapTimer;
     private bool _hasStarted;
     private Vector2 _lastPoint;
     private Color _lineColor = new(1, 0, 0);
+    public bool IsDrawing { get; private set; } = true;
     public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
@@ -27,21 +24,20 @@ public partial class CurveSpawner : Node2D
         InitializeTimers();
     }
 
-    public void Step(Vector2 playerPosition, float playerRotation, float playerRadius)
+    public override void _Process(double delta)
     {
-        var angleBehind = playerRotation + (float)(Math.PI / 2);
-        var pointBehind = CalculatePointOnCircle(
-            playerPosition,
-            playerRadius + CurveSpawnOffset,
-            angleBehind
-        );
+        Step();
+    }
 
+    private void Step()
+    {
         // Don't draw line on first iteration (first line will otherwise originate from (0,0))
         if (_hasStarted && IsDrawing)
-            DrawLine(_lastPoint, pointBehind);
+            SpawnLine(_lastPoint, GlobalPosition);
         else
             _hasStarted = true;
-        _lastPoint = pointBehind;
+
+        _lastPoint = GlobalPosition;
     }
 
     private void InitializeTimers()
@@ -71,10 +67,10 @@ public partial class CurveSpawner : Node2D
         _drawTimer.Start();
     }
 
-    private void DrawLine(Vector2 from, Vector2 to)
+    private void SpawnLine(Vector2 from, Vector2 to)
     {
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth, };
+        var line = new Line2D { DefaultColor = _lineColor, Width = Constants.LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
 
@@ -83,16 +79,5 @@ public partial class CurveSpawner : Node2D
 
         // Pass information to Main
         EmitSignal(SignalName.CreatedLine, line, segment);
-    }
-
-    private static Vector2 CalculatePointOnCircle(
-        Vector2 center,
-        float radius,
-        float angleInRadians
-    )
-    {
-        float x = center.X + (radius * Mathf.Cos(angleInRadians));
-        float y = center.Y + (radius * Mathf.Sin(angleInRadians));
-        return new Vector2(x, y);
     }
 }
