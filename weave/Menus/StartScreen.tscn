@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
-[ext_resource type="PackedScene" uid="uid://b6nafgky7moxh" path="res://Objects/FlyingLightPath.tscn" id="3_r76ru"]
+[ext_resource type="PackedScene" uid="uid://b6nafgky7moxh" path="res://Objects/Firefly.tscn" id="3_r76ru"]
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_bb43u")
@@ -46,6 +46,6 @@ custom_minimum_size = Vector2(2.08165e-12, 40)
 layout_mode = 2
 text = "Quit :("
 
-[node name="FlyingLightLayer" type="CanvasLayer" parent="."]
+[node name="FireflyLayer" type="CanvasLayer" parent="."]
 
-[node name="FlyingLightPath" parent="FlyingLightLayer" instance=ExtResource("3_r76ru")]
+[node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
