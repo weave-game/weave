@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://duuehvdcdyqki"]
+
+[ext_resource type="Script" path="res://Scripts/FlyingLight.cs" id="1_ty5j8"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_hqrub"]
+
+[sub_resource type="Curve2D" id="Curve2D_33qe8"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -48, 483, -151.361, 109.317, 151.361, -109.317, 217, 168, -146.316, -102.589, 146.316, 102.589, 571, 147, -42.0448, -77.3625, 42.0448, 77.3625, 833, 352, -241.09, -80.9313, 241.09, 80.9313, 865, 592, 0, 0, 0, 0, 1294, 547)
+}
+point_count = 6
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bv5u7"]
+size = Vector2(58.3506, 61.5321)
+
+[node name="FlyingLightPath" type="Path2D"]
+curve = SubResource("Curve2D_33qe8")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+position = Vector2(-48, 483)
+rotation = -0.871392
+
+[node name="FlyingLight" type="Area2D" parent="PathFollow2D"]
+script = ExtResource("1_ty5j8")
+
+[node name="Sprite2D" type="Sprite2D" parent="PathFollow2D/FlyingLight"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_hqrub")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/FlyingLight"]
+position = Vector2(-0.643768, -0.765259)
+shape = SubResource("RectangleShape2D_bv5u7")
+
+[node name="_Timer_24667" type="Timer" parent="PathFollow2D"]
+wait_time = 0.2
+one_shot = true

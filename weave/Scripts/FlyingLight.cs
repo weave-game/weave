@@ -21,12 +21,6 @@ public partial class FlyingLight : Area2D
 
     private float CalculateProgress()
     {
-        _step++;
-        // Calculate the sine value of the input x, then multiply by a random factor.
-        float sineValue = Mathf.Sin(_step) + 1;
-        float randomFactor = GD.Randf(); // Random value between 0 and 1
-
-        // Ensure the result is always positive.
-        return Mathf.Abs(sineValue * randomFactor * 10);
+        return 2f;
     }
 }
