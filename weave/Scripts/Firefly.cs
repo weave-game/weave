@@ -51,8 +51,7 @@ public partial class Firefly : Path2D
 
             for (var i = 0; i < NrPoints; i++)
             {
-                tempPoints[i].X = lastPoint.X;
-                tempPoints[i].Y = lastPoint.Y;
+                tempPoints[i] = lastPoint;
                 lastPoint = line.Points[Math.Max(i - 1, 0)]; // Avoid index out of bounds
             }
 
