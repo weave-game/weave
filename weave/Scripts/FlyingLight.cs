@@ -6,8 +6,12 @@ namespace weave;
 public partial class FlyingLight : Area2D
 {
     private PathFollow2D pathFollow;
-    private int Speed = 5;
+    private float Speed;
+    private float GoalSpeed;
     private int _step;
+
+    private float lastSpeed;
+    private float goalSpeed;
 
     public override void _Ready()
     {
@@ -16,11 +20,12 @@ public partial class FlyingLight : Area2D
 
     public override void _Process(double delta)
     {
-        pathFollow.Progress += CalculateProgress();
-    }
-
-    private float CalculateProgress()
-    {
-        return 2f;
+        if (MathF.Abs(Speed - GoalSpeed) < (float) 10e-5)
+        {
+            GoalSpeed = GD.Randf() * 10;
+        }
+        Speed = Mathf.Lerp(Speed, GoalSpeed, 0.3f);
+        pathFollow.Progress += Speed;
+        _step++;
     }
 }
