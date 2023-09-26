@@ -7,7 +7,7 @@ namespace weave;
 public partial class CurveSpawner : Node2D
 {
     [Signal]
-    public delegate void CreatedLineEventHandler(Line2D line);
+    public delegate void CreatedLineEventHandler(Line2D line, SegmentShape2D segment);
 
     private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
@@ -73,9 +73,11 @@ public partial class CurveSpawner : Node2D
         var line = new Line2D { DefaultColor = Color, Width = Constants.LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
-        EmitSignal(SignalName.CreatedLine, line);
 
-        // Create segment that is used to check for intersections
-        Segments.Add(new SegmentShape2D { A = from, B = to });
+        // Segment that is used to test for intersections
+        var segment = new SegmentShape2D { A = from, B = to };
+
+        // Pass information to Main
+        EmitSignal(SignalName.CreatedLine, line, segment);
     }
 }

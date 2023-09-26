@@ -49,4 +49,9 @@ public partial class Player : CharacterBody2D
         if (Controller.IsTurningLeft())
             RotationDegrees -= 120 * (float)delta;
     }
+
+    public float GetRadius()
+    {
+        return CircleShape.Radius;
+    }
 }

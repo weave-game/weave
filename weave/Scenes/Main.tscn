@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
-[ext_resource type="PackedScene" uid="uid://4nc7omeqyir" path="res://UI/GameOverOverlay.tscn" id="3_fn3bt"]
+[ext_resource type="PackedScene" path="res://UI/GameOverOverlay.tscn" id="3_fn3bt"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")

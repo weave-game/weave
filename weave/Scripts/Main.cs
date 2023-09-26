@@ -20,6 +20,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
+    private Grid _grid;
     private const int NPlayers = 3;
 
     private readonly List<(Key, Key)> _keybindings =
@@ -43,6 +44,7 @@ public partial class Main : Node2D
         if (_keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
+        CreateMapGrid();
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
@@ -53,16 +55,29 @@ public partial class Main : Node2D
         DetectPlayerCollision();
     }
 
+    private void CreateMapGrid()
+    {
+        var width = (int)GetViewportRect().Size.X;
+        var height = (int)GetViewportRect().Size.Y;
+        _grid = new Grid(10, 10, width, height);
+    }
+
     private void DetectPlayerCollision()
     {
-        // Collect all segments
-        var allSegments = GetAllSegments();
+        var hasCollided = false;
 
-        // Perform collision detection only for drawing players
-        var hasCollided = _players
-            .Where(p => p.CurveSpawner.IsDrawing)
-            .Where(p => IsIntersecting(p, allSegments))
-            .Any(p => IsIntersecting(p, allSegments));
+        // Perform collision detection for players that are drawing
+        foreach (var player in _players.Where(player => player.CurveSpawner.IsDrawing))
+        {
+            var segments = _grid.GetSegmentsFromPlayerPosition(
+                player.GlobalPosition,
+                player.GetRadius()
+            );
+            if (IsPlayerIntersecting(player, segments))
+            {
+                hasCollided = true;
+            }
+        }
 
         if (hasCollided)
             GameOver();
@@ -90,23 +105,30 @@ public partial class Main : Node2D
                 player.Controller = new KeyboardController(_keybindings[i]);
 
             AddChild(player);
+            player.CurveSpawner.CreatedLine += HandleCreateLine;
             player.GlobalPosition = GetRandomCoordinateInView(100);
-            player.CurveSpawner.CreatedLine += line => AddChild(line);
-
             _players.Add(player);
         });
     }
 
-    private static bool IsIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
+    private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.CircleShape.Radius + Constants.LineWidth / 2f;
+        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 Geometry2D.SegmentIntersectsCircle(segment.A, segment.B, position, radius) != -1
         );
+    }
+
+    private void HandleCreateLine(Line2D line, SegmentShape2D segment)
+    {
+        // Draw line to screen
+        AddChild(line);
+
+        _grid.AddSegment(segment);
     }
 
     private void OnPlayerReachedGoal(Player player)
