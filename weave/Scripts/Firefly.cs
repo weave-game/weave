@@ -16,17 +16,17 @@ public partial class Firefly : Path2D
     [GetNode("Line2D")]
     private Line2D line;
 
-    private float _currentSpeed;
-    private float _goalSpeed;
     private const float MaxSpeed = 15;
     private const int NrPoints = 30;
-    private float _distanceBetweenPoints = 5;
+    private const float DistanceBetweenPoints = 5;
+    private float _currentSpeed;
+    private float _goalSpeed;
 
     public override void _Ready()
     {
         this.GetNodes();
 
-        line.Width = 4;
+        line.Width = Constants.LineWidth;
         line.DefaultColor = Unique.NewColor();
 
         for (var i = 0; i < NrPoints; i++)
@@ -37,12 +37,14 @@ public partial class Firefly : Path2D
 
     public override void _Process(double delta)
     {
+        // Reached goal speed, set new speed
         if (MathF.Abs(_currentSpeed - _goalSpeed) < (float)10e-5)
         {
-            _goalSpeed = GD.Randf() * 15;
+            _goalSpeed = GD.Randf() * MaxSpeed;
         }
 
-        if (line.Points[0].DistanceTo(area.GlobalPosition) >= _distanceBetweenPoints)
+        // Make line follow the leading point
+        if (line.Points[0].DistanceTo(area.GlobalPosition) >= DistanceBetweenPoints)
         {
             var lastPoint = area.GlobalPosition;
             var tempPoints = (Vector2[])line.Points.Clone();
@@ -51,8 +53,7 @@ public partial class Firefly : Path2D
             {
                 tempPoints[i].X = lastPoint.X;
                 tempPoints[i].Y = lastPoint.Y;
-                if (i > 0)
-                    lastPoint = line.Points[i - 1];
+                lastPoint = line.Points[Math.Max(i - 1, 0)]; // Avoid index out of bounds
             }
 
             line.Points = tempPoints;
