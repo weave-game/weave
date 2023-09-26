@@ -5,6 +5,8 @@ namespace weave;
 
 public partial class FlyingLight : Area2D
 {
+    [Signal]
+    public delegate void CreatePathEventHandler(Vector2[] points);
     private PathFollow2D pathFollow;
     private float Speed;
     private float GoalSpeed;
@@ -12,7 +14,7 @@ public partial class FlyingLight : Area2D
     private float goalSpeed;
     private const int NrPoints = 10;
     private Vector2[] points;
-    private float distBetweenPoints = 1;
+    private float distanceBetweenPoints = 1;
 
     public override void _Ready()
     {
@@ -32,23 +34,27 @@ public partial class FlyingLight : Area2D
             GoalSpeed = GD.Randf() * 10;
         }
 
-        var lastPoint = GlobalPosition;
-
-        for (var i = 0; i < NrPoints; i++)
+        if (points[0].DistanceTo(GlobalPosition) >= distanceBetweenPoints)
         {
-            if (points[i].DistanceTo(lastPoint) >= distBetweenPoints)
+            var lastPoint = GlobalPosition;
+            var tempPoints = (Vector2[])points.Clone();
+
+            for (var i = 0; i < NrPoints; i++)
             {
-                points[i].X = GlobalPosition.X;
-                points[i].Y = GlobalPosition.Y;
+                tempPoints[i].X = lastPoint.X;
+                tempPoints[i].Y = lastPoint.Y;
+                if (i > 0)
+                    lastPoint = points[i - 1];
             }
-            else if (i > 0)
+
+            for (var i = 0; i < NrPoints; i++)
             {
-                points[i].X = points[i-1].X;
-                points[i].Y = points[i-1].Y;
+                points[i].X = tempPoints[i].X;
+                points[i].Y = tempPoints[i].Y;
             }
-            
-            GD.Print($"Point nr {i+1} is at position {points[i]}");
         }
+
+        EmitSignal(SignalName.CreatePath, points);
 
         Speed = Mathf.Lerp(Speed, GoalSpeed, 0.3f);
         pathFollow.Progress += Speed;

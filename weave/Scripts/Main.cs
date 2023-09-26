@@ -90,7 +90,7 @@ public partial class Main : Node2D
             _players.Add(player);
 
             AddChild(player);
-            player.CurveSpawner.CreatedLine += HandleCreateLine;
+            player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = GetRandomCoordinateInView(100);
             player.PlayerId = playerId;
         });
@@ -108,7 +108,7 @@ public partial class Main : Node2D
         );
     }
 
-    private void HandleCreateLine(Line2D line, SegmentShape2D segment)
+    private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
         // Draw line to screen
         AddChild(line);
