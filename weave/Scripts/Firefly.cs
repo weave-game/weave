@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using GodotSharper.AutoGetNode;
-using System.Reflection.Emit;
+using weave.Utils;
 
 namespace weave;
 
@@ -16,16 +16,18 @@ public partial class Firefly : Path2D
     [GetNode("Line2D")]
     private Line2D line;
 
-    private float Speed;
-    private float GoalSpeed;
-    private const int NrPoints = 20;
-    private float distanceBetweenPoints = 5;
+    private float _currentSpeed;
+    private float _goalSpeed;
+    private const float MaxSpeed = 15;
+    private const int NrPoints = 30;
+    private float _distanceBetweenPoints = 5;
 
     public override void _Ready()
     {
         this.GetNodes();
 
-        line.Width = 1;
+        line.Width = 4;
+        line.DefaultColor = Unique.NewColor();
 
         for (var i = 0; i < NrPoints; i++)
         {
@@ -35,12 +37,12 @@ public partial class Firefly : Path2D
 
     public override void _Process(double delta)
     {
-        if (MathF.Abs(Speed - GoalSpeed) < (float)10e-5)
+        if (MathF.Abs(_currentSpeed - _goalSpeed) < (float)10e-5)
         {
-            GoalSpeed = GD.Randf() * 10;
+            _goalSpeed = GD.Randf() * 15;
         }
 
-        if (line.Points[0].DistanceTo(area.GlobalPosition) >= distanceBetweenPoints)
+        if (line.Points[0].DistanceTo(area.GlobalPosition) >= _distanceBetweenPoints)
         {
             var lastPoint = area.GlobalPosition;
             var tempPoints = (Vector2[])line.Points.Clone();
@@ -56,7 +58,7 @@ public partial class Firefly : Path2D
             line.Points = tempPoints;
         }
 
-        Speed = Mathf.Lerp(Speed, GoalSpeed, 0.3f);
-        pathFollow.Progress += Speed;
+        _currentSpeed = Mathf.Lerp(_currentSpeed, _goalSpeed, 0.3f);
+        pathFollow.Progress += _currentSpeed;
     }
 }
