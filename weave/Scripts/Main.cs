@@ -114,7 +114,7 @@ public partial class Main : Node2D
     private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + (Constants.LineWidth / 2);
+        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
