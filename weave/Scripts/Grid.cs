@@ -14,7 +14,7 @@ public class Grid
     private readonly float _cellHeight;
     private readonly List<List<Cell>> _cells = new();
 
-    public class Cell
+    public struct Cell
     {
         public Rect2 Rect { get; set; }
         public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
