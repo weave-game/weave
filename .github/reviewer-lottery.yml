@@ -1,11 +1,16 @@
 groups:
-  - name: devs
-    reviewers: 1            # how many reviewers do you want to assign?
-    internal_reviewers: 1   # how many reviewers do you want to assign when the PR author belongs to this group?
+  - name: group1
+    reviewers: 1
+    internal_reviewers: 1
     usernames:
-      - erikwessman
-      - theowiik
       - elias-carlson
       - SimplemathicDev
       - krystynaziobro
       - cvazouras
+
+  - name: group2
+    reviewers: 1
+    internal_reviewers: 1
+    usernames:
+      - erikwessman
+      - theowiik
