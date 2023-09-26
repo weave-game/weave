@@ -79,5 +79,6 @@ public partial class CurveSpawner : Node2D
 
         // Pass information to Main
         EmitSignal(SignalName.CreatedLine, line, segment);
+        // HEllo
     }
 }
