@@ -12,7 +12,7 @@ public partial class Player : CharacterBody2D
     [Signal]
     public delegate void PlayerShotBulletEventHandler(Node2D bullet, Vector2 globalPosition);
 
-    private float MovementSpeed = 100f;
+    private float _movementSpeed = 100f;
 
     [GetNode("Label")]
     private Label _label;
@@ -25,7 +25,7 @@ public partial class Player : CharacterBody2D
     public CurveSpawner CurveSpawner { get; private set; }
 
     [GetNode("CollisionShape2D")]
-    public CollisionShape2D CollisionShape2D;
+    public CollisionShape2D CollisionShape2D { get; private set; }
 
     public IController Controller { get; set; }
 
@@ -53,7 +53,7 @@ public partial class Player : CharacterBody2D
     private void Move(double delta)
     {
         Rotate(delta);
-        Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
+        Translate(Vector2.Up.Rotated(Rotation).Normalized() * _movementSpeed * (float)delta);
     }
 
     private void Rotate(double delta)
@@ -67,7 +67,6 @@ public partial class Player : CharacterBody2D
 
     public float GetRadius()
     {
-        var shape = (CircleShape2D)CollisionShape2D.Shape;
-        return shape.Radius;
+        return CircleShape.Radius;
     }
 }
