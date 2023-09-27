@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
 namespace weave;
@@ -17,8 +16,8 @@ public class Grid
 
     private struct Cell
     {
-        public Rect2 Rect { get; set; }
-        public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
+        public Rect2 Rect { get; }
+        public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
         public Cell(Rect2 rect2)
         {
@@ -52,10 +51,7 @@ public class Grid
         }
     }
 
-    public IEnumerable<SegmentShape2D> Segments =>
-        _cells.SelectMany(cell => cell.SelectMany(c => c.Segments));
-
-    public ISet<SegmentShape2D> GetSegmentsFromPlayerPosition(
+    public IEnumerable<SegmentShape2D> GetSegmentsFromPlayerPosition(
         Vector2 playerPosition,
         float playerRadius
     )

@@ -22,11 +22,12 @@ public partial class Main : Node2D
 {
     private Grid _grid;
     private const int NPlayers = 3;
-    private const int Acceleration = 5;
+    private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
 
-    private readonly List<(Key, Key)> _keybindings =
-        new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
+    private readonly IList<(Key, Key)> _keybindings =
+        new List<(Key, Key)>
+            { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
 
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
@@ -57,8 +58,8 @@ public partial class Main : Node2D
         _players.ForEach(
             p =>
             {
-                p.MovementSpeed += Acceleration * (float)delta * (float)delta;
-                p.TurnRadius += TurnAcceleration * (float)delta * (float)delta;
+                p.MovementSpeed += Acceleration * (float)delta;
+                p.TurnRadius += TurnAcceleration * (float)delta;
             });
     }
 
@@ -191,17 +192,30 @@ public partial class Main : Node2D
 
     private void SetupLogger()
     {
-        var logger = new Logger.Logger(
-            DevConstants.LogFilePath,
-            new[] { FpsLogger, LineCountLogger }
-        );
+        var logIteration = 0;
+        float msFirstLog = -1;
+
+        var loggers = new List<Logger.Logger>()
+        {
+            // FPS Logger
+            new(
+                DevConstants.FpsLogFilePath,
+                new[] { IdLogger, DeltaLogger, FpsLogger, LineCountLogger }
+            ),
+            // Speed Logger
+            new(
+                DevConstants.SpeedLogFilePath,
+                new[] { IdLogger,  DeltaLogger, SpeedLogger, TurnRadiusLogger }
+            )
+        };
 
         // Log every half second
-        AddChild(TimerFactory.StartedRepeating(0.5f, () => logger.Log()));
+        AddChild(TimerFactory.StartedRepeating(0.5f, () => loggers.ForEach(l => l.Log())));
 
         // Save to file every 5 seconds
-        AddChild(TimerFactory.StartedRepeating(5f, () => logger.Persist()));
+        AddChild(TimerFactory.StartedRepeating(5f, () => loggers.ForEach(l => l.Persist())));
 
+        // ReSharper disable once SeparateLocalFunctionsWithJumpStatement
         Log FpsLogger()
         {
             var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
@@ -212,6 +226,33 @@ public partial class Main : Node2D
         {
             var value = GetAllSegments().Count.ToString();
             return new Log("lines", value);
+        }
+
+        Log SpeedLogger()
+        {
+            var value = _players.First().MovementSpeed.ToString(CultureInfo.InvariantCulture);
+            return new Log("speed", value);
+        }
+
+        Log TurnRadiusLogger()
+        {
+            var value = _players.First().TurnRadius.ToString(CultureInfo.InvariantCulture);
+            return new Log("turn_radius", value);
+        }
+
+        Log IdLogger()
+        {
+            return new Log("id", logIteration++.ToString());
+        }
+
+        Log DeltaLogger()
+        {
+            if (msFirstLog == -1)
+                msFirstLog = Time.GetTicksMsec();
+
+            var elapsed = Time.GetTicksMsec() - msFirstLog;
+
+            return new Log("delta_ms", elapsed.ToString());
         }
     }
 }
