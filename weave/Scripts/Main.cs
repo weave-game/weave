@@ -8,6 +8,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
 using weave.Logger;
+using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
 
@@ -192,20 +193,20 @@ public partial class Main : Node2D
 
     private void SetupLogger()
     {
-        var logIteration = 0;
-        float msFirstLog = -1;
+        var fpsDeltaLogger = new DeltaLogger();
+        var speedDeltaLogger = new DeltaLogger();
 
         var loggers = new List<Logger.Logger>
         {
             // FPS Logger
             new(
                 DevConstants.FpsLogFilePath,
-                new[] { IdLogger, DeltaLogger, FpsLogger, LineCountLogger }
+                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
             ),
             // Speed Logger
             new(
                 DevConstants.SpeedLogFilePath,
-                new[] { IdLogger, DeltaLogger, SpeedLogger, TurnRadiusLogger }
+                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
             )
         };
 
@@ -214,45 +215,35 @@ public partial class Main : Node2D
 
         // Save to file every 5 seconds
         AddChild(TimerFactory.StartedRepeating(5f, () => loggers.ForEach(l => l.Persist())));
-
-        // ReSharper disable once SeparateLocalFunctionsWithJumpStatement
-        Log FpsLogger()
-        {
-            var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
-            return new Log("fps", value);
-        }
-
-        Log LineCountLogger()
-        {
-            var value = GetAllSegments().Count.ToString();
-            return new Log("lines", value);
-        }
-
-        Log SpeedLogger()
-        {
-            var value = _players.First().MovementSpeed.ToString(CultureInfo.InvariantCulture);
-            return new Log("speed", value);
-        }
-
-        Log TurnRadiusLogger()
-        {
-            var value = _players.First().TurnRadius.ToString(CultureInfo.InvariantCulture);
-            return new Log("turn_radius", value);
-        }
-
-        Log IdLogger()
-        {
-            return new Log("id", logIteration++.ToString());
-        }
-
-        Log DeltaLogger()
-        {
-            if (msFirstLog <= 0)
-                msFirstLog = Time.GetTicksMsec();
-
-            var elapsed = Time.GetTicksMsec() - msFirstLog;
-
-            return new Log("delta_ms", elapsed.ToString(CultureInfo.InvariantCulture));
-        }
     }
+
+    #region Loggers
+
+    private static Log FpsLogger()
+    {
+        return new Log("fps", Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture));
+    }
+
+    private Log LineCountLogger()
+    {
+        return new Log("lines", GetAllSegments().Count.ToString());
+    }
+
+    private Log SpeedLogger()
+    {
+        return new Log(
+            "speed",
+            _players.First().MovementSpeed.ToString(CultureInfo.InvariantCulture)
+        );
+    }
+
+    private Log TurnRadiusLogger()
+    {
+        return new Log(
+            "turn_radius",
+            _players.First().TurnRadius.ToString(CultureInfo.InvariantCulture)
+        );
+    }
+
+    #endregion
 }
