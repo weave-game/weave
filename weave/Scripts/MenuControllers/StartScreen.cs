@@ -14,9 +14,6 @@ public partial class StartScreen : Node2D
     [GetNode("CanvasLayer/CenterContainer/VBoxContainer/StartButton")]
     private Button _startButton;
 
-    [GetNode("FireflyLayer")]
-    private CanvasLayer _fireflyLayer;
-
     public override void _Ready()
     {
         this.GetNodes();
