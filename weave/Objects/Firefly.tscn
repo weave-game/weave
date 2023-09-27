@@ -4,7 +4,7 @@
 
 [sub_resource type="Curve2D" id="Curve2D_33qe8"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -48, 483, -151.361, 109.317, 151.361, -109.317, 217, 168, -146.316, -102.589, 146.316, 102.589, 571, 147, -42.0448, -77.3625, 42.0448, 77.3625, 833, 352, -241.09, -80.9313, 241.09, 80.9313, 865, 592, 0, 0, 0, 0, 1294, 547)
+"points": PackedVector2Array(0, 0, 0, 0, 614, -96, -31.4964, 160.259, 31.4964, -160.259, 113, 203, -146.316, -102.589, 146.316, 102.589, 461, 457, -69.0143, -51.8913, 69.0143, 51.8913, 833, 352, 241.777, -9.6594, -241.777, 9.6594, 705, 599, 0, 0, 0, 0, 421, 741)
 }
 point_count = 6
 
@@ -16,8 +16,8 @@ curve = SubResource("Curve2D_33qe8")
 script = ExtResource("1_3dm8u")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
-position = Vector2(-48, 483)
-rotation = -0.871392
+position = Vector2(614, -96)
+rotation = 2.60352
 
 [node name="Area2D" type="Area2D" parent="PathFollow2D"]
 

@@ -14,12 +14,12 @@ public static class Unique
     /// </summary>
     private static readonly ISet<Color> Colors = new HashSet<Color>
     {
+        Godot.Colors.BlueViolet,
+        Godot.Colors.Gold,
         Godot.Colors.Turquoise,
         Godot.Colors.Magenta,
         Godot.Colors.SpringGreen,
         Godot.Colors.OrangeRed,
-        Godot.Colors.Gold,
-        Godot.Colors.BlueViolet,
         Godot.Colors.HotPink,
         Godot.Colors.DarkOrange
     };

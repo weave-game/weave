@@ -1,8 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=7 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
 [ext_resource type="PackedScene" uid="uid://b6nafgky7moxh" path="res://Objects/Firefly.tscn" id="3_r76ru"]
+
+[sub_resource type="Curve2D" id="Curve2D_k2fae"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -106, 537, -23.0716, 52.2995, 23.0716, -52.2995, 274, 514, -126.452, -60.3871, 126.452, 60.3871, 570, 291, -68.6006, -38.7017, 68.6006, 38.7017, 780, 141, -241.09, -80.9313, 241.09, 80.9313, 865, 592, 0, 0, 0, 0, 1277, 278)
+}
+point_count = 6
+
+[sub_resource type="Curve2D" id="Curve2D_strfe"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1264, 103, 131.819, -130.412, -131.819, 130.412, 261, 164, -146.316, -102.589, 146.316, 102.589, 533, 555, -60.5386, 83.72, 60.5386, -83.72, 70, 552, 126.407, 227.073, -126.407, -227.073, 28, 202, 0, 0, 0, 0, -181, 153)
+}
+point_count = 6
+
+[sub_resource type="Curve2D" id="Curve2D_wxcnk"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 730, 782, -129.04, -29.7831, 129.04, 29.7831, 799, 550, -40.4866, 58.402, 40.4866, -58.402, 1020, 460, 124.392, 116.288, -124.392, -116.288, 966, 94, 162.733, -124.021, -162.733, 124.021, 223, 160, 0, 0, 0, 0, -135, 89)
+}
+point_count = 6
 
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_bb43u")
@@ -49,3 +67,12 @@ text = "Quit :("
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+
+[node name="Firefly2" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+curve = SubResource("Curve2D_k2fae")
+
+[node name="Firefly3" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+curve = SubResource("Curve2D_strfe")
+
+[node name="Firefly4" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+curve = SubResource("Curve2D_wxcnk")
