@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace weave;
@@ -12,9 +13,9 @@ public class Grid
     private readonly int _height;
     private readonly float _cellWidth;
     private readonly float _cellHeight;
-    private readonly List<List<Cell>> _cells = new();
+    private readonly IList<IList<Cell>> _cells = new List<IList<Cell>>();
 
-    public struct Cell
+    private struct Cell
     {
         public Rect2 Rect { get; set; }
         public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
@@ -46,9 +47,13 @@ public class Grid
                 var cell = new Cell(rect);
                 rowList.Add(cell);
             }
+
             _cells.Add(rowList);
         }
     }
+
+    public IEnumerable<SegmentShape2D> Segments =>
+        _cells.SelectMany(cell => cell.SelectMany(c => c.Segments));
 
     public ISet<SegmentShape2D> GetSegmentsFromPlayerPosition(
         Vector2 playerPosition,
@@ -97,19 +102,20 @@ public class Grid
             return true;
         }
 
-        float closestX = Mathf.Clamp(
+        var closestX = Mathf.Clamp(
             circleCenter.X,
             rectangle.Position.X,
             rectangle.Position.X + rectangle.Size.X
         );
-        float closestY = Mathf.Clamp(
+
+        var closestY = Mathf.Clamp(
             circleCenter.Y,
             rectangle.Position.Y,
             rectangle.Position.Y + rectangle.Size.Y
         );
 
-        Vector2 closestPoint = new(closestX, closestY);
-        float distance = circleCenter.DistanceTo(closestPoint);
+        var closestPoint = new Vector2(closestX, closestY);
+        var distance = circleCenter.DistanceTo(closestPoint);
 
         return distance <= circleRadius;
     }

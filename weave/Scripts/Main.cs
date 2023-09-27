@@ -111,10 +111,10 @@ public partial class Main : Node2D
         });
     }
 
-    private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
+    private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
+        var radius = player.GetRadius() + Constants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
@@ -125,10 +125,9 @@ public partial class Main : Node2D
 
     private void HandleCreateLine(Line2D line, SegmentShape2D segment)
     {
-        // Draw line to screen
-        AddChild(line);
-
+        line.AddToGroup(GroupConstants.LineGroup);
         _grid.AddSegment(segment);
+        AddChild(line);
     }
 
     private void OnPlayerReachedGoal(Player player)
@@ -137,7 +136,15 @@ public partial class Main : Node2D
             return;
 
         _roundCompletions = 0;
+        ClearLinesAndSegments();
         ClearAndSpawnGoals();
+    }
+
+    private void ClearLinesAndSegments()
+    {
+        GetTree().GetNodesInGroup(GroupConstants.LineGroup).ForEach(line => line.QueueFree());
+
+        CreateMapGrid();
     }
 
     private void ClearAndSpawnGoals()
