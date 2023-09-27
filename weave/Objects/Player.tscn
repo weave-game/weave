@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cydglrjfdxyu2"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_j6e2d"]
-[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_kadug"]
+[ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_q6hj4"]
 [ext_resource type="Script" path="res://Scripts/CurveSpawner.cs" id="3_1y1di"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nrd2o"]
@@ -11,9 +11,9 @@ radius = 3.0
 script = ExtResource("1_j6e2d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -8)
-scale = Vector2(0.03125, 0.03125)
-texture = ExtResource("2_kadug")
+position = Vector2(0, -6)
+scale = Vector2(0.00274659, 0.00274659)
+texture = ExtResource("2_q6hj4")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
