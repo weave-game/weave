@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
-[ext_resource type="PackedScene" path="res://UI/GameOverOverlay.tscn" id="3_fn3bt"]
+[ext_resource type="PackedScene" uid="uid://d1gxme4fjesjw" path="res://Objects/GlowEnvironment.tscn" id="2_sbqwd"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
 
-[node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
+[node name="WorldEnvironment" parent="." instance=ExtResource("2_sbqwd")]
 
-[node name="GameOverOverlay" parent="." instance=ExtResource("3_fn3bt")]
+[node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
 visible = false
