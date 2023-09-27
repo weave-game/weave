@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Linq;
-using GodotSharper;
 using GodotSharper.AutoGetNode;
 using weave.Utils;
 
@@ -25,17 +24,17 @@ public partial class Firefly : Path2D
     private float _currentSpeed;
     private float _goalSpeed;
     private float _lastProgress;
-    private bool _isWaiting = true;
+    private bool _isWaiting;
+    private bool _firstIteration = true;
     private Timer _animationTimer;
 
     public override void _Ready()
     {
         this.GetNodes();
 
-        // TODO: Add non destructive one shot timer factory method
-        var animationDelay = (GD.Randf() * 4) + 2;
-        _animationTimer = TimerFactory.StartedRepeating(animationDelay, HandleTimerTimeout);
-        _animationTimer.OneShot = true; 
+        var animationDelay = (GD.Randf() * 10) + 3;
+        _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
+        _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 
         _line.Width = Constants.LineWidth;
@@ -52,12 +51,13 @@ public partial class Firefly : Path2D
         if (_isWaiting)
             return;
 
-        // Reset line points when progress is done
-        if (_lastProgress >= _pathFollow.Progress)
+        // Reset line points & pause animation when progress is done or on first iteration
+        if (_lastProgress > _pathFollow.Progress || _firstIteration)
         {
             _line.Points = Enumerable.Repeat(_area.GlobalPosition, NrPoints).ToArray();
             _animationTimer.Start();
             _isWaiting = true;
+            _firstIteration = false;
         }
 
         // Reached goal speed, set new speed
@@ -92,3 +92,4 @@ public partial class Firefly : Path2D
         _animationTimer.Stop();
     }
 }
+
