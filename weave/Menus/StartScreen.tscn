@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=8 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
@@ -22,18 +22,22 @@ _data = {
 }
 point_count = 6
 
+[sub_resource type="Environment" id="Environment_1k2n6"]
+background_mode = 3
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 5.0
+glow_strength = 1.5
+glow_bloom = 0.05
+adjustment_enabled = true
+adjustment_brightness = 2.0
+adjustment_saturation = 2.0
+
 [node name="StartScreen" type="Node2D"]
 script = ExtResource("1_bb43u")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.733333, 0.847059, 0.933333, 1)
+layer = -1
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
 anchors_preset = 15
@@ -65,6 +69,7 @@ layout_mode = 2
 text = "Quit :("
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
+layer = -1
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 
@@ -76,3 +81,6 @@ curve = SubResource("Curve2D_strfe")
 
 [node name="Firefly4" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 curve = SubResource("Curve2D_wxcnk")
+
+[node name="CanvasGlow" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1k2n6")
