@@ -22,6 +22,8 @@ public partial class Main : Node2D
 {
     private Grid _grid;
     private const int NPlayers = 3;
+    private const int Acceleration = 5;
+    private const int TurnAcceleration = 5;
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
@@ -48,6 +50,16 @@ public partial class Main : Node2D
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
+    }
+
+    public override void _Process(double delta)
+    {
+        _players.ForEach(
+            p =>
+            {
+                p.MovementSpeed += Acceleration * (float)delta * (float)delta;
+                p.TurnRadius += TurnAcceleration * (float)delta * (float)delta;
+            });
     }
 
     public override void _PhysicsProcess(double delta)
@@ -96,19 +108,21 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        NPlayers.TimesDo(i =>
-        {
-            var player = Instanter.Instantiate<Player>();
-            player.Color = Unique.NewColor();
+        NPlayers.TimesDo(
+            i =>
+            {
+                var player = Instanter.Instantiate<Player>();
+                player.Color = Unique.NewColor();
 
-            if (_controllerType == ControllerTypes.Keyboard)
-                player.Controller = new KeyboardController(_keybindings[i]);
+                if (_controllerType == ControllerTypes.Keyboard)
+                    player.Controller = new KeyboardController(_keybindings[i]);
 
-            AddChild(player);
-            player.CurveSpawner.CreatedLine += HandleCreateLine;
-            player.GlobalPosition = GetRandomCoordinateInView(100);
-            _players.Add(player);
-        });
+                AddChild(player);
+                player.CurveSpawner.CreatedLine += HandleCreateLine;
+                player.GlobalPosition = GetRandomCoordinateInView(100);
+                _players.Add(player);
+            }
+        );
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -156,14 +170,16 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Spawn new goals
-        _players.ForEach(player =>
-        {
-            var goal = Instanter.Instantiate<Goal>();
-            CallDeferred("add_child", goal);
-            goal.GlobalPosition = GetRandomCoordinateInView(100);
-            goal.PlayerReachedGoal += OnPlayerReachedGoal;
-            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
-        });
+        _players.ForEach(
+            player =>
+            {
+                var goal = Instanter.Instantiate<Goal>();
+                CallDeferred("add_child", goal);
+                goal.GlobalPosition = GetRandomCoordinateInView(100);
+                goal.PlayerReachedGoal += OnPlayerReachedGoal;
+                goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+            }
+        );
     }
 
     private Vector2 GetRandomCoordinateInView(float margin)
