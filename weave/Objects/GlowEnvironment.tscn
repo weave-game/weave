@@ -17,5 +17,5 @@ adjustment_enabled = true
 adjustment_brightness = 2.4
 adjustment_contrast = 2.31
 
-[node name="WorldEnvironment" type="WorldEnvironment"]
+[node name="GlowEnvironment" type="WorldEnvironment"]
 environment = SubResource("Environment_0o2dr")
