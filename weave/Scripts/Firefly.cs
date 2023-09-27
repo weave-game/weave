@@ -23,10 +23,19 @@ public partial class Firefly : Path2D
     private const float DistanceBetweenPoints = 5;
     private float _currentSpeed;
     private float _goalSpeed;
+    private float _lastProgress;
+    private bool _isWaiting = true;
+    private Timer _animationTimer;
 
     public override void _Ready()
     {
         this.GetNodes();
+
+        var animationDelay = GD.Randf() * 5;
+        _animationTimer = new Timer {WaitTime = animationDelay, OneShot = true};
+        _animationTimer.Timeout += HandleTimerTimeout;
+        AddChild(_animationTimer);
+        _animationTimer.Start();
 
         _line.Width = Constants.LineWidth;
         _line.DefaultColor = Unique.NewColor();
@@ -39,16 +48,21 @@ public partial class Firefly : Path2D
 
     public override void _Process(double delta)
     {
+        if (_isWaiting)
+            return;
+
+        // Reset line points when progress is done
+        if (_lastProgress >= _pathFollow.Progress)
+        {
+            _line.Points = Enumerable.Repeat(_area.GlobalPosition, NrPoints).ToArray();
+            _animationTimer.Start();
+            _isWaiting = true;
+        }
+
         // Reached goal speed, set new speed
         if (MathF.Abs(_currentSpeed - _goalSpeed) < (float)10e-5)
         {
             _goalSpeed = (GD.Randf() * MaxSpeed) + MinSpeed;
-        }
-
-        // Reset line points when progress is done
-        if (_pathFollow.Progress < (MaxSpeed + MinSpeed))
-        {
-            _line.Points = Enumerable.Repeat(_area.GlobalPosition, NrPoints).ToArray();
         }
 
         // Make line follow the leading point
@@ -66,7 +80,14 @@ public partial class Firefly : Path2D
             _line.Points = tempPoints;
         }
 
+        _lastProgress = _pathFollow.Progress;
         _currentSpeed = Mathf.Lerp(_currentSpeed, _goalSpeed, 0.3f);
         _pathFollow.Progress += _currentSpeed;
+    }
+
+    private void HandleTimerTimeout()
+    {
+        _isWaiting = false;
+        _animationTimer.Stop();
     }
 }
