@@ -6,24 +6,13 @@ namespace weave;
 
 public class Grid
 {
-    private readonly int _nrRows;
-    private readonly int _nrCols;
-    private readonly int _width;
-    private readonly int _height;
-    private readonly float _cellWidth;
     private readonly float _cellHeight;
     private readonly IList<IList<Cell>> _cells = new List<IList<Cell>>();
-
-    private struct Cell
-    {
-        public Rect2 Rect { get; }
-        public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
-
-        public Cell(Rect2 rect2)
-        {
-            Rect = rect2;
-        }
-    }
+    private readonly float _cellWidth;
+    private readonly int _height;
+    private readonly int _nrCols;
+    private readonly int _nrRows;
+    private readonly int _width;
 
     public Grid(int nrRows, int nrCols, int width, int height)
     {
@@ -119,5 +108,16 @@ public class Grid
     private bool IsPointOutsideBounds(Vector2 point)
     {
         return point.X < 0 || point.X > _width || point.Y < 0 || point.Y > _height;
+    }
+
+    private readonly struct Cell
+    {
+        public Rect2 Rect { get; }
+        public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
+
+        public Cell(Rect2 rect2)
+        {
+            Rect = rect2;
+        }
     }
 }

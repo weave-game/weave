@@ -20,20 +20,25 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private Grid _grid;
     private const int NPlayers = 3;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
 
-    private readonly IList<(Key, Key)> _keybindings =
-        new List<(Key, Key)>
-            { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
+    private readonly IList<(Key, Key)> _keybindings = new List<(Key, Key)>
+    {
+        (Key.Left, Key.Right),
+        (Key.Key1, Key.Q),
+        (Key.B, Key.N),
+        (Key.Z, Key.X)
+    };
 
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
+
+    private Grid _grid;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -55,12 +60,11 @@ public partial class Main : Node2D
 
     public override void _Process(double delta)
     {
-        _players.ForEach(
-            p =>
-            {
-                p.MovementSpeed += Acceleration * (float)delta;
-                p.TurnRadius += TurnAcceleration * (float)delta;
-            });
+        _players.ForEach(p =>
+        {
+            p.MovementSpeed += Acceleration * (float)delta;
+            p.TurnRadius += TurnAcceleration * (float)delta;
+        });
     }
 
     public override void _PhysicsProcess(double delta)
@@ -109,21 +113,19 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        NPlayers.TimesDo(
-            i =>
-            {
-                var player = Instanter.Instantiate<Player>();
-                player.Color = Unique.NewColor();
+        NPlayers.TimesDo(i =>
+        {
+            var player = Instanter.Instantiate<Player>();
+            player.Color = Unique.NewColor();
 
-                if (_controllerType == ControllerTypes.Keyboard)
-                    player.Controller = new KeyboardController(_keybindings[i]);
+            if (_controllerType == ControllerTypes.Keyboard)
+                player.Controller = new KeyboardController(_keybindings[i]);
 
-                AddChild(player);
-                player.CurveSpawner.CreatedLine += HandleCreateLine;
-                player.GlobalPosition = GetRandomCoordinateInView(100);
-                _players.Add(player);
-            }
-        );
+            AddChild(player);
+            player.CurveSpawner.CreatedLine += HandleCreateLine;
+            player.GlobalPosition = GetRandomCoordinateInView(100);
+            _players.Add(player);
+        });
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -171,16 +173,14 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Spawn new goals
-        _players.ForEach(
-            player =>
-            {
-                var goal = Instanter.Instantiate<Goal>();
-                CallDeferred("add_child", goal);
-                goal.GlobalPosition = GetRandomCoordinateInView(100);
-                goal.PlayerReachedGoal += OnPlayerReachedGoal;
-                goal.CallDeferred("set", nameof(Goal.Color), player.Color);
-            }
-        );
+        _players.ForEach(player =>
+        {
+            var goal = Instanter.Instantiate<Goal>();
+            CallDeferred("add_child", goal);
+            goal.GlobalPosition = GetRandomCoordinateInView(100);
+            goal.PlayerReachedGoal += OnPlayerReachedGoal;
+            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+        });
     }
 
     private Vector2 GetRandomCoordinateInView(float margin)
@@ -195,7 +195,7 @@ public partial class Main : Node2D
         var logIteration = 0;
         float msFirstLog = -1;
 
-        var loggers = new List<Logger.Logger>()
+        var loggers = new List<Logger.Logger>
         {
             // FPS Logger
             new(
@@ -205,7 +205,7 @@ public partial class Main : Node2D
             // Speed Logger
             new(
                 DevConstants.SpeedLogFilePath,
-                new[] { IdLogger,  DeltaLogger, SpeedLogger, TurnRadiusLogger }
+                new[] { IdLogger, DeltaLogger, SpeedLogger, TurnRadiusLogger }
             )
         };
 
@@ -247,12 +247,12 @@ public partial class Main : Node2D
 
         Log DeltaLogger()
         {
-            if (msFirstLog == -1)
+            if (msFirstLog <= 0)
                 msFirstLog = Time.GetTicksMsec();
 
             var elapsed = Time.GetTicksMsec() - msFirstLog;
 
-            return new Log("delta_ms", elapsed.ToString());
+            return new Log("delta_ms", elapsed.ToString(CultureInfo.InvariantCulture));
         }
     }
 }
