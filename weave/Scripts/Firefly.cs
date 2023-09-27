@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using weave.Utils;
 
@@ -31,11 +32,11 @@ public partial class Firefly : Path2D
     {
         this.GetNodes();
 
-        var animationDelay = GD.Randf() * 5;
-        _animationTimer = new Timer {WaitTime = animationDelay, OneShot = true};
-        _animationTimer.Timeout += HandleTimerTimeout;
+        // TODO: Add non destructive one shot timer factory method
+        var animationDelay = (GD.Randf() * 4) + 2;
+        _animationTimer = TimerFactory.StartedRepeating(animationDelay, HandleTimerTimeout);
+        _animationTimer.OneShot = true; 
         AddChild(_animationTimer);
-        _animationTimer.Start();
 
         _line.Width = Constants.LineWidth;
         _line.DefaultColor = Unique.NewColor();
