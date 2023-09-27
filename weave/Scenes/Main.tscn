@@ -1,11 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=4 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
 [ext_resource type="PackedScene" uid="uid://d1gxme4fjesjw" path="res://Objects/GlowEnvironment.tscn" id="2_sbqwd"]
-[ext_resource type="PackedScene" uid="uid://4nc7omeqyir" path="res://UI/GameOverOverlay.tscn" id="3_fn3bt"]
-[ext_resource type="PackedScene" uid="uid://bqx7duesttoq1" path="res://Objects/Dev/ReferenceUnit.tscn" id="4_pqgms"]
-[ext_resource type="PackedScene" uid="uid://cwkcn26tiyvom" path="res://Objects/Goal.tscn" id="5_lb4ed"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
@@ -14,19 +11,3 @@ script = ExtResource("1_x7cvk")
 
 [node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
 visible = false
-
-[node name="GameOverOverlay" parent="." instance=ExtResource("3_fn3bt")]
-visible = false
-
-[node name="ReferenceUnit" parent="." instance=ExtResource("4_pqgms")]
-visible = false
-position = Vector2(283, 297)
-
-[node name="Goal" parent="." instance=ExtResource("5_lb4ed")]
-visible = false
-position = Vector2(783, 416)
-
-[node name="Line2D" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(659, 154, 907, 210, 1030, 121)
-width = 6.0
