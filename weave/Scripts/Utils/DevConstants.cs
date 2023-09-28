@@ -2,5 +2,6 @@ namespace weave.Utils;
 
 public static class DevConstants
 {
-    public const string LogFilePath = "./Loggings/log.csv";
+    public const string FpsLogFilePath = "./Loggings/fps.csv";
+    public const string SpeedLogFilePath = "./Loggings/speed.csv";
 }

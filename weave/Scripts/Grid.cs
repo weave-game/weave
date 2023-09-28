@@ -6,24 +6,13 @@ namespace weave;
 
 public class Grid
 {
-    private readonly int _nrRows;
-    private readonly int _nrCols;
-    private readonly int _width;
-    private readonly int _height;
-    private readonly float _cellWidth;
     private readonly float _cellHeight;
-    private readonly List<List<Cell>> _cells = new();
-
-    public struct Cell
-    {
-        public Rect2 Rect { get; set; }
-        public ISet<SegmentShape2D> Segments { get; set; } = new HashSet<SegmentShape2D>();
-
-        public Cell(Rect2 rect2)
-        {
-            Rect = rect2;
-        }
-    }
+    private readonly IList<IList<Cell>> _cells = new List<IList<Cell>>();
+    private readonly float _cellWidth;
+    private readonly int _height;
+    private readonly int _nrCols;
+    private readonly int _nrRows;
+    private readonly int _width;
 
     public Grid(int nrRows, int nrCols, int width, int height)
     {
@@ -46,11 +35,12 @@ public class Grid
                 var cell = new Cell(rect);
                 rowList.Add(cell);
             }
+
             _cells.Add(rowList);
         }
     }
 
-    public ISet<SegmentShape2D> GetSegmentsFromPlayerPosition(
+    public IEnumerable<SegmentShape2D> GetSegmentsFromPlayerPosition(
         Vector2 playerPosition,
         float playerRadius
     )
@@ -97,19 +87,20 @@ public class Grid
             return true;
         }
 
-        float closestX = Mathf.Clamp(
+        var closestX = Mathf.Clamp(
             circleCenter.X,
             rectangle.Position.X,
             rectangle.Position.X + rectangle.Size.X
         );
-        float closestY = Mathf.Clamp(
+
+        var closestY = Mathf.Clamp(
             circleCenter.Y,
             rectangle.Position.Y,
             rectangle.Position.Y + rectangle.Size.Y
         );
 
-        Vector2 closestPoint = new(closestX, closestY);
-        float distance = circleCenter.DistanceTo(closestPoint);
+        var closestPoint = new Vector2(closestX, closestY);
+        var distance = circleCenter.DistanceTo(closestPoint);
 
         return distance <= circleRadius;
     }
@@ -117,5 +108,16 @@ public class Grid
     private bool IsPointOutsideBounds(Vector2 point)
     {
         return point.X < 0 || point.X > _width || point.Y < 0 || point.Y > _height;
+    }
+
+    private readonly struct Cell
+    {
+        public Rect2 Rect { get; }
+        public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
+
+        public Cell(Rect2 rect2)
+        {
+            Rect = rect2;
+        }
     }
 }

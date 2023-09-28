@@ -9,9 +9,10 @@ namespace weave;
 [Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : CharacterBody2D
 {
-    private const int MovementSpeed = 100;
+    public float MovementSpeed { get; set; } = 100;
+    public float TurnRadius { get; set; } = 120;
 
-    public CircleShape2D CircleShape { get; private set; }
+    private CircleShape2D CircleShape { get; set; }
 
     [GetNode("CurveSpawner")]
     public CurveSpawner CurveSpawner { get; private set; }
@@ -44,10 +45,10 @@ public partial class Player : CharacterBody2D
     private void Rotate(double delta)
     {
         if (Controller.IsTurningRight())
-            RotationDegrees += 120 * (float)delta;
+            RotationDegrees += TurnRadius * (float)delta;
 
         if (Controller.IsTurningLeft())
-            RotationDegrees -= 120 * (float)delta;
+            RotationDegrees -= TurnRadius * (float)delta;
     }
 
     public float GetRadius()

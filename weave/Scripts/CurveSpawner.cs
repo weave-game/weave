@@ -17,7 +17,7 @@ public partial class CurveSpawner : Node2D
     private Vector2 _lastPoint;
     public Color Color { get; set; }
     public bool IsDrawing { get; private set; } = true;
-    public ISet<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
+    public IEnumerable<SegmentShape2D> Segments { get; } = new HashSet<SegmentShape2D>();
 
     public override void _Ready()
     {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6nafgky7moxh"]
+[gd_scene load_steps=4 format=3 uid="uid://13krjegt6uqn"]
 
 [ext_resource type="Script" path="res://Scripts/Firefly.cs" id="1_3dm8u"]
 
@@ -29,3 +29,4 @@ position = Vector2(-0.643768, -0.765259)
 shape = SubResource("RectangleShape2D_bv5u7")
 
 [node name="Line2D" type="Line2D" parent="."]
+width = 6.0

@@ -37,6 +37,8 @@ public partial class Firefly : Path2D
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 
+        _line.Width = Constants.LineWidth;
+
         for (var i = 0; i < NrPoints; i++)
         {
             _line.AddPoint(new Vector2());

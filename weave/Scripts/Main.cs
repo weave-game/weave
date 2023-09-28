@@ -8,6 +8,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputHandlers;
 using weave.Logger;
+using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
 
@@ -20,16 +21,24 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 1;
+    private const int NPlayers = 3;
+    private const float Acceleration = 3.5f;
+    private const int TurnAcceleration = 5;
 
-    private readonly List<(Key, Key)> _keybindings =
-        new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
+    private readonly IList<(Key, Key)> _keybindings = new List<(Key, Key)>
+    {
+        (Key.Left, Key.Right),
+        (Key.Key1, Key.Q),
+        (Key.B, Key.N),
+        (Key.Z, Key.X)
+    };
 
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
+
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -53,6 +62,15 @@ public partial class Main : Node2D
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
+    }
+
+    public override void _Process(double delta)
+    {
+        _players.ForEach(p =>
+        {
+            p.MovementSpeed += Acceleration * (float)delta;
+            p.TurnRadius += TurnAcceleration * (float)delta;
+        });
     }
 
     public override void _PhysicsProcess(double delta)
@@ -135,10 +153,10 @@ public partial class Main : Node2D
         });
     }
 
-    private static bool IsPlayerIntersecting(Player player, ISet<SegmentShape2D> segments)
+    private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
+        var radius = player.GetRadius() + Constants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
@@ -149,10 +167,9 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        // Draw line to screen
-        AddChild(line);
-
+        line.AddToGroup(GroupConstants.LineGroup);
         _grid.AddSegment(segment);
+        AddChild(line);
     }
 
     private void OnPlayerReachedGoal(Player player)
@@ -161,7 +178,15 @@ public partial class Main : Node2D
             return;
 
         _roundCompletions = 0;
+        ClearLinesAndSegments();
         ClearAndSpawnGoals();
+    }
+
+    private void ClearLinesAndSegments()
+    {
+        GetTree().GetNodesInGroup(GroupConstants.LineGroup).ForEach(line => line.QueueFree());
+
+        CreateMapGrid();
     }
 
     private void ClearAndSpawnGoals()
@@ -192,27 +217,57 @@ public partial class Main : Node2D
 
     private void SetupLogger()
     {
-        var logger = new Logger.Logger(
-            DevConstants.LogFilePath,
-            new[] { FpsLogger, LineCountLogger }
-        );
+        var fpsDeltaLogger = new DeltaLogger();
+        var speedDeltaLogger = new DeltaLogger();
+
+        var loggers = new List<Logger.Logger>
+        {
+            // FPS Logger
+            new(
+                DevConstants.FpsLogFilePath,
+                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
+            ),
+            // Speed Logger
+            new(
+                DevConstants.SpeedLogFilePath,
+                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
+            )
+        };
 
         // Log every half second
-        AddChild(TimerFactory.StartedRepeating(0.5f, () => logger.Log()));
+        AddChild(TimerFactory.StartedRepeating(0.5f, () => loggers.ForEach(l => l.Log())));
 
         // Save to file every 5 seconds
-        AddChild(TimerFactory.StartedRepeating(5f, () => logger.Persist()));
-
-        Log FpsLogger()
-        {
-            var value = Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture);
-            return new Log("fps", value);
-        }
-
-        Log LineCountLogger()
-        {
-            var value = GetAllSegments().Count.ToString();
-            return new Log("lines", value);
-        }
+        AddChild(TimerFactory.StartedRepeating(5f, () => loggers.ForEach(l => l.Persist())));
     }
+
+    #region Loggers
+
+    private static Log FpsLogger()
+    {
+        return new Log("fps", Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture));
+    }
+
+    private Log LineCountLogger()
+    {
+        return new Log("lines", GetAllSegments().Count.ToString());
+    }
+
+    private Log SpeedLogger()
+    {
+        return new Log(
+            "speed",
+            _players.First().MovementSpeed.ToString(CultureInfo.InvariantCulture)
+        );
+    }
+
+    private Log TurnRadiusLogger()
+    {
+        return new Log(
+            "turn_radius",
+            _players.First().TurnRadius.ToString(CultureInfo.InvariantCulture)
+        );
+    }
+
+    #endregion
 }
