@@ -123,7 +123,7 @@ public partial class Main : Node2D
                 player.Controller = new KeyboardController(_keybindings[i]);
 
             AddChild(player);
-            player.CurveSpawner.CreatedLine += HandleCreateLine;
+            player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = GetRandomCoordinateInView(100);
             _players.Add(player);
         });
@@ -141,7 +141,7 @@ public partial class Main : Node2D
         );
     }
 
-    private void HandleCreateLine(Line2D line, SegmentShape2D segment)
+    private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
         line.AddToGroup(GroupConstants.LineGroup);
         _grid.AddSegment(segment);

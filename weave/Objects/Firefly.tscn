@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6nafgky7moxh"]
+
+[ext_resource type="Script" path="res://Scripts/Firefly.cs" id="1_3dm8u"]
+
+[sub_resource type="Curve2D" id="Curve2D_33qe8"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 614, -96, -31.4964, 160.259, 31.4964, -160.259, 113, 203, -146.316, -102.589, 146.316, 102.589, 461, 457, -69.0143, -51.8913, 69.0143, 51.8913, 833, 352, 241.777, -9.6594, -241.777, 9.6594, 705, 599, 0, 0, 0, 0, 421, 741)
+}
+point_count = 6
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bv5u7"]
+size = Vector2(58.3506, 61.5321)
+
+[node name="Firefly" type="Path2D"]
+curve = SubResource("Curve2D_33qe8")
+script = ExtResource("1_3dm8u")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+position = Vector2(614, -96)
+rotation = 2.60352
+
+[node name="Area2D" type="Area2D" parent="PathFollow2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="PathFollow2D/Area2D"]
+scale = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/Area2D"]
+position = Vector2(-0.643768, -0.765259)
+shape = SubResource("RectangleShape2D_bv5u7")
+
+[node name="Line2D" type="Line2D" parent="."]
