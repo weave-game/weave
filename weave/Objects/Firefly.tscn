@@ -11,7 +11,7 @@ point_count = 6
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bv5u7"]
 size = Vector2(58.3506, 61.5321)
 
-[node name="Firefly" type="Path2D"]
+[node name="Firefly" type="Path2D" groups=["firefly"]]
 curve = SubResource("Curve2D_33qe8")
 script = ExtResource("1_3dm8u")
 
