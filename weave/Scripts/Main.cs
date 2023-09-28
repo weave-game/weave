@@ -96,10 +96,12 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
+        var colorGenerator = new UniqueColorGenerator();
+
         NPlayers.TimesDo(i =>
         {
             var player = Instanter.Instantiate<Player>();
-            player.Color = Unique.NewColor();
+            player.Color = colorGenerator.NewColor();
 
             if (_controllerType == ControllerTypes.Keyboard)
                 player.Controller = new KeyboardController(_keybindings[i]);
