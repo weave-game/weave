@@ -69,6 +69,10 @@ public partial class CurveSpawner : Node2D
 
     private void SpawnLine(Vector2 from, Vector2 to)
     {
+        // If the distance is too large something is probably wrong, dont draw
+        if (from.DistanceTo(to) > 100)
+            return;
+
         // Line that is drawn to screen
         var line = new Line2D { DefaultColor = Color, Width = Constants.LineWidth };
         line.AddPoint(from);

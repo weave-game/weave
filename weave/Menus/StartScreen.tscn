@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
-[ext_resource type="PackedScene" uid="uid://b6nafgky7moxh" path="res://Objects/Firefly.tscn" id="3_r76ru"]
+[ext_resource type="PackedScene" uid="uid://13krjegt6uqn" path="res://Objects/Firefly.tscn" id="3_r76ru"]
 
 [sub_resource type="Curve2D" id="Curve2D_k2fae"]
 _data = {

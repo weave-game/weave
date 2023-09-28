@@ -38,13 +38,14 @@ public partial class Firefly : Path2D
         AddChild(_animationTimer);
 
         _line.Width = Constants.LineWidth;
-        _line.DefaultColor = Unique.NewColor();
 
         for (var i = 0; i < NrPoints; i++)
         {
             _line.AddPoint(new Vector2());
         }
     }
+
+    public void SetColor(Color color) => _line.DefaultColor = color;
 
     public override void _Process(double delta)
     {
@@ -92,4 +93,3 @@ public partial class Firefly : Path2D
         _animationTimer.Stop();
     }
 }
-

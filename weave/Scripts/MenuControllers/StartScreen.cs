@@ -1,4 +1,6 @@
+using System.Linq;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using weave.Utils;
 
@@ -19,6 +21,9 @@ public partial class StartScreen : Node2D
         this.GetNodes();
         _startButton.Pressed += OnStartButtonPressed;
         _quitButton.Pressed += OnQuitButtonPressed;
+
+        var colorGen = new UniqueColorGenerator();
+        GetTree().GetNodesInGroup(GroupConstants.Firefly).Cast<Firefly>().ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
     private void OnStartButtonPressed()
