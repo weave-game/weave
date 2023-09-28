@@ -21,7 +21,7 @@ internal enum ControllerTypes
 public partial class Main : Node2D
 {
     private Grid _grid;
-    private const int NPlayers = 3;
+    private const int NPlayers = 1;
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
@@ -53,6 +53,7 @@ public partial class Main : Node2D
     public override void _PhysicsProcess(double delta)
     {
         DetectPlayerCollision();
+        DetectPlayerOutOfBounds();
     }
 
     private void CreateMapGrid()
@@ -81,6 +82,27 @@ public partial class Main : Node2D
 
         if (hasCollided)
             GameOver();
+    }
+
+    private void DetectPlayerOutOfBounds()
+    {
+        var width = (int)GetViewportRect().Size.X;
+        var height = (int)GetViewportRect().Size.Y;
+
+        foreach (var player in _players)
+        {
+            var pos = player.Position;
+            if (pos.X < 0)
+            {
+                player.Position = new Vector2(width, pos.Y);
+            } else if (pos.X > width) {
+                player.Position = new Vector2(0, pos.Y);
+            } else if (pos.Y < 0) {
+                player.Position = new Vector2(pos.X, height);
+            } else if (pos.Y > height) {
+                player.Position = new Vector2(pos.X, 0);
+            }
+        }
     }
 
     private void GameOver()
