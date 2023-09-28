@@ -91,4 +91,3 @@ public partial class Firefly : Path2D
         _animationTimer.Stop();
     }
 }
-

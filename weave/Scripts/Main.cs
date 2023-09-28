@@ -20,8 +20,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private Grid _grid;
-    private const int NPlayers = 3;
+    private const int NPlayers = 1;
 
     private readonly List<(Key, Key)> _keybindings =
         new() { (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X) };
@@ -36,6 +35,9 @@ public partial class Main : Node2D
     ///     How many players that have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
+    private Grid _grid;
+    private int _width;
+    private int _height;
 
     public override void _Ready()
     {
@@ -43,6 +45,9 @@ public partial class Main : Node2D
 
         if (_keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
+
+        _width = (int)GetViewportRect().Size.X;
+        _height = (int)GetViewportRect().Size.Y;
 
         CreateMapGrid();
         SpawnPlayers();
@@ -53,13 +58,12 @@ public partial class Main : Node2D
     public override void _PhysicsProcess(double delta)
     {
         DetectPlayerCollision();
+        DetectPlayerOutOfBounds();
     }
 
     private void CreateMapGrid()
     {
-        var width = (int)GetViewportRect().Size.X;
-        var height = (int)GetViewportRect().Size.Y;
-        _grid = new Grid(10, 10, width, height);
+        _grid = new Grid(10, 10, _width, _height);
     }
 
     private void DetectPlayerCollision()
@@ -81,6 +85,24 @@ public partial class Main : Node2D
 
         if (hasCollided)
             GameOver();
+    }
+
+    private void DetectPlayerOutOfBounds()
+    {
+        foreach (var player in _players)
+        {
+            var pos = player.Position;
+            if (pos.X < 0)
+            {
+                player.Position = new Vector2(_width, pos.Y);
+            } else if (pos.X > _width) {
+                player.Position = new Vector2(0, pos.Y);
+            } else if (pos.Y < 0) {
+                player.Position = new Vector2(pos.X, _height);
+            } else if (pos.Y > _height) {
+                player.Position = new Vector2(pos.X, 0);
+            }
+        }
     }
 
     private void GameOver()
