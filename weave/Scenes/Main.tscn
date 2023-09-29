@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=6 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
-[ext_resource type="PackedScene" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
+[ext_resource type="AudioStream" uid="uid://c4u3ecsd5s5if" path="res://Assets/Music/weave.wav" id="4_dnn4g"]
+[ext_resource type="PackedScene" uid="uid://4nc7omeqyir" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
 
 [sub_resource type="Environment" id="Environment_0o2dr"]
 background_mode = 3
@@ -32,3 +33,7 @@ visible = false
 
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
 visible = false
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_dnn4g")
+autoplay = true
