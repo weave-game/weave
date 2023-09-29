@@ -21,9 +21,10 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 3;
+    private const int NPlayers = 2;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
+    private const int PlayerStartDelay = 2;
 
     private readonly IList<(Key, Key)> _keybindings = new List<(Key, Key)>
     {
@@ -39,6 +40,8 @@ public partial class Main : Node2D
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
+    [GetNode("CountdownLabel")]
+    private CountdownLabel _countdownLabel;
 
     /// <summary>
     ///     How many players that have reached the goal during the current round.
@@ -47,6 +50,8 @@ public partial class Main : Node2D
     private Grid _grid;
     private int _width;
     private int _height;
+    private Timer _uiUpdateTimer;
+    private Timer _playerDelayTimer;
 
     public override void _Ready()
     {
@@ -58,6 +63,7 @@ public partial class Main : Node2D
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
 
+        InitializeTimers();
         CreateMapGrid();
         SpawnPlayers();
         ClearAndSpawnGoals();
@@ -82,6 +88,34 @@ public partial class Main : Node2D
     private void CreateMapGrid()
     {
         _grid = new Grid(10, 10, _width, _height);
+    }
+
+    private void EnablePlayerMovement()
+    {
+        _players.ForEach(player => player.IsMoving = true);
+        _uiUpdateTimer.Timeout -= UpdateCountdown;
+        _countdownLabel.UpdateLabelText("");
+    }
+
+    private void InitializeTimers()
+    {
+        // Updating UI components
+        _uiUpdateTimer = new Timer { WaitTime = 0.02 };
+        _uiUpdateTimer.Timeout += UpdateCountdown;
+        AddChild(_uiUpdateTimer);
+        _uiUpdateTimer.Start();
+
+        // Countdown timer
+        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
+        _playerDelayTimer.Timeout += EnablePlayerMovement;
+        AddChild(_playerDelayTimer);
+        _playerDelayTimer.Start();
+    }
+
+    private void UpdateCountdown()
+    {
+        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1).ToString();
+        _countdownLabel.UpdateLabelText(newText);
     }
 
     private void DetectPlayerCollision()
@@ -113,11 +147,17 @@ public partial class Main : Node2D
             if (pos.X < 0)
             {
                 player.Position = new Vector2(_width, pos.Y);
-            } else if (pos.X > _width) {
+            }
+            else if (pos.X > _width)
+            {
                 player.Position = new Vector2(0, pos.Y);
-            } else if (pos.Y < 0) {
+            }
+            else if (pos.Y < 0)
+            {
                 player.Position = new Vector2(pos.X, _height);
-            } else if (pos.Y > _height) {
+            }
+            else if (pos.Y > _height)
+            {
                 player.Position = new Vector2(pos.X, 0);
             }
         }
