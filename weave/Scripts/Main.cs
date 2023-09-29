@@ -26,15 +26,6 @@ public partial class Main : Node2D
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
-
-    private readonly IList<(Key, Key)> _keybindings = new List<(Key, Key)>
-    {
-        (Key.Left, Key.Right),
-        (Key.Key1, Key.Q),
-        (Key.B, Key.N),
-        (Key.Z, Key.X)
-    };
-
     private readonly ISet<Player> _players = new HashSet<Player>();
     private ControllerTypes _controllerType = ControllerTypes.Keyboard;
 
@@ -58,7 +49,7 @@ public partial class Main : Node2D
     {
         this.GetNodes();
 
-        if (_keybindings.Count < NPlayers)
+        if (KeyboardController.Keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -191,7 +182,7 @@ public partial class Main : Node2D
             player.Color = colorGenerator.NewColor();
 
             if (_controllerType == ControllerTypes.Keyboard)
-                player.Controller = new KeyboardController(_keybindings[i]);
+                player.Controller = new KeyboardController(KeyboardController.Keybindings[i]);
 
             // demo
             player.Controller = new GamepadController(0);

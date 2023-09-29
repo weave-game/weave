@@ -25,6 +25,19 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="weave"
 
+[input]
+
+gamepad_join={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":0,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+gamepad_leave={
+"deadzone": 0.5,
+"events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":true,"script":null)
+]
+}
+
 [rendering]
 
 environment/defaults/default_clear_color=Color(0.0666667, 0.0745098, 0.0705882, 1)

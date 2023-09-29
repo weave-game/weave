@@ -1,44 +1,67 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using GodotSharper.AutoGetNode;
+using weave.InputHandlers;
+using weave.Utils;
 
 namespace weave.MenuControllers;
 
 public partial class ControllerJoinTest : Control
 {
-    private readonly ISet<int> _deviceIds = new HashSet<int>();
+    private readonly ISet<IController> _connected = new HashSet<IController>();
 
     public override void _Ready()
     {
         this.GetNodes();
     }
 
-    public override void _Process(double delta)
-    {
-    }
-
     public override void _UnhandledInput(InputEvent @event)
     {
-        switch (@event)
-        {
-            case InputEventJoypadButton button:
-                GamepadPressed(button.Device);
-                break;
-            case InputEventJoypadMotion motion:
-                GamepadPressed(motion.Device);
-                break;
-        }
+        if (@event is InputEventJoypadButton button)
+            GamepadPressed(button);
     }
 
-    private void GamepadPressed(int deviceId)
+    private void GamepadPressed(InputEvent @event)
     {
+        var deviceId = @event.Device;
         if (deviceId < 0)
             return;
 
-        if (_deviceIds.Contains(deviceId))
-            return;
+        var joined = @event.IsActionPressed(ActionConstants.GamepadJoinAction);
+        var left = @event.IsActionPressed(ActionConstants.GamepadLeaveAction);
 
-        _deviceIds.Add(deviceId);
-        GD.Print("Gamepad joined: " + deviceId);
+        if (joined)
+        {
+            if (IsConnected(deviceId)) return;
+
+            _connected.Add(new GamepadController(deviceId));
+            PrintControllers();
+        }
+
+        if (left)
+        {
+            var toRemove = _connected.FirstOrDefault(c => c.DeviceId == deviceId);
+            if (toRemove == null) return;
+
+            _connected.Remove(toRemove);
+
+            PrintControllers();
+        }
+    }
+
+    private bool IsConnected(int deviceId)
+    {
+        return _connected.Any(c => c.DeviceId == deviceId);
+    }
+
+    private void PrintControllers()
+    {
+        GD.Print("Controllers:");
+
+        foreach (var controller in _connected)
+            GD.Print($"{controller}. Device ID: {controller.DeviceId}");
+        
+        GD.Print("");
     }
 }
