@@ -1,6 +1,8 @@
 # weave 🧵🕹️ [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=weave-game_weave&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=weave-game_weave)
 
-game
+<div align="center">
+  <img width="300" src="readme/logo.png">
+</div>
 
 ## Development
 
