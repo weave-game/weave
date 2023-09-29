@@ -21,7 +21,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 2;
+    private const int NPlayers = 3;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
@@ -64,6 +64,7 @@ public partial class Main : Node2D
         _height = (int)GetViewportRect().Size.Y;
 
         InitializeTimers();
+        DisablePlayerMovement();
         CreateMapGrid();
         SpawnPlayers();
         ClearAndSpawnGoals();
@@ -97,11 +98,17 @@ public partial class Main : Node2D
         _countdownLabel.UpdateLabelText("");
     }
 
+    private void DisablePlayerMovement()
+    {
+        _players.ForEach(player => player.IsMoving = false);
+        _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.Start();
+    }
+
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Timer { WaitTime = 0.02 };
-        _uiUpdateTimer.Timeout += UpdateCountdown;
+        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
@@ -109,7 +116,6 @@ public partial class Main : Node2D
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
         AddChild(_playerDelayTimer);
-        _playerDelayTimer.Start();
     }
 
     private void UpdateCountdown()
@@ -216,8 +222,14 @@ public partial class Main : Node2D
     {
         if (++_roundCompletions != NPlayers)
             return;
+        OnRoundComplete();
+    }
 
+    private void OnRoundComplete()
+    {
         _roundCompletions = 0;
+
+        DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
     }
