@@ -34,12 +34,21 @@ visible = false
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
 visible = false
 
-[node name="CountdownLabel" type="RichTextLabel" parent="."]
-offset_left = 445.0
-offset_top = 29.0
-offset_right = 587.0
-offset_bottom = 67.0
-scale = Vector2(2, 2)
+[node name="CountdownLayer" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer" type="CenterContainer" parent="CountdownLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CountdownLabel" type="RichTextLabel" parent="CountdownLayer/CenterContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 81
 bbcode_enabled = true
 text = "[center]10.0s[/center]"
+fit_content = true
 script = ExtResource("4_ajka0")

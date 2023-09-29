@@ -40,7 +40,7 @@ public partial class Main : Node2D
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
-    [GetNode("CountdownLabel")]
+    [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
     /// <summary>
