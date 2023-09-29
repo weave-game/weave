@@ -21,6 +21,9 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
+    [GetNode("Sprite2D")]
+    private Sprite2D _sprite2D;
+
     public IController Controller { get; set; }
 
     public Color Color { get; set; }
@@ -40,6 +43,7 @@ public partial class Player : CharacterBody2D
         this.GetNodes();
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
         CurveSpawner.Color = Color;
+        _sprite2D.Modulate = Color;
     }
 
     public override void _PhysicsProcess(double delta)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
-[ext_resource type="Texture2D" uid="uid://cpublvvdhw6bf" path="res://Assets/weave.png" id="2_gitg2"]
+[ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
 [ext_resource type="PackedScene" uid="uid://13krjegt6uqn" path="res://Objects/Firefly.tscn" id="3_r76ru"]
 
 [sub_resource type="Curve2D" id="Curve2D_k2fae"]
