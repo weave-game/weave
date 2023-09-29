@@ -23,7 +23,10 @@ public partial class StartScreen : Node2D
         _quitButton.Pressed += OnQuitButtonPressed;
 
         var colorGen = new UniqueColorGenerator();
-        GetTree().GetNodesInGroup(GroupConstants.Firefly).Cast<Firefly>().ForEach(f => f.SetColor(colorGen.NewColor()));
+        GetTree()
+            .GetNodesInGroup(GroupConstants.Firefly)
+            .Cast<Firefly>()
+            .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
     private void OnStartButtonPressed()

@@ -14,8 +14,8 @@ public sealed class UniqueColorGenerator
     /// </summary>
     private readonly IReadOnlyList<Color> _defaultColors = new List<Color>
     {
-        Colors.Gold,
-        Colors.DeepPink,
+        Colors.Red,
+        Colors.Seashell,
         Colors.Green,
         Colors.Blue
     };

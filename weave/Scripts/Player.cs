@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
@@ -26,6 +27,16 @@ public partial class Player : CharacterBody2D
     public IController Controller { get; set; }
 
     public Color Color { get; set; }
+    private bool _isMoving;
+    public bool IsMoving
+    {
+        get { return _isMoving; }
+        set
+        {
+            _isMoving = value;
+            CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+        }
+    }
 
     public override void _Ready()
     {
@@ -43,7 +54,8 @@ public partial class Player : CharacterBody2D
     private void Move(double delta)
     {
         Rotate(delta);
-        Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
+        if (_isMoving)
+            Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
     }
 
     private void Rotate(double delta)
