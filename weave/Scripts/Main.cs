@@ -16,12 +16,13 @@ namespace weave;
 
 internal enum ControllerTypes
 {
-    Keyboard
+    Keyboard,
+    Gamepad
 }
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 3;
+    private const int NPlayers = 1;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
@@ -191,6 +192,9 @@ public partial class Main : Node2D
 
             if (_controllerType == ControllerTypes.Keyboard)
                 player.Controller = new KeyboardController(_keybindings[i]);
+
+            // demo
+            player.Controller = new GamepadController(0);
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
