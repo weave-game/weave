@@ -21,7 +21,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 3;
+    private const int NPlayers = 1;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
 
@@ -113,11 +113,17 @@ public partial class Main : Node2D
             if (pos.X < 0)
             {
                 player.Position = new Vector2(_width, pos.Y);
-            } else if (pos.X > _width) {
+            }
+            else if (pos.X > _width)
+            {
                 player.Position = new Vector2(0, pos.Y);
-            } else if (pos.Y < 0) {
+            }
+            else if (pos.Y < 0)
+            {
                 player.Position = new Vector2(pos.X, _height);
-            } else if (pos.Y > _height) {
+            }
+            else if (pos.Y > _height)
+            {
                 player.Position = new Vector2(pos.X, 0);
             }
         }
