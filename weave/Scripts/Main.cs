@@ -222,10 +222,10 @@ public partial class Main : Node2D
     {
         if (++_roundCompletions != NPlayers)
             return;
-        OnRoundComplete();
+        HandleRoundComplete();
     }
 
-    private void OnRoundComplete()
+    private void HandleRoundComplete()
     {
         _roundCompletions = 0;
 
