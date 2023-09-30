@@ -32,12 +32,13 @@ public partial class Firefly : Path2D
     {
         this.GetNodes();
 
+        Visible = true;
+        _line.Width = Constants.LineWidth;
+
         var animationDelay = (GD.Randf() * 10) + 3;
         _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
-
-        _line.Width = Constants.LineWidth;
 
         for (var i = 0; i < NrPoints; i++)
         {

@@ -72,14 +72,18 @@ text = "Quit :("
 layer = -1
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+visible = false
 
 [node name="Firefly2" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+visible = false
 curve = SubResource("Curve2D_k2fae")
 
 [node name="Firefly3" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+visible = false
 curve = SubResource("Curve2D_strfe")
 
 [node name="Firefly4" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+visible = false
 curve = SubResource("Curve2D_wxcnk")
 
 [node name="CanvasGlow" type="WorldEnvironment" parent="."]
