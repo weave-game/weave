@@ -10,10 +10,10 @@ public partial class Score : CanvasLayer
 	private enum ScoringRule
 	{
 		TIME_ONLY,
-        TIME_ONLY_BASED_ON_LEVEL,
-        LEVEL_ONLY,
-        LEVEL_ONLY_BASED_ON_TIME,
-        TIME_AND_LEVEL,
+		TIME_ONLY_BASED_ON_LEVEL,
+		LEVEL_ONLY,
+		LEVEL_ONLY_BASED_ON_TIME,
+		TIME_AND_LEVEL,
 	}
 
 	private double _score = 0;
@@ -30,26 +30,26 @@ public partial class Score : CanvasLayer
 	public override void _Ready()
 	{
 		this.GetNodes();
-    }
+	}
 
 	public override void _Process(double delta)
 	{
-        switch (_scoringRule)
-        {
-            case ScoringRule.TIME_ONLY:
-            case ScoringRule.TIME_AND_LEVEL:
-                _score += delta * ScoringConstants.PointsForSeconds;
-                break;
-            case ScoringRule.TIME_ONLY_BASED_ON_LEVEL:
+		switch (_scoringRule)
+		{
+			case ScoringRule.TIME_ONLY:
+			case ScoringRule.TIME_AND_LEVEL:
+				_score += delta * ScoringConstants.PointsForSeconds;
+				break;
+			case ScoringRule.TIME_ONLY_BASED_ON_LEVEL:
 				_score += delta * ScoringConstants.PointsForSeconds * Math.Pow(ScoringConstants.LevelMultiplier, _level - 1);
-                break;
-            default:
-                break;
-        }
+				break;
+			default:
+				break;
+		}
 
 		_timeSinceLevelStart += delta;
-        _scoreLabel.Text = ((int)_score).ToString();
-    }
+		_scoreLabel.Text = ((int)_score).ToString();
+	}
 
 	public void OnLevelUp(int currentLevel)
 	{
