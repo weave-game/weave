@@ -16,13 +16,12 @@ public partial class Score : CanvasLayer
 		TIME_AND_LEVEL,
 	}
 
+	// Change to switch between different scoring rules
+	private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_LEVEL;
+
 	private double _score = 0;
 	private double _timeSinceLevelStart = 0;
 	private int _level = 1;
-	private const double _scorePerSecond = 25;
-	private const double _scorePerLevel = 1000;
-
-	private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_LEVEL; // << Change
 
 	[GetNode("CenterContainer/ScoreLabel")]
 	private Label _scoreLabel; 
