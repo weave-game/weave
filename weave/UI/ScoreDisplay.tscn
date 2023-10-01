@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1s5px2gej6oj"]
+
+[ext_resource type="Script" path="res://Scripts/Score.cs" id="1_koc7r"]
+
+[node name="ScoreDisplay" type="CanvasLayer"]
+script = ExtResource("1_koc7r")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="ScoreLabel" type="Label" parent="CenterContainer"]
+layout_mode = 2
