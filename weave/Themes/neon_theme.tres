@@ -1,3 +1,40 @@
-[gd_resource type="Theme" format=3 uid="uid://by2pot0p04k5c"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://by2pot0p04k5c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7m1e7"]
+content_margin_left = 32.0
+content_margin_top = 16.0
+content_margin_right = 32.0
+content_margin_bottom = 16.0
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.164706, 0.427451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i8slf"]
+content_margin_left = 32.0
+content_margin_top = 16.0
+content_margin_right = 32.0
+content_margin_bottom = 16.0
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [resource]
+AccentedButton/styles/normal = SubResource("StyleBoxFlat_7m1e7")
+Button/constants/h_separation = 16
+Button/font_sizes/font_size = 24
+Button/styles/normal = SubResource("StyleBoxFlat_i8slf")
+VBoxContainer/constants/separation = 16

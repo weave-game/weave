@@ -19,8 +19,8 @@ public partial class StartScreen : Node2D
     public override void _Ready()
     {
         // this.GetNodes();
-        _startButton.Pressed += OnStartButtonPressed;
-        _quitButton.Pressed += OnQuitButtonPressed;
+        // _startButton.Pressed += OnStartButtonPressed;
+        // _quitButton.Pressed += OnQuitButtonPressed;
 
         var colorGen = new UniqueColorGenerator();
         GetTree()

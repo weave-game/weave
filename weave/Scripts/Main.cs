@@ -21,7 +21,7 @@ internal enum ControllerTypes
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 3;
+    private const int NPlayers = 2;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
