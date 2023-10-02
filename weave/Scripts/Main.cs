@@ -170,12 +170,9 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         // TODO: Temp
-        var defaultControllers = new HashSet<IController>
-        {
-            new KeyboardController(Keybindings[0])
-        };
+        var defaultControllers = new List<IController> { new KeyboardController(Keybindings[0]) };
 
-        var controllers = GameState.Controllers.Count > 0 ? GameState.Controllers : defaultControllers;
+        var controllers = GameState.Controllers.Any() ? GameState.Controllers : defaultControllers;
         var colorGenerator = new UniqueColorGenerator();
 
         controllers.ForEach(controller =>

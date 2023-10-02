@@ -14,18 +14,18 @@ public partial class ControllerJoinTest : Control
 {
     private readonly IList<IController> _connected = new List<IController>();
 
-    [GetNode("TextEdit")]
-    private TextEdit _textEdit;
-
     [GetNode("Button")]
     private Button _button;
+
+    [GetNode("TextEdit")]
+    private TextEdit _textEdit;
 
     public override void _Ready()
     {
         this.GetNodes();
         _button.Pressed += () =>
         {
-            GameState.Controllers = _connected.ToHashSet();
+            GameState.Controllers = _connected;
             GetTree().ChangeSceneToFile(SceneResources.MainScene);
         };
     }
@@ -43,12 +43,17 @@ public partial class ControllerJoinTest : Control
         }
     }
 
+    #region Keyboard
+
     private void KeyPressed()
     {
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
-            var isPressingBoth = Input.IsKeyPressed(keybindingTuple.Item1) && Input.IsKeyPressed(keybindingTuple.Item2);
-            if (!isPressingBoth) continue;
+            var isPressingBoth =
+                Input.IsKeyPressed(keybindingTuple.Item1)
+                && Input.IsKeyPressed(keybindingTuple.Item2);
+            if (!isPressingBoth)
+                continue;
 
             var kb = new KeyboardController(keybindingTuple);
             var alreadyExisting = _connected.FirstOrDefault(c => c.Equals(kb));
@@ -66,46 +71,15 @@ public partial class ControllerJoinTest : Control
         }
     }
 
-    private void GamepadPressed(InputEvent @event)
-    {
-        var deviceId = @event.Device;
-        if (deviceId < 0)
-            return;
+    #endregion
 
-        var joined = @event.IsActionPressed(ActionConstants.GamepadJoinAction);
-        var left = @event.IsActionPressed(ActionConstants.GamepadLeaveAction);
-
-        if (joined)
-        {
-            if (IsConnected(deviceId))
-                return;
-
-            _connected.Add(new GamepadController(deviceId));
-            PrintControllers();
-        }
-
-        if (left)
-        {
-            var toRemove = _connected.FirstOrDefault(c => c.DeviceId == deviceId);
-            if (toRemove == null)
-                return;
-
-            _connected.Remove(toRemove);
-
-            PrintControllers();
-        }
-    }
-
-    private bool IsConnected(int deviceId)
-    {
-        return _connected.Any(c => c.DeviceId == deviceId);
-    }
 
     /// <summary>
     ///     IMPORTANT: This is a hack, only used for debugging purposes
     /// </summary>
     private void PrintControllers()
     {
+        // NO NEED TO REVIEW THIS; WILL BE REMOVED
         var sb = new StringBuilder();
 
         var i = 1;
@@ -113,14 +87,54 @@ public partial class ControllerJoinTest : Control
         {
             if (controller is KeyboardController k)
             {
-                var _left = typeof(KeyboardController).GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(k);
-                var _right = typeof(KeyboardController).GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(k);
+                var left = typeof(KeyboardController)
+                    .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetValue(k);
+                var right = typeof(KeyboardController)
+                    .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetValue(k);
 
                 sb.AppendLine($"({i++}) Device ID: {controller.DeviceId}. Type: {controller.Type}");
-                sb.AppendLine($"Left: {_left}. Right: {_right}\n");
+                sb.AppendLine($"Left: {left}. Right: {right}\n");
             }
         }
 
         _textEdit.Text = sb.ToString();
     }
+
+    #region Gamepad
+
+    private void GamepadPressed(InputEvent @event)
+    {
+        var deviceId = @event.Device;
+        if (deviceId < 0)
+            return;
+
+        if (@event.IsActionPressed(ActionConstants.GamepadJoinAction))
+            AddGamepad(deviceId);
+
+        if (@event.IsActionPressed(ActionConstants.GamepadLeaveAction))
+            RemoveGamepad(deviceId);
+    }
+
+    private void AddGamepad(int deviceId)
+    {
+        if (_connected.Any(c => c.DeviceId == deviceId))
+            return;
+
+        _connected.Add(new GamepadController(deviceId));
+        PrintControllers();
+    }
+
+    private void RemoveGamepad(int deviceId)
+    {
+        var toRemove = _connected.FirstOrDefault(c => c.DeviceId == deviceId);
+        if (toRemove == null)
+            return;
+
+        _connected.Remove(toRemove);
+        PrintControllers();
+    }
+
+    #endregion
 }

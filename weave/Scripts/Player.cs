@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
@@ -10,6 +9,11 @@ namespace weave;
 [Instantiable(ObjectResources.PlayerScene)]
 public partial class Player : CharacterBody2D
 {
+    private bool _isMoving;
+
+    [GetNode("Sprite2D")]
+    private Sprite2D _sprite2D;
+
     public float MovementSpeed { get; set; } = 100;
     public float TurnRadius { get; set; } = 120;
 
@@ -21,16 +25,12 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
-    [GetNode("Sprite2D")]
-    private Sprite2D _sprite2D;
-
     public IController Controller { get; set; }
 
     public Color Color { get; set; }
-    private bool _isMoving;
     public bool IsMoving
     {
-        get { return _isMoving; }
+        get => _isMoving;
         set
         {
             _isMoving = value;
