@@ -121,6 +121,8 @@ public partial class LobbyDemo : Control
 
     private void AddGamepad(int deviceId)
     {
+        if (deviceId < 0) return;
+
         if (_connectedInputDevices.Any(c => c.DeviceId == deviceId))
             return;
 
@@ -130,6 +132,8 @@ public partial class LobbyDemo : Control
 
     private void RemoveGamepad(int deviceId)
     {
+        if (deviceId < 0) return;
+
         var toRemove = _connectedInputDevices.FirstOrDefault(c => c.DeviceId == deviceId);
         if (toRemove == null)
             return;
