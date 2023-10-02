@@ -11,18 +11,18 @@ using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
+using static weave.Controller.Controller;
 using static weave.Controller.KeyboardBindings;
 
 namespace weave;
 
 public partial class Main : Node2D
 {
-    private const int NPlayers = 1;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private Controller.Controller _controller = Controller.Controller.Keyboard;
+    private Controller.Controller _controller = Keyboard;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -44,7 +44,7 @@ public partial class Main : Node2D
     {
         this.GetNodes();
 
-        if (Keybindings.Count < NPlayers)
+        if (Keybindings.Count < GameState.Controllers.Count)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -169,18 +169,22 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
+        // TODO: Temp
+        var defaultControllers = new HashSet<IController>
+        {
+            new KeyboardController(Keybindings[0])
+        };
+
+        var controllers = GameState.Controllers.Count > 0 ? GameState.Controllers : defaultControllers;
         var colorGenerator = new UniqueColorGenerator();
 
-        NPlayers.TimesDo(i =>
+        controllers.ForEach(controller =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
 
-            if (_controller == Controller.Controller.Keyboard)
-                player.Controller = new KeyboardController(Keybindings[i]);
-
-            // demo
-            player.Controller = new GamepadController(0);
+            if (_controller == Keyboard)
+                player.Controller = controller;
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
@@ -210,8 +214,9 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != NPlayers)
+        if (++_roundCompletions != GameState.Controllers.Count)
             return;
+
         HandleRoundComplete();
     }
 

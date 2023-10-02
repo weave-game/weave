@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using Godot;
 using GodotSharper.AutoGetNode;
 using weave.Controller;
@@ -7,13 +9,25 @@ using weave.Utils;
 
 namespace weave.MenuControllers;
 
+// NOTE: This will be moved to the original StartScreen once the changes are added
 public partial class ControllerJoinTest : Control
 {
-    private readonly ISet<IController> _connected = new HashSet<IController>();
+    private readonly IList<IController> _connected = new List<IController>();
+
+    [GetNode("TextEdit")]
+    private TextEdit _textEdit;
+
+    [GetNode("Button")]
+    private Button _button;
 
     public override void _Ready()
     {
         this.GetNodes();
+        _button.Pressed += () =>
+        {
+            GameState.Controllers = _connected.ToHashSet();
+            GetTree().ChangeSceneToFile(SceneResources.MainScene);
+        };
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -34,12 +48,6 @@ public partial class ControllerJoinTest : Control
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
             var isPressingBoth = Input.IsKeyPressed(keybindingTuple.Item1) && Input.IsKeyPressed(keybindingTuple.Item2);
-
-            if (isPressingBoth)
-            {
-                GD.Print("both!");
-            }
-
             if (!isPressingBoth) continue;
 
             var kb = new KeyboardController(keybindingTuple);
@@ -93,13 +101,26 @@ public partial class ControllerJoinTest : Control
         return _connected.Any(c => c.DeviceId == deviceId);
     }
 
+    /// <summary>
+    ///     IMPORTANT: This is a hack, only used for debugging purposes
+    /// </summary>
     private void PrintControllers()
     {
-        GD.Print("Controllers:");
+        var sb = new StringBuilder();
 
+        var i = 1;
         foreach (var controller in _connected)
-            GD.Print($"Device ID: {controller.DeviceId}. Type: {controller.Type}");
+        {
+            if (controller is KeyboardController k)
+            {
+                var _left = typeof(KeyboardController).GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(k);
+                var _right = typeof(KeyboardController).GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(k);
 
-        GD.Print("");
+                sb.AppendLine($"({i++}) Device ID: {controller.DeviceId}. Type: {controller.Type}");
+                sb.AppendLine($"Left: {_left}. Right: {_right}\n");
+            }
+        }
+
+        _textEdit.Text = sb.ToString();
     }
 }
