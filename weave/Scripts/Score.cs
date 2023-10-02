@@ -7,66 +7,88 @@ namespace weave;
 
 public partial class Score : CanvasLayer
 {
-	private enum ScoringRule
-	{
-		TIME_ONLY,
-		TIME_ONLY_BASED_ON_LEVEL,
-		LEVEL_ONLY,
-		LEVEL_ONLY_BASED_ON_TIME,
-		TIME_AND_LEVEL,
-	}
+    private enum ScoringRule
+    {
+        TIME_ONLY,
+        TIME_ONLY_BASED_ON_ROUND,
+        ROUND_ONLY,
+        ROUND_ONLY_BASED_ON_TIME,
+        TIME_AND_ROUND,
+    }
 
-	// Change to switch between different scoring rules
-	private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_LEVEL;
+    // Change to switch between different scoring rules
+    private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_ROUND;
 
-	private double _score = 0;
-	private double _timeSinceLevelStart = 0;
-	private int _level = 1;
+    private bool _enabled = false;
+    private double _score = 0;
+    private double _timeSinceRoundStart = 0;
+    private int _finishedRounds = 0;
 
-	[GetNode("CenterContainer/ScoreLabel")]
-	private Label _scoreLabel; 
+    private const double PointsForSeconds = 25;
+    private const double PointsForRound = 500;
+    private const double MinPointsForRound = 150;
+    private const double RoundMultiplier = 1.1;
 
-	public override void _Ready()
-	{
-		this.GetNodes();
-	}
+    [GetNode("CenterContainer/ScoreLabel")]
+    private Label _scoreLabel;
 
-	public override void _Process(double delta)
-	{
-		switch (_scoringRule)
-		{
-			case ScoringRule.TIME_ONLY:
-			case ScoringRule.TIME_AND_LEVEL:
-				_score += delta * ScoringConstants.PointsForSeconds;
-				break;
-			case ScoringRule.TIME_ONLY_BASED_ON_LEVEL:
-				_score += delta * ScoringConstants.PointsForSeconds * Math.Pow(ScoringConstants.LevelMultiplier, _level - 1);
-				break;
-			default:
-				break;
-		}
+    public override void _Ready()
+    {
+        this.GetNodes();
+    }
 
-		_timeSinceLevelStart += delta;
-		_scoreLabel.Text = ((int)_score).ToString();
-	}
+    public override void _Process(double delta)
+    {
+        if (!_enabled)
+            return;
 
-	public void OnLevelUp(int currentLevel)
-	{
-		_level = currentLevel;
+        switch (_scoringRule)
+        {
+            case ScoringRule.TIME_ONLY:
+            case ScoringRule.TIME_AND_ROUND:
+                _score += delta * PointsForSeconds;
+                break;
+            case ScoringRule.TIME_ONLY_BASED_ON_ROUND:
+                _score += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
+                break;
+            default:
+                break;
+        }
 
-		switch (_scoringRule)
-		{
-			case ScoringRule.LEVEL_ONLY:
-			case ScoringRule.TIME_AND_LEVEL:
-				_score += ScoringConstants.PointsForLevelUp;
-				break;
-			case ScoringRule.LEVEL_ONLY_BASED_ON_TIME:
-				_score += Math.Max(ScoringConstants.MinPointsForLevelUp, ScoringConstants.PointsForLevelUp - _timeSinceLevelStart * ScoringConstants.PointsForSeconds);
-				break;
-			default:
-				break;
-		}
+        _timeSinceRoundStart += delta;
+        _scoreLabel.Text = ((int)_score).ToString();
+    }
 
-		_timeSinceLevelStart = 0;
-	}
+    public void OnRoundComplete()
+    {
+        if (!_enabled)
+            return;
+
+        switch (_scoringRule)
+        {
+            case ScoringRule.ROUND_ONLY:
+            case ScoringRule.TIME_AND_ROUND:
+                _score += PointsForRound;
+                break;
+            case ScoringRule.ROUND_ONLY_BASED_ON_TIME:
+                _score += Math.Max(
+                    MinPointsForRound,
+                    PointsForRound - _timeSinceRoundStart * PointsForSeconds
+                );
+                break;
+            default:
+                break;
+        }
+
+        _finishedRounds++;
+        _timeSinceRoundStart = 0;
+    }
+
+    public void OnGameStart()
+    {
+        _score = 0;
+        _finishedRounds = 0;
+        _timeSinceRoundStart = 0;
+        _enabled = true;
+    }
 }
