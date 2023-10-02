@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
-using weave.InputHandlers;
+using weave.Controller;
 using weave.Utils;
 
 namespace weave.MenuControllers;
@@ -20,6 +21,26 @@ public partial class ControllerJoinTest : Control
     {
         if (@event is InputEventJoypadButton button)
             GamepadPressed(button);
+
+        if (@event is InputEventKey { Pressed: true } key)
+            KeyPressed(key);
+    }
+
+    private static void KeyPressed(InputEventKey key)
+    {
+        GD.Print(key);
+
+        var keyboardPlayerIndex = 0;
+        foreach (var keybindingTuple in KeyboardBindings.Keybindings)
+        {
+            if (key.Keycode == keybindingTuple.Item1 || key.Keycode == keybindingTuple.Item2)
+            {
+                GD.Print("Keyboard player " + keyboardPlayerIndex);
+                break;
+            }
+
+            keyboardPlayerIndex++;
+        }
     }
 
     private void GamepadPressed(InputEvent @event)
@@ -33,7 +54,8 @@ public partial class ControllerJoinTest : Control
 
         if (joined)
         {
-            if (IsConnected(deviceId)) return;
+            if (IsConnected(deviceId))
+                return;
 
             _connected.Add(new GamepadController(deviceId));
             PrintControllers();
@@ -42,7 +64,8 @@ public partial class ControllerJoinTest : Control
         if (left)
         {
             var toRemove = _connected.FirstOrDefault(c => c.DeviceId == deviceId);
-            if (toRemove == null) return;
+            if (toRemove == null)
+                return;
 
             _connected.Remove(toRemove);
 
@@ -61,7 +84,7 @@ public partial class ControllerJoinTest : Control
 
         foreach (var controller in _connected)
             GD.Print($"{controller}. Device ID: {controller.DeviceId}");
-        
+
         GD.Print("");
     }
 }

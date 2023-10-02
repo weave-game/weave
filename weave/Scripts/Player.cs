@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputHandlers;
+using weave.Controller;
 using weave.Utils;
 
 namespace weave;

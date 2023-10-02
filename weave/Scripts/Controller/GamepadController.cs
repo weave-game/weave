@@ -1,12 +1,13 @@
 using Godot;
 
-namespace weave.InputHandlers;
+namespace weave.Controller;
 
 public sealed class GamepadController : IController
 {
     private const float DeadZone = 0.2f;
     private readonly int _deviceId;
     int IController.DeviceId => _deviceId;
+    public Controller Type => Controller.Gamepad;
 
     public GamepadController(int deviceId)
     {

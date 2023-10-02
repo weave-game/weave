@@ -6,19 +6,14 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputHandlers;
+using weave.Controller;
 using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
+using static weave.Controller.KeyboardBindings;
 
 namespace weave;
-
-internal enum ControllerTypes
-{
-    Keyboard,
-    Gamepad
-}
 
 public partial class Main : Node2D
 {
@@ -27,7 +22,7 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
+    private Controller.Controller _controller = Controller.Controller.Keyboard;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -49,7 +44,7 @@ public partial class Main : Node2D
     {
         this.GetNodes();
 
-        if (KeyboardController.Keybindings.Count < NPlayers)
+        if (Keybindings.Count < NPlayers)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -181,8 +176,8 @@ public partial class Main : Node2D
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
 
-            if (_controllerType == ControllerTypes.Keyboard)
-                player.Controller = new KeyboardController(KeyboardController.Keybindings[i]);
+            if (_controller == Controller.Controller.Keyboard)
+                player.Controller = new KeyboardController(Keybindings[i]);
 
             // demo
             player.Controller = new GamepadController(0);
