@@ -23,4 +23,12 @@ public sealed class GamepadController : IController
     {
         return Input.GetJoyAxis(_deviceId, JoyAxis.LeftX) > DeadZone;
     }
+
+    public bool Equals(IController other)
+    {
+        if (other is GamepadController gamepadController)
+            return _deviceId == gamepadController._deviceId;
+
+        return false;
+    }
 }

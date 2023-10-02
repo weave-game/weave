@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using GodotSharper;
 using GodotSharper.AutoGetNode;
 using weave.Controller;
 using weave.Utils;
@@ -19,27 +18,43 @@ public partial class ControllerJoinTest : Control
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is InputEventJoypadButton button)
-            GamepadPressed(button);
-
-        if (@event is InputEventKey { Pressed: true } key)
-            KeyPressed(key);
+        switch (@event)
+        {
+            case InputEventJoypadButton button:
+                GamepadPressed(button);
+                break;
+            case InputEventKey { Pressed: true }:
+                KeyPressed();
+                break;
+        }
     }
 
-    private static void KeyPressed(InputEventKey key)
+    private void KeyPressed()
     {
-        GD.Print(key);
-
-        var keyboardPlayerIndex = 0;
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
-            if (key.Keycode == keybindingTuple.Item1 || key.Keycode == keybindingTuple.Item2)
+            var isPressingBoth = Input.IsKeyPressed(keybindingTuple.Item1) && Input.IsKeyPressed(keybindingTuple.Item2);
+
+            if (isPressingBoth)
             {
-                GD.Print("Keyboard player " + keyboardPlayerIndex);
-                break;
+                GD.Print("both!");
             }
 
-            keyboardPlayerIndex++;
+            if (!isPressingBoth) continue;
+
+            var kb = new KeyboardController(keybindingTuple);
+            var alreadyExisting = _connected.FirstOrDefault(c => c.Equals(kb));
+
+            if (alreadyExisting != null)
+            {
+                _connected.Remove(alreadyExisting);
+            }
+            else
+            {
+                _connected.Add(kb);
+            }
+
+            PrintControllers();
         }
     }
 
@@ -83,7 +98,7 @@ public partial class ControllerJoinTest : Control
         GD.Print("Controllers:");
 
         foreach (var controller in _connected)
-            GD.Print($"{controller}. Device ID: {controller.DeviceId}");
+            GD.Print($"Device ID: {controller.DeviceId}. Type: {controller.Type}");
 
         GD.Print("");
     }

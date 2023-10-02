@@ -24,4 +24,12 @@ public sealed class KeyboardController : IController
     }
 
     public Controller Type => Controller.Keyboard;
+
+    public bool Equals(IController other)
+    {
+        if (other is KeyboardController keyboardController)
+            return keyboardController._left == _left && keyboardController._right == _right;
+
+        return false;
+    }
 }

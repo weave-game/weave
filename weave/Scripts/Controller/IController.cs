@@ -1,9 +1,11 @@
+using System;
+
 namespace weave.Controller;
 
-public interface IController
+public interface IController : IEquatable<IController>
 {
-    bool IsTurningLeft();
-    bool IsTurningRight();
     int DeviceId => -1;
     public Controller Type { get; }
+    bool IsTurningLeft();
+    bool IsTurningRight();
 }
