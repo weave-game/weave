@@ -34,6 +34,7 @@ public partial class Main : Node2D
     ///     How many players that have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
+
     private Grid _grid;
     private int _width;
     private int _height;
@@ -44,7 +45,14 @@ public partial class Main : Node2D
     {
         this.GetNodes();
 
-        if (Keybindings.Count < GameState.InputDevices.Count)
+        // Fallback to <- and -> if there are no keybindings
+        if (GameConfig.InputDevices.Count == 0)
+            GameConfig.InputDevices = new List<IInputDevice>
+            {
+                new KeyboardInputDevice(Keybindings[0])
+            };
+
+        if (Keybindings.Count < GameConfig.InputDevices.Count)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -169,13 +177,9 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        // Fallback to <- and -> if there are no keybindings
-        var defaultInputDevices = new List<IInputDevice> { new KeyboardInputDevice(Keybindings[0]) };
-
-        var inputDevices = GameState.InputDevices.Any() ? GameState.InputDevices : defaultInputDevices;
         var colorGenerator = new UniqueColorGenerator();
 
-        inputDevices.ForEach(inputDevice =>
+        GameConfig.InputDevices.ForEach(inputDevice =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
@@ -211,7 +215,7 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != GameState.InputDevices.Count)
+        if (++_roundCompletions != GameConfig.InputDevices.Count)
             return;
 
         HandleRoundComplete();

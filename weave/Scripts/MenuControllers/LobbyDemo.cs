@@ -25,7 +25,7 @@ public partial class LobbyDemo : Control
         this.GetNodes();
         _button.Pressed += () =>
         {
-            GameState.InputDevices = _connectedInputDevices;
+            GameConfig.InputDevices = _connectedInputDevices;
             GetTree().ChangeSceneToFile(SceneResources.MainScene);
         };
     }
@@ -94,7 +94,9 @@ public partial class LobbyDemo : Control
                     .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
 
-                sb.AppendLine($"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}");
+                sb.AppendLine(
+                    $"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}"
+                );
                 sb.AppendLine($"Left: {left}. Right: {right}\n");
             }
         }

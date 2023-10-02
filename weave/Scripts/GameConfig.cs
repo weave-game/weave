@@ -6,9 +6,9 @@ namespace weave;
 /// <summary>
 ///     Data that NEEDS to be transferred between scenes. Only use this for data that is absolutely necessary.
 /// </summary>
-public static class GameState
+public static class GameConfig
 {
-    static GameState() { }
+    static GameConfig() { }
 
     /// <summary>
     ///     Set of input devices that are currently in use.
