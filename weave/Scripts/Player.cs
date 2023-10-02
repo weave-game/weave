@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
@@ -20,15 +21,29 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
+    [GetNode("Sprite2D")]
+    private Sprite2D _sprite2D;
+
     public IController Controller { get; set; }
 
     public Color Color { get; set; }
+    private bool _isMoving;
+    public bool IsMoving
+    {
+        get { return _isMoving; }
+        set
+        {
+            _isMoving = value;
+            CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+        }
+    }
 
     public override void _Ready()
     {
         this.GetNodes();
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
         CurveSpawner.Color = Color;
+        _sprite2D.Modulate = Color;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -39,7 +54,8 @@ public partial class Player : CharacterBody2D
     private void Move(double delta)
     {
         Rotate(delta);
-        Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
+        if (_isMoving)
+            Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
     }
 
     private void Rotate(double delta)
