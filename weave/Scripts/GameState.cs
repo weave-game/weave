@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using weave.Controller;
+using weave.InputDevices;
 
 namespace weave;
 
@@ -11,7 +11,7 @@ public static class GameState
     static GameState() { }
 
     /// <summary>
-    ///     Set of controllers that are currently in use.
+    ///     Set of input devices that are currently in use.
     /// </summary>
-    public static IList<IController> Controllers { get; set; } = new List<IController>();
+    public static IList<IInputDevice> InputDevices { get; set; } = new List<IInputDevice>();
 }

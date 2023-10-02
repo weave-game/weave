@@ -6,13 +6,13 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Controller;
+using weave.InputDevices;
 using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
-using static weave.Controller.Controller;
-using static weave.Controller.KeyboardBindings;
+using static weave.InputDevices.InputType;
+using static weave.InputDevices.KeyboardBindings;
 
 namespace weave;
 
@@ -22,7 +22,7 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private Controller.Controller _controller = Keyboard;
+    private InputType _inputType = Keyboard;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -44,7 +44,7 @@ public partial class Main : Node2D
     {
         this.GetNodes();
 
-        if (Keybindings.Count < GameState.Controllers.Count)
+        if (Keybindings.Count < GameState.InputDevices.Count)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -169,19 +169,19 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        // TODO: Temp
-        var defaultControllers = new List<IController> { new KeyboardController(Keybindings[0]) };
+        // Fallback to <- and -> if there are no keybindings
+        var defaultInputDevices = new List<IInputDevice> { new KeyboardInputDevice(Keybindings[0]) };
 
-        var controllers = GameState.Controllers.Any() ? GameState.Controllers : defaultControllers;
+        var inputDevices = GameState.InputDevices.Any() ? GameState.InputDevices : defaultInputDevices;
         var colorGenerator = new UniqueColorGenerator();
 
-        controllers.ForEach(controller =>
+        inputDevices.ForEach(inputDevice =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
 
-            if (_controller == Keyboard)
-                player.Controller = controller;
+            if (_inputType == Keyboard)
+                player.InputDevice = inputDevice;
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
@@ -211,7 +211,7 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != GameState.Controllers.Count)
+        if (++_roundCompletions != GameState.InputDevices.Count)
             return;
 
         HandleRoundComplete();

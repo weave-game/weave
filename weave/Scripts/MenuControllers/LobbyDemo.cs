@@ -4,15 +4,15 @@ using System.Reflection;
 using System.Text;
 using Godot;
 using GodotSharper.AutoGetNode;
-using weave.Controller;
+using weave.InputDevices;
 using weave.Utils;
 
 namespace weave.MenuControllers;
 
 // NOTE: This will be moved to the original StartScreen once the changes are added
-public partial class ControllerJoinTest : Control
+public partial class LobbyDemo : Control
 {
-    private readonly IList<IController> _connected = new List<IController>();
+    private readonly IList<IInputDevice> _connectedInputDevices = new List<IInputDevice>();
 
     [GetNode("Button")]
     private Button _button;
@@ -25,7 +25,7 @@ public partial class ControllerJoinTest : Control
         this.GetNodes();
         _button.Pressed += () =>
         {
-            GameState.Controllers = _connected;
+            GameState.InputDevices = _connectedInputDevices;
             GetTree().ChangeSceneToFile(SceneResources.MainScene);
         };
     }
@@ -55,19 +55,19 @@ public partial class ControllerJoinTest : Control
             if (!isPressingBoth)
                 continue;
 
-            var kb = new KeyboardController(keybindingTuple);
-            var alreadyExisting = _connected.FirstOrDefault(c => c.Equals(kb));
+            var kb = new KeyboardInputDevice(keybindingTuple);
+            var alreadyExisting = _connectedInputDevices.FirstOrDefault(c => c.Equals(kb));
 
             if (alreadyExisting != null)
             {
-                _connected.Remove(alreadyExisting);
+                _connectedInputDevices.Remove(alreadyExisting);
             }
             else
             {
-                _connected.Add(kb);
+                _connectedInputDevices.Add(kb);
             }
 
-            PrintControllers();
+            PrintInputDevices();
         }
     }
 
@@ -77,24 +77,24 @@ public partial class ControllerJoinTest : Control
     /// <summary>
     ///     IMPORTANT: This is a hack, only used for debugging purposes
     /// </summary>
-    private void PrintControllers()
+    private void PrintInputDevices()
     {
         // NO NEED TO REVIEW THIS; WILL BE REMOVED
         var sb = new StringBuilder();
 
         var i = 1;
-        foreach (var controller in _connected)
+        foreach (var inputDevice in _connectedInputDevices)
         {
-            if (controller is KeyboardController k)
+            if (inputDevice is KeyboardInputDevice k)
             {
-                var left = typeof(KeyboardController)
+                var left = typeof(KeyboardInputDevice)
                     .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
-                var right = typeof(KeyboardController)
+                var right = typeof(KeyboardInputDevice)
                     .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
 
-                sb.AppendLine($"({i++}) Device ID: {controller.DeviceId}. Type: {controller.Type}");
+                sb.AppendLine($"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}");
                 sb.AppendLine($"Left: {left}. Right: {right}\n");
             }
         }
@@ -119,21 +119,21 @@ public partial class ControllerJoinTest : Control
 
     private void AddGamepad(int deviceId)
     {
-        if (_connected.Any(c => c.DeviceId == deviceId))
+        if (_connectedInputDevices.Any(c => c.DeviceId == deviceId))
             return;
 
-        _connected.Add(new GamepadController(deviceId));
-        PrintControllers();
+        _connectedInputDevices.Add(new GamepadInputDevice(deviceId));
+        PrintInputDevices();
     }
 
     private void RemoveGamepad(int deviceId)
     {
-        var toRemove = _connected.FirstOrDefault(c => c.DeviceId == deviceId);
+        var toRemove = _connectedInputDevices.FirstOrDefault(c => c.DeviceId == deviceId);
         if (toRemove == null)
             return;
 
-        _connected.Remove(toRemove);
-        PrintControllers();
+        _connectedInputDevices.Remove(toRemove);
+        PrintInputDevices();
     }
 
     #endregion
