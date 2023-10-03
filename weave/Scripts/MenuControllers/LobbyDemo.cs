@@ -47,8 +47,12 @@ public partial class LobbyDemo : Control
     {
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
-            var isPressingBoth = Input.IsKeyPressed(keybindingTuple.Item1) && Input.IsKeyPressed(keybindingTuple.Item2);
-            if (!isPressingBoth) continue;
+            var isPressingBoth =
+                Input.IsKeyPressed(keybindingTuple.Item1)
+                && Input.IsKeyPressed(keybindingTuple.Item2);
+
+            if (!isPressingBoth)
+                continue;
 
             _lobby.ToggleKeyboard(keybindingTuple);
         }
@@ -58,7 +62,8 @@ public partial class LobbyDemo : Control
     {
         GD.Print(@event);
         var deviceId = @event.Device;
-        if (deviceId < 0) return;
+        if (deviceId < 0)
+            return;
 
         if (@event.IsActionPressed(ActionConstants.GamepadJoinAction))
         {
@@ -84,9 +89,7 @@ public partial class LobbyDemo : Control
         var i = 1;
         foreach (var inputDevice in _lobby.ConnectedInputDevices)
         {
-            sb.AppendLine(
-                $"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}"
-            );
+            sb.AppendLine($"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}");
 
             if (inputDevice is KeyboardInputDevice k)
             {
@@ -106,5 +109,4 @@ public partial class LobbyDemo : Control
 
         _textEdit.Text = sb.ToString();
     }
-
 }
