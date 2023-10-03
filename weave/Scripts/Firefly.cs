@@ -18,7 +18,7 @@ public partial class Firefly : Path2D
     private Line2D _line;
 
     private const float MaxSpeed = 12;
-    private const float MinSpeed = 3;
+    private const float MinSpeed = 5;
     private const int NrPoints = 30;
     private const float DistanceBetweenPoints = 5;
     private float _currentSpeed;

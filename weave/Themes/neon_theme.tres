@@ -1,6 +1,25 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://by2pot0p04k5c"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://by2pot0p04k5c"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7m1e7"]
+[ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="1_wxucp"]
+[ext_resource type="StyleBox" uid="uid://m7ol4vvsflr4" path="res://Themes/base_button.tres" id="1_xvkqr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8jkh"]
+content_margin_left = 32.0
+content_margin_top = 16.0
+content_margin_right = 32.0
+content_margin_bottom = 16.0
+bg_color = Color(1, 0.164706, 0.427451, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.164706, 0.427451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d6dlm"]
 content_margin_left = 32.0
 content_margin_top = 16.0
 content_margin_right = 32.0
@@ -16,12 +35,12 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i8slf"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12c4k"]
 content_margin_left = 32.0
 content_margin_top = 16.0
 content_margin_right = 32.0
 content_margin_bottom = 16.0
-draw_center = false
+bg_color = Color(1, 1, 1, 1)
 border_width_left = 4
 border_width_top = 4
 border_width_right = 4
@@ -33,8 +52,20 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [resource]
-AccentedButton/styles/normal = SubResource("StyleBoxFlat_7m1e7")
+AccentedButton/base_type = &"Button"
+AccentedButton/colors/font_color = Color(1, 0.164706, 0.427451, 1)
+AccentedButton/colors/font_hover_color = Color(1, 1, 1, 1)
+AccentedButton/colors/icon_hover_color = Color(1, 1, 1, 1)
+AccentedButton/colors/icon_normal_color = Color(1, 0.164706, 0.427451, 1)
+AccentedButton/styles/hover = SubResource("StyleBoxFlat_k8jkh")
+AccentedButton/styles/normal = SubResource("StyleBoxFlat_d6dlm")
+Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/colors/icon_hover_color = Color(0, 0, 0, 1)
 Button/constants/h_separation = 16
 Button/font_sizes/font_size = 24
-Button/styles/normal = SubResource("StyleBoxFlat_i8slf")
+Button/fonts/font = ExtResource("1_wxucp")
+Button/styles/focus = ExtResource("1_xvkqr")
+Button/styles/hover = SubResource("StyleBoxFlat_12c4k")
+Button/styles/normal = ExtResource("1_xvkqr")
+Button/styles/pressed = ExtResource("1_xvkqr")
 VBoxContainer/constants/separation = 16

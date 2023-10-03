@@ -10,17 +10,17 @@ public partial class StartScreen : Node2D
 {
     private PackedScene _gameScene = GD.Load<PackedScene>(SceneResources.MainScene);
 
-    [GetNode("CanvasLayer/CenterContainer/VBoxContainer/QuitButton")]
+    [GetNode("CanvasLayer/MarginContainer/VBoxContainer/Quit")]
     private Button _quitButton;
 
-    [GetNode("CanvasLayer/CenterContainer/VBoxContainer/StartButton")]
+    [GetNode("CanvasLayer/MarginContainer/VBoxContainer/Start")]
     private Button _startButton;
 
     public override void _Ready()
     {
-        // this.GetNodes();
-        // _startButton.Pressed += OnStartButtonPressed;
-        // _quitButton.Pressed += OnQuitButtonPressed;
+        this.GetNodes();
+        _startButton.Pressed += OnStartButtonPressed;
+        _quitButton.Pressed += OnQuitButtonPressed;
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
