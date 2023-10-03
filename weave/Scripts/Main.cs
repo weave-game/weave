@@ -6,36 +6,22 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputHandlers;
+using weave.InputSources;
 using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
+using static weave.InputSources.KeyboardBindings;
 
 namespace weave;
 
-internal enum ControllerTypes
-{
-    Keyboard
-}
-
 public partial class Main : Node2D
 {
-    private const int NPlayers = 2;
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
-
-    private readonly IList<(Key, Key)> _keybindings = new List<(Key, Key)>
-    {
-        (Key.Left, Key.Right),
-        (Key.Key1, Key.Q),
-        (Key.B, Key.N),
-        (Key.Z, Key.X)
-    };
-
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private ControllerTypes _controllerType = ControllerTypes.Keyboard;
+    private Lobby _lobby = new();
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -43,10 +29,14 @@ public partial class Main : Node2D
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
+    [GetNode("ScoreDisplay")]
+    private Score _scoreDisplay;
+
     /// <summary>
-    ///     How many players that have reached the goal during the current round.
+    ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
+
     private Grid _grid;
     private int _width;
     private int _height;
@@ -56,9 +46,11 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _lobby = GameConfig.Lobby;
 
-        if (_keybindings.Count < NPlayers)
-            throw new ArgumentException("More players than available keybindings");
+        // Fallback to <- and -> if there are no keybindings
+        if (_lobby.InputSources.Count == 0)
+            _lobby.InputSources.Add(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
@@ -115,6 +107,7 @@ public partial class Main : Node2D
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
+        _playerDelayTimer.Timeout += _scoreDisplay.OnGameStart;
         AddChild(_playerDelayTimer);
     }
 
@@ -184,13 +177,11 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
-        NPlayers.TimesDo(i =>
+        _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
-
-            if (_controllerType == ControllerTypes.Keyboard)
-                player.Controller = new KeyboardController(_keybindings[i]);
+            player.InputSource = input;
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
@@ -220,8 +211,9 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != NPlayers)
+        if (++_roundCompletions != _lobby.Count)
             return;
+
         HandleRoundComplete();
     }
 
@@ -232,6 +224,7 @@ public partial class Main : Node2D
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
+        _scoreDisplay.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
