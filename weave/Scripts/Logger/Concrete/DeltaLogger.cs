@@ -1,3 +1,4 @@
+using System.Globalization;
 using Godot;
 
 namespace weave.Logger.Concrete;
@@ -13,6 +14,6 @@ public sealed class DeltaLogger
         if (_firstLog < 0f)
             _firstLog = ms;
 
-        return new Log("delta_ms", (ms - _firstLog).ToString());
+        return new Log("delta_ms", (ms - _firstLog).ToString(CultureInfo.InvariantCulture));
     }
 }
