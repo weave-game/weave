@@ -60,20 +60,17 @@ public partial class LobbyDemo : Control
 
     private void GamepadPressed(InputEvent @event)
     {
-        GD.Print(@event);
         var deviceId = @event.Device;
         if (deviceId < 0)
             return;
 
         if (@event.IsActionPressed(ActionConstants.GamepadJoinAction))
         {
-            GD.Print("x");
             _lobby.AddGamepad(deviceId);
         }
 
         if (@event.IsActionPressed(ActionConstants.GamepadLeaveAction))
         {
-            GD.Print("y");
             _lobby.RemoveGamepad(deviceId);
         }
     }
