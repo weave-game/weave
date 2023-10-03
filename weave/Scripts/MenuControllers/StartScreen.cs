@@ -8,7 +8,7 @@ namespace weave.MenuControllers;
 
 public partial class StartScreen : Node2D
 {
-    private PackedScene _gameScene = GD.Load<PackedScene>(SceneResources.MainScene);
+    private PackedScene _gameScene = GD.Load<PackedScene>("res://Menus/LobbyDemo.tscn");
 
     [GetNode("CanvasLayer/MarginContainer/VBoxContainer/Quit")]
     private Button _quitButton;

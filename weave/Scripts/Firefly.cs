@@ -33,7 +33,7 @@ public partial class Firefly : Path2D
         this.GetNodes();
 
         Visible = true;
-        _line.Width = Constants.LineWidth;
+        _line.Width = Constants.MenuLineWidth;
 
         var animationDelay = (GD.Randf() * 10) + 3;
         _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
