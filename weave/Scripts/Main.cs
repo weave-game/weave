@@ -23,6 +23,7 @@ public partial class Main : Node2D
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private InputType _inputType = Keyboard;
+    private Lobby _lobby;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -44,15 +45,15 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
-        if (GameConfig.InputDevices.Count == 0)
-            GameConfig.InputDevices = new List<IInputDevice>
-            {
-                new KeyboardInputDevice(Keybindings[0])
-            };
+        if (_lobby.ConnectedInputDevices.Count == 0)
+        {
+            _lobby.ToggleKeyboard(Keybindings[0]);
+        }
 
-        if (Keybindings.Count < GameConfig.InputDevices.Count)
+        if (Keybindings.Count < GameConfig.Lobby.ConnectedInputDevices.Count)
             throw new ArgumentException("More players than available keybindings");
 
         _width = (int)GetViewportRect().Size.X;
@@ -179,7 +180,7 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
-        GameConfig.InputDevices.ForEach(inputDevice =>
+        _lobby.ConnectedInputDevices.ForEach(inputDevice =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
@@ -215,7 +216,7 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != GameConfig.InputDevices.Count)
+        if (++_roundCompletions != _lobby.ConnectedInputDevices.Count)
             return;
 
         HandleRoundComplete();
