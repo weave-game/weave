@@ -29,8 +29,11 @@ public partial class Main : Node2D
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
+    [GetNode("ScoreDisplay")]
+    private Score _scoreDisplay;
+
     /// <summary>
-    ///     How many players that have reached the goal during the current round.
+    ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
 
@@ -104,6 +107,7 @@ public partial class Main : Node2D
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
+        _playerDelayTimer.Timeout += _scoreDisplay.OnGameStart;
         AddChild(_playerDelayTimer);
     }
 
@@ -220,6 +224,7 @@ public partial class Main : Node2D
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
+        _scoreDisplay.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
