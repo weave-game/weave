@@ -65,12 +65,6 @@ public partial class Score : CanvasLayer
         _timeSinceRoundStart += delta;
     }
 
-    public void Initialize() {
-        _score = 0;
-        _finishedRounds = 0;
-        _timeSinceRoundStart = 0;
-    }
-
     public void OnRoundComplete()
     {
         if (!_enabled)
