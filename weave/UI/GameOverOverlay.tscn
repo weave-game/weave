@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://4nc7omeqyir"]
+[gd_scene load_steps=2 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
 
@@ -28,6 +28,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 226
 text = "L"
 
+[node name="RetryButton" type="Button" parent="CenterContainer/VBox"]
+layout_mode = 2
+text = "Retry"
+
 [node name="MenuButton" type="Button" parent="CenterContainer/VBox"]
 layout_mode = 2
-text = "Menu"
+text = "Menu
+"

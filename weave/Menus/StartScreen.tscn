@@ -1,90 +1,141 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=14 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
 [ext_resource type="PackedScene" uid="uid://13krjegt6uqn" path="res://Objects/Firefly.tscn" id="3_r76ru"]
+[ext_resource type="Texture2D" uid="uid://8rd510i1ect" path="res://Assets/bg_pattern.png" id="4_cecwe"]
+[ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
+[ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/neon_theme.tres" id="5_gh586"]
+[ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
+[ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
 
-[sub_resource type="Curve2D" id="Curve2D_k2fae"]
+[sub_resource type="Curve2D" id="Curve2D_b5vkc"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -106, 537, -23.0716, 52.2995, 23.0716, -52.2995, 274, 514, -126.452, -60.3871, 126.452, 60.3871, 570, 291, -68.6006, -38.7017, 68.6006, 38.7017, 780, 141, -241.09, -80.9313, 241.09, 80.9313, 865, 592, 0, 0, 0, 0, 1277, 278)
+"points": PackedVector2Array(0, 0, 0, 0, 1001, -113, -187.887, 294.078, 187.887, -294.078, 259, 114, -313.992, 71.5364, 313.992, -71.5364, 725, 757, -204.445, 131.908, 204.445, -131.908, 614, 174, 157.939, -396.605, -157.939, 396.605, 1762, 536, 0, 0, 0, 0, 374, 1089)
 }
 point_count = 6
 
-[sub_resource type="Curve2D" id="Curve2D_strfe"]
+[sub_resource type="Curve2D" id="Curve2D_eky13"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 1264, 103, 131.819, -130.412, -131.819, 130.412, 261, 164, -146.316, -102.589, 146.316, 102.589, 533, 555, -60.5386, 83.72, 60.5386, -83.72, 70, 552, 126.407, 227.073, -126.407, -227.073, 28, 202, 0, 0, 0, 0, -181, 153)
+"points": PackedVector2Array(-31.4964, 160.259, 31.4964, -160.259, 61, 1120, -215.644, 11.8823, 215.644, -11.8823, 414, 669, -95.3672, 37.9185, 95.3672, -37.9185, 768, 467, 0, 0, 0, 0, 989, 453, -63.6776, -4.61465, 63.6776, 4.61465, 1187, 503, -21.5988, 27.5571, 21.5988, -27.5571, 1388, 381, 0, 0, 0, 0, 1519.38, 291.628, -59.7617, -74.0741, 59.7617, 74.0741, 1707, 248, 241.777, -9.6594, -241.777, 9.6594, 1279, 954)
 }
-point_count = 6
+point_count = 9
 
-[sub_resource type="Curve2D" id="Curve2D_wxcnk"]
+[sub_resource type="Curve2D" id="Curve2D_ifgwf"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 730, 782, -129.04, -29.7831, 129.04, 29.7831, 799, 550, -40.4866, 58.402, 40.4866, -58.402, 1020, 460, 124.392, 116.288, -124.392, -116.288, 966, 94, 162.733, -124.021, -162.733, 124.021, 223, 160, 0, 0, 0, 0, -135, 89)
+"points": PackedVector2Array(-228.356, 119.356, 228.356, -119.356, 525, 1044, -57.2315, 184.683, 57.2315, -184.683, 362, 521, -136.364, -55.4701, 136.364, 55.4701, 697, -59, -152.661, 1.16349, 152.661, -1.16349, 1079, 357, -232.382, -79.1561, 232.382, 79.1561, 1556, 90, 215.148, -61.2672, -215.148, 61.2672, 1250, 789, 241.777, -9.6594, -241.777, 9.6594, -58, 711)
 }
-point_count = 6
+point_count = 7
+
+[sub_resource type="Curve2D" id="Curve2D_bm1nx"]
+_data = {
+"points": PackedVector2Array(-228.356, 119.356, 228.356, -119.356, -182, 0, -155.544, -61.8105, 155.544, 61.8105, 344, 285, -136.364, -55.4701, 136.364, 55.4701, 844, 174, -45.8669, 150.054, 45.8669, -150.054, 1320, 257, -125.521, -20.7385, 125.521, 20.7385, 1591, 80, 68.3913, -202.324, -68.3913, 202.324, 1562, 714, 282.114, 11.3986, -282.114, -11.3986, 549, 1011, 241.777, -9.6594, -241.777, 9.6594, -31, 618)
+}
+point_count = 8
 
 [sub_resource type="Environment" id="Environment_1k2n6"]
 background_mode = 3
 glow_enabled = true
 glow_normalized = true
-glow_intensity = 5.0
-glow_strength = 1.5
-glow_bloom = 0.05
+glow_intensity = 1.05
+glow_strength = 0.9
+glow_bloom = 0.2
+glow_blend_mode = 1
 adjustment_enabled = true
-adjustment_brightness = 2.0
-adjustment_saturation = 2.0
 
 [node name="StartScreen" type="Node2D"]
+scale = Vector2(1.00664, 0.991901)
 script = ExtResource("1_bb43u")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+[node name="bg-pattern" type="TextureRect" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
+texture = ExtResource("4_cecwe")
+expand_mode = 1
+
+[node name="weave-logo" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -852.0
+offset_top = -85.0
+offset_right = -203.0
+offset_bottom = 78.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 8
 size_flags_vertical = 4
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer"]
-custom_minimum_size = Vector2(200, 2.08165e-12)
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(200, 2.08165e-12)
-layout_mode = 2
 texture = ExtResource("2_gitg2")
-expand_mode = 5
+expand_mode = 1
 
-[node name="StartButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 40)
-layout_mode = 2
-text = "Play :D"
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
 
-[node name="QuitButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 40)
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+custom_minimum_size = Vector2(250, 2.08165e-12)
 layout_mode = 2
-text = "Quit :("
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = ExtResource("5_gh586")
+alignment = 1
+
+[node name="Start" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_gh586")
+theme_type_variation = &"AccentedButton"
+text = "PLAY"
+icon = ExtResource("5_76tk4")
+alignment = 0
+
+[node name="Options" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("5_gh586")
+text = "OPTIONS"
+icon = ExtResource("6_bndfp")
+alignment = 0
+
+[node name="Quit" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_gh586")
+text = "QUIT"
+icon = ExtResource("7_6tkco")
+alignment = 0
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -1
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
+curve = SubResource("Curve2D_b5vkc")
 
 [node name="Firefly2" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
-curve = SubResource("Curve2D_k2fae")
+curve = SubResource("Curve2D_eky13")
 
 [node name="Firefly3" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
-curve = SubResource("Curve2D_strfe")
+curve = SubResource("Curve2D_ifgwf")
 
 [node name="Firefly4" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
-curve = SubResource("Curve2D_wxcnk")
+curve = SubResource("Curve2D_bm1nx")
 
 [node name="CanvasGlow" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1k2n6")

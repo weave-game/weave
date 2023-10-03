@@ -165,6 +165,7 @@ public partial class Main : Node2D
     private void GameOver()
     {
         _gameOverOverlay.Visible = true;
+        _gameOverOverlay.FocusRetryButton();
         ProcessMode = ProcessModeEnum.Disabled;
     }
 

@@ -18,7 +18,7 @@ public partial class Firefly : Path2D
     private Line2D _line;
 
     private const float MaxSpeed = 12;
-    private const float MinSpeed = 3;
+    private const float MinSpeed = 5;
     private const int NrPoints = 30;
     private const float DistanceBetweenPoints = 5;
     private float _currentSpeed;
@@ -33,7 +33,7 @@ public partial class Firefly : Path2D
         this.GetNodes();
 
         Visible = true;
-        _line.Width = Constants.LineWidth;
+        _line.Width = Constants.MenuLineWidth;
 
         var animationDelay = (GD.Randf() * 10) + 3;
         _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };

@@ -11,12 +11,12 @@ radius = 3.0
 script = ExtResource("1_j6e2d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -7)
-scale = Vector2(0.00982304, 0.00982304)
+position = Vector2(-1.19209e-07, -8)
+scale = Vector2(0.0112741, 0.0112741)
 texture = ExtResource("2_am1c8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8)
+position = Vector2(0, -11)
 shape = SubResource("CircleShape2D_nrd2o")
 
 [node name="CurveSpawner" type="Marker2D" parent="."]
