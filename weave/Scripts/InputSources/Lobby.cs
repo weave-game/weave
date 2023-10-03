@@ -20,19 +20,6 @@ public sealed class Lobby
 
     public void Leave(IInputSource inputSource)
     {
-        var existing = _inputSources.FirstOrDefault(input => input.Equals(inputSource));
-        if (existing == null)
-            return;
-
         _inputSources.Remove(inputSource);
-    }
-
-    public void Leave(int deviceId)
-    {
-        var existing = _inputSources.FirstOrDefault(input => input.DeviceId == deviceId);
-        if (existing == null)
-            return;
-
-        _inputSources.Remove(existing);
     }
 }

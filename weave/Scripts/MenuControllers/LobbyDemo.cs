@@ -37,7 +37,7 @@ public partial class LobbyDemo : Control
                 GamepadPressed(button);
                 break;
             case InputEventKey { Pressed: true }:
-                KeyPressed();
+                KeyboardPressed();
                 break;
         }
     }
@@ -49,7 +49,7 @@ public partial class LobbyDemo : Control
 
     #region Keyboard
 
-    private void KeyPressed()
+    private void KeyboardPressed()
     {
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
@@ -121,7 +121,7 @@ public partial class LobbyDemo : Control
             _lobby.Join(new GamepadInputSource(deviceId));
 
         if (@event.IsActionPressed(ActionConstants.GamepadLeaveAction))
-            _lobby.Leave(deviceId);
+            _lobby.Leave(new GamepadInputSource(deviceId));
     }
 
     #endregion
