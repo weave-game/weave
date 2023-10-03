@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using weave.InputDevices;
+using weave.InputSources;
 
 namespace weave;
 
@@ -8,10 +7,5 @@ namespace weave;
 /// </summary>
 public static class GameConfig
 {
-    static GameConfig() { }
-
-    /// <summary>
-    ///     Set of input devices that are currently in use.
-    /// </summary>
-    public static IList<IInputDevice> InputDevices { get; set; } = new List<IInputDevice>();
+    public static Lobby Lobby { get; set; }
 }

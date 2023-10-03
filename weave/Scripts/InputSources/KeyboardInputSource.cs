@@ -1,13 +1,13 @@
 using Godot;
 
-namespace weave.InputDevices;
+namespace weave.InputSources;
 
-public sealed class KeyboardInputDevice : IInputDevice
+public sealed class KeyboardInputSource : IInputSource
 {
     private readonly Key _left;
     private readonly Key _right;
 
-    public KeyboardInputDevice((Key, Key) keybindings)
+    public KeyboardInputSource((Key, Key) keybindings)
     {
         _left = keybindings.Item1;
         _right = keybindings.Item2;
@@ -25,10 +25,10 @@ public sealed class KeyboardInputDevice : IInputDevice
 
     public InputType Type => InputType.Keyboard;
 
-    public bool Equals(IInputDevice other)
+    public bool Equals(IInputSource other)
     {
-        if (other is KeyboardInputDevice keyboardInputDevice)
-            return keyboardInputDevice._left == _left && keyboardInputDevice._right == _right;
+        if (other is KeyboardInputSource keyboard)
+            return keyboard._left == _left && keyboard._right == _right;
 
         return false;
     }

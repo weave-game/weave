@@ -1,4 +1,4 @@
-namespace weave.InputDevices;
+namespace weave.InputSources;
 
 public enum InputType
 {

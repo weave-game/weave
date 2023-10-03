@@ -1,8 +1,8 @@
 using System;
 
-namespace weave.InputDevices;
+namespace weave.InputSources;
 
-public interface IInputDevice : IEquatable<IInputDevice>
+public interface IInputSource : IEquatable<IInputSource>
 {
     int DeviceId => -1;
     public InputType Type { get; }

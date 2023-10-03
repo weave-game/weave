@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 
-namespace weave.InputDevices;
+namespace weave.InputSources;
 
 public static class KeyboardBindings
 {

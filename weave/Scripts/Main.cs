@@ -6,13 +6,12 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputDevices;
+using weave.InputSources;
 using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
 using weave.Utils;
-using static weave.InputDevices.InputType;
-using static weave.InputDevices.KeyboardBindings;
+using static weave.InputSources.KeyboardBindings;
 
 namespace weave;
 
@@ -22,7 +21,7 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private InputType _inputType = Keyboard;
+    private Lobby _lobby = new();
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -44,16 +43,11 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
-        if (GameConfig.InputDevices.Count == 0)
-            GameConfig.InputDevices = new List<IInputDevice>
-            {
-                new KeyboardInputDevice(Keybindings[0])
-            };
-
-        if (Keybindings.Count < GameConfig.InputDevices.Count)
-            throw new ArgumentException("More players than available keybindings");
+        if (_lobby.InputSources.Count == 0)
+            _lobby.InputSources.Add(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
@@ -179,13 +173,11 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
-        GameConfig.InputDevices.ForEach(inputDevice =>
+        _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
             player.Color = colorGenerator.NewColor();
-
-            if (_inputType == Keyboard)
-                player.InputDevice = inputDevice;
+            player.InputSource = input;
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
@@ -215,7 +207,7 @@ public partial class Main : Node2D
 
     private void OnPlayerReachedGoal(Player player)
     {
-        if (++_roundCompletions != GameConfig.InputDevices.Count)
+        if (++_roundCompletions != _lobby.Count)
             return;
 
         HandleRoundComplete();

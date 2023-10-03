@@ -1,7 +1,7 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputDevices;
+using weave.InputSources;
 using weave.Utils;
 
 namespace weave;
@@ -25,7 +25,7 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
-    public IInputDevice InputDevice { get; set; }
+    public IInputSource InputSource { get; set; }
 
     public Color Color { get; set; }
     public bool IsMoving
@@ -60,10 +60,10 @@ public partial class Player : CharacterBody2D
 
     private void Rotate(double delta)
     {
-        if (InputDevice.IsTurningRight())
+        if (InputSource.IsTurningRight())
             RotationDegrees += TurnRadius * (float)delta;
 
-        if (InputDevice.IsTurningLeft())
+        if (InputSource.IsTurningLeft())
             RotationDegrees -= TurnRadius * (float)delta;
     }
 

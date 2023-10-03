@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Godot;
 using GodotSharper.AutoGetNode;
-using weave.InputDevices;
+using weave.InputSources;
 using weave.Utils;
 
 namespace weave.MenuControllers;
@@ -12,7 +11,7 @@ namespace weave.MenuControllers;
 // NOTE: This will be moved to the original StartScreen once the changes are added
 public partial class LobbyDemo : Control
 {
-    private readonly IList<IInputDevice> _connectedInputDevices = new List<IInputDevice>();
+    private readonly Lobby _lobby = new();
 
     [GetNode("Button")]
     private Button _button;
@@ -25,7 +24,7 @@ public partial class LobbyDemo : Control
         this.GetNodes();
         _button.Pressed += () =>
         {
-            GameConfig.InputDevices = _connectedInputDevices;
+            GameConfig.Lobby = _lobby;
             GetTree().ChangeSceneToFile(SceneResources.MainScene);
         };
     }
@@ -43,6 +42,11 @@ public partial class LobbyDemo : Control
         }
     }
 
+    public override void _Process(double delta)
+    {
+        PrintInputSources();
+    }
+
     #region Keyboard
 
     private void KeyPressed()
@@ -52,53 +56,54 @@ public partial class LobbyDemo : Control
             var isPressingBoth =
                 Input.IsKeyPressed(keybindingTuple.Item1)
                 && Input.IsKeyPressed(keybindingTuple.Item2);
+
             if (!isPressingBoth)
                 continue;
 
-            var kb = new KeyboardInputDevice(keybindingTuple);
-            var alreadyExisting = _connectedInputDevices.FirstOrDefault(c => c.Equals(kb));
+            var kb = new KeyboardInputSource(keybindingTuple);
+            var alreadyExisting = _lobby.InputSources.FirstOrDefault(c => c.Equals(kb));
 
             if (alreadyExisting != null)
             {
-                _connectedInputDevices.Remove(alreadyExisting);
+                _lobby.Leave(alreadyExisting);
             }
             else
             {
-                _connectedInputDevices.Add(kb);
+                _lobby.Join(kb);
             }
-
-            PrintInputDevices();
         }
     }
 
     #endregion
 
-
     /// <summary>
     ///     IMPORTANT: This is a hack, only used for debugging purposes
     /// </summary>
-    private void PrintInputDevices()
+    private void PrintInputSources()
     {
         // NO NEED TO REVIEW THIS; WILL BE REMOVED
         var sb = new StringBuilder();
 
         var i = 1;
-        foreach (var inputDevice in _connectedInputDevices)
+        foreach (var inputSource in _lobby.InputSources)
         {
-            if (inputDevice is KeyboardInputDevice k)
+            sb.AppendLine(
+                $"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}"
+            );
+
+            if (inputSource is KeyboardInputSource k)
             {
-                var left = typeof(KeyboardInputDevice)
+                var left = typeof(KeyboardInputSource)
                     .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
-                var right = typeof(KeyboardInputDevice)
+                var right = typeof(KeyboardInputSource)
                     .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
 
-                sb.AppendLine(
-                    $"({i++}) Device ID: {inputDevice.DeviceId}. Type: {inputDevice.Type}"
-                );
-                sb.AppendLine($"Left: {left}. Right: {right}\n");
+                sb.AppendLine($"Left: {left}. Right: {right}");
             }
+
+            sb.AppendLine("");
         }
 
         _textEdit.Text = sb.ToString();
@@ -113,34 +118,12 @@ public partial class LobbyDemo : Control
             return;
 
         if (@event.IsActionPressed(ActionConstants.GamepadJoinAction))
-            AddGamepad(deviceId);
+            _lobby.Join(new GamepadInputSource(deviceId));
 
         if (@event.IsActionPressed(ActionConstants.GamepadLeaveAction))
-            RemoveGamepad(deviceId);
-    }
-
-    private void AddGamepad(int deviceId)
-    {
-        if (deviceId < 0) return;
-
-        if (_connectedInputDevices.Any(c => c.DeviceId == deviceId))
-            return;
-
-        _connectedInputDevices.Add(new GamepadInputDevice(deviceId));
-        PrintInputDevices();
-    }
-
-    private void RemoveGamepad(int deviceId)
-    {
-        if (deviceId < 0) return;
-
-        var toRemove = _connectedInputDevices.FirstOrDefault(c => c.DeviceId == deviceId);
-        if (toRemove == null)
-            return;
-
-        _connectedInputDevices.Remove(toRemove);
-        PrintInputDevices();
+            _lobby.Leave(deviceId);
     }
 
     #endregion
+
 }
