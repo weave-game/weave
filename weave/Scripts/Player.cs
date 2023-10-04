@@ -28,6 +28,7 @@ public partial class Player : CharacterBody2D
     public IInputSource InputSource { get; set; }
 
     public Color Color { get; set; }
+
     public bool IsMoving
     {
         get => _isMoving;

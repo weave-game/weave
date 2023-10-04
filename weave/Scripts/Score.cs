@@ -1,36 +1,26 @@
+using System;
 using Godot;
 using GodotSharper.AutoGetNode;
-using System;
-using weave.Utils;
 
 namespace weave;
 
 public partial class Score : CanvasLayer
 {
-    private enum ScoringRule
-    {
-        TIME_ONLY,
-        TIME_ONLY_BASED_ON_ROUND,
-        ROUND_ONLY,
-        ROUND_ONLY_BASED_ON_TIME,
-        TIME_AND_ROUND,
-    }
-
-    // Change to switch between different scoring rules
-    private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_ROUND;
-
-    private bool _enabled = false;
-    private double _score = 0;
-    private double _timeSinceRoundStart = 0;
-    private int _finishedRounds = 0;
-
     private const double PointsForSeconds = 25;
     private const double PointsForRound = 500;
     private const double MinPointsForRound = 150;
     private const double RoundMultiplier = 1.1;
 
+    private bool _enabled;
+    private int _finishedRounds;
+    private double _score;
+
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
+
+    // Change to switch between different scoring rules
+    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
+    private double _timeSinceRoundStart;
 
     public override void _Ready()
     {
@@ -44,15 +34,22 @@ public partial class Score : CanvasLayer
 
         switch (_scoringRule)
         {
-            case ScoringRule.TIME_ONLY:
-            case ScoringRule.TIME_AND_ROUND:
+            case ScoringRule.TimeOnly:
+            case ScoringRule.TimeAndRound:
                 _score += delta * PointsForSeconds;
                 break;
-            case ScoringRule.TIME_ONLY_BASED_ON_ROUND:
+            case ScoringRule.TimeOnlyBasedOnRound:
                 _score += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
                 break;
-            default:
+            case ScoringRule.RoundOnly:
                 break;
+            case ScoringRule.RoundOnlyBasedOnTime:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(_scoringRule),
+                    "_scoringRule must be a valid ScoringRule"
+                );
         }
 
         _timeSinceRoundStart += delta;
@@ -66,18 +63,22 @@ public partial class Score : CanvasLayer
 
         switch (_scoringRule)
         {
-            case ScoringRule.ROUND_ONLY:
-            case ScoringRule.TIME_AND_ROUND:
+            case ScoringRule.RoundOnly:
+            case ScoringRule.TimeAndRound:
                 _score += PointsForRound;
                 break;
-            case ScoringRule.ROUND_ONLY_BASED_ON_TIME:
+            case ScoringRule.RoundOnlyBasedOnTime:
                 _score += Math.Max(
                     MinPointsForRound,
                     PointsForRound - _timeSinceRoundStart * PointsForSeconds
                 );
                 break;
-            default:
+            case ScoringRule.TimeOnly:
                 break;
+            case ScoringRule.TimeOnlyBasedOnRound:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         _finishedRounds++;
@@ -90,5 +91,14 @@ public partial class Score : CanvasLayer
         _finishedRounds = 0;
         _timeSinceRoundStart = 0;
         _enabled = true;
+    }
+
+    private enum ScoringRule
+    {
+        TimeOnly,
+        TimeOnlyBasedOnRound,
+        RoundOnly,
+        RoundOnlyBasedOnTime,
+        TimeAndRound
     }
 }

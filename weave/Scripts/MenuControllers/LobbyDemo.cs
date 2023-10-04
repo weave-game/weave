@@ -64,13 +64,9 @@ public partial class LobbyDemo : Control
             var alreadyExisting = _lobby.InputSources.FirstOrDefault(c => c.Equals(kb));
 
             if (alreadyExisting != null)
-            {
                 _lobby.Leave(alreadyExisting);
-            }
             else
-            {
                 _lobby.Join(kb);
-            }
         }
     }
 
@@ -87,15 +83,16 @@ public partial class LobbyDemo : Control
         var i = 1;
         foreach (var inputSource in _lobby.InputSources)
         {
-            sb.AppendLine(
-                $"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}"
-            );
+            sb.AppendLine($"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}");
 
             if (inputSource is KeyboardInputSource k)
             {
+                // ReSharper disable once PossibleNullReferenceException
                 var left = typeof(KeyboardInputSource)
                     .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
+
+                // ReSharper disable once PossibleNullReferenceException
                 var right = typeof(KeyboardInputSource)
                     .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
@@ -125,5 +122,4 @@ public partial class LobbyDemo : Control
     }
 
     #endregion
-
 }
