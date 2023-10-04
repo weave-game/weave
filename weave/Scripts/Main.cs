@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using Godot;
@@ -177,6 +179,7 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var colorGenerator = new UniqueColorGenerator();
+        List<Vector2> playerPositions = GetRandomPointsInView(_lobby.InputSources.Count);
 
         _lobby.InputSources.ForEach(input =>
         {
@@ -186,7 +189,8 @@ public partial class Main : Node2D
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
-            player.GlobalPosition = GetRandomCoordinateInView(100);
+            player.GlobalPosition = playerPositions[0];
+            playerPositions.RemoveAt(0);
             _players.Add(player);
         });
     }
@@ -241,14 +245,16 @@ public partial class Main : Node2D
         GetTree()
             .GetNodesInGroup(GroupConstants.GoalGroup)
             .ToList()
-            .ForEach(goal => goal.QueueFree());
+            .ForEach(goal => goal.QueueFree());        
 
         // Spawn new goals
+        List<Vector2> goalPositions = GetRandomPointsInView(_players.Count);
         _players.ForEach(player =>
         {
             var goal = Instanter.Instantiate<Goal>();
             CallDeferred("add_child", goal);
-            goal.GlobalPosition = GetRandomCoordinateInView(100);
+            goal.GlobalPosition = goalPositions[0];
+            goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
         });
@@ -256,9 +262,89 @@ public partial class Main : Node2D
 
     private Vector2 GetRandomCoordinateInView(float margin)
     {
-        var x = (float)GD.RandRange(margin, GetViewportRect().Size.X - margin);
-        var y = (float)GD.RandRange(margin, GetViewportRect().Size.Y - margin);
+        var x = (float)GD.RandRange(margin, _width - margin);
+        var y = (float)GD.RandRange(margin, _height - margin);
         return new Vector2(x, y);
+    }
+
+    private List<Vector2> GetRandomPointsInView(int n, float minDistance = 300, float margin = 50) {
+        List<Vector2> points = new List<Vector2>();
+        if (n < 1) return points;
+
+        const int maxTries = 1000;
+
+        Console.WriteLine($"Generating...");
+
+        // Create the first point anywhere
+        points.Add(GetRandomCoordinateInView(margin));
+        Console.WriteLine($"Position: {points[0]}");
+
+        // Then generate the rest
+        for (int pointsLeft = n - 1; pointsLeft > 0; pointsLeft--) {
+
+            // Pick a random existing point
+            Vector2 origo = points[GD.RandRange(0, points.Count - 1)];
+            Vector2 newPoint = new Vector2();
+
+            // Generate a random point around it
+            bool valid = false;
+            for (int tries = 0; tries <= maxTries && !valid; tries++) {
+                float radius = (float)GD.RandRange(minDistance, (_width + _height) / 2.0f);
+                float angle = (float)GD.RandRange(0, 2 * Math.PI);
+
+                newPoint = new Vector2(
+                    origo.X + radius * Mathf.Cos(angle),
+                    origo.Y + radius * Mathf.Sin(angle)
+                );
+
+                while (origo.X < 0) origo.X += _width;
+                while (origo.Y < 0) origo.Y += _height;
+                while (origo.X >= _width) origo.X -= _width;
+                while (origo.Y >= _height) origo.Y -= _height;
+
+                valid = true;
+
+                // Check if it is far away enough from other points
+                foreach (Vector2 point in points) {
+                    if (GetDistanceOfPointsInView(newPoint, point) < minDistance) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                // Check if it is outside the margin
+                if (margin > newPoint.X || newPoint.X > _width - margin) valid = false;
+                if (margin > newPoint.Y || newPoint.Y > _height - margin) valid = false;
+            }
+
+            // If generation was not successful, add a random point instead
+            if (!valid) {
+                Console.WriteLine($"Generating failed from {maxTries} tries, using random coordinates.");
+                newPoint = GetRandomCoordinateInView(margin);
+            }
+
+            points.Add(newPoint);   
+
+            Console.WriteLine($"Position: {newPoint}");         
+        }
+
+        return points;
+    }
+
+    private float GetDistanceOfPointsInView(Vector2 a, Vector2 b) {
+        float distance = a.DistanceTo(b);
+
+        Vector2 bUp = new Vector2(b.X, b.Y - _height);
+        Vector2 bDown = new Vector2(b.X, b.Y + _height);
+        Vector2 bLeft = new Vector2(b.X - _width, b.Y);
+        Vector2 bRight = new Vector2(b.X + _width, b.Y);
+
+        if (distance > a.DistanceTo(bUp)) distance = a.DistanceTo(bUp);
+        if (distance > a.DistanceTo(bDown)) distance = a.DistanceTo(bDown);
+        if (distance > a.DistanceTo(bLeft)) distance = a.DistanceTo(bLeft);
+        if (distance > a.DistanceTo(bRight)) distance = a.DistanceTo(bRight);
+
+        return distance;
     }
 
     private void SetupLogger()
