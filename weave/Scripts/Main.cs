@@ -51,7 +51,7 @@ public partial class Main : Node2D
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.InputSources.Count == 0)
-            _lobby.InputSources.Add(new KeyboardInputSource(Keybindings[0]));
+            _lobby.Join(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
