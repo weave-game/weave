@@ -46,10 +46,7 @@ public partial class Score : CanvasLayer
             case ScoringRule.RoundOnlyBasedOnTime:
                 break;
             default:
-                throw new ArgumentOutOfRangeException(
-                    nameof(_scoringRule),
-                    "_scoringRule must be a valid ScoringRule"
-                );
+                throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
         _timeSinceRoundStart += delta;
@@ -78,7 +75,7 @@ public partial class Score : CanvasLayer
             case ScoringRule.TimeOnlyBasedOnRound:
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
         _finishedRounds++;
