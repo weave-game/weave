@@ -19,9 +19,15 @@ public partial class LobbyDemo : Control
     [GetNode("TextEdit")]
     private TextEdit _textEdit;
 
+    [GetNode("LobbyCodeLabel")]
+    private RichTextLabel _lobbyCodeLabel;
+
     public override void _Ready()
     {
         this.GetNodes();
+
+        SetLobbyCodeLabelText(_lobby.LobbyCode);
+
         _button.Pressed += () =>
         {
             GameConfig.Lobby = _lobby;
@@ -125,5 +131,10 @@ public partial class LobbyDemo : Control
     }
 
     #endregion
+
+    private void SetLobbyCodeLabelText(string newCode)
+    {
+        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+    }
 
 }

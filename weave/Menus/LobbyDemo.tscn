@@ -28,3 +28,12 @@ offset_bottom = 541.0
 mouse_filter = 2
 placeholder_text = "Players here..."
 editable = false
+
+[node name="LobbyCodeLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 1159.0
+offset_top = 185.0
+offset_right = 1339.0
+offset_bottom = 240.0
+bbcode_enabled = true
+text = "[center]Lobby code: abc123[/center]"
