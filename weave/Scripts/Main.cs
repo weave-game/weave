@@ -33,6 +33,9 @@ public partial class Main : Node2D
     private Lobby _lobby = new();
     private Timer _playerDelayTimer;
 
+    [GetNode("ScoreDisplay")]
+    private Score _score;
+
     /// <summary>
     ///     How many players have reached the goal during the current round.
     /// </summary>
@@ -89,6 +92,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
+        _score.Enabled = true;
     }
 
     private void DisablePlayerMovement()
@@ -96,6 +100,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
+        _score.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -108,7 +113,6 @@ public partial class Main : Node2D
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
-        _playerDelayTimer.Timeout += _scoreDisplay.OnGameStart;
         AddChild(_playerDelayTimer);
     }
 
@@ -217,7 +221,7 @@ public partial class Main : Node2D
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
-        _scoreDisplay.OnRoundComplete();
+        _score.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()

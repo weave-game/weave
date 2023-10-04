@@ -6,20 +6,20 @@ namespace weave;
 
 public partial class Score : CanvasLayer
 {
+    // Change to switch between different scoring rules
+    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
+
+    public bool Enabled { set; get; }
     private const double PointsForSeconds = 25;
     private const double PointsForRound = 500;
     private const double MinPointsForRound = 150;
     private const double RoundMultiplier = 1.1;
-
-    private bool _enabled;
     private int _finishedRounds;
     private double _score;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
 
-    // Change to switch between different scoring rules
-    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
     private double _timeSinceRoundStart;
 
     public override void _Ready()
@@ -29,7 +29,9 @@ public partial class Score : CanvasLayer
 
     public override void _Process(double delta)
     {
-        if (!_enabled)
+        _scoreLabel.Text = ((int)_score).ToString();
+
+        if (!Enabled)
             return;
 
         switch (_scoringRule)
@@ -50,12 +52,11 @@ public partial class Score : CanvasLayer
         }
 
         _timeSinceRoundStart += delta;
-        _scoreLabel.Text = ((int)_score).ToString();
     }
 
     public void OnRoundComplete()
     {
-        if (!_enabled)
+        if (!Enabled)
             return;
 
         switch (_scoringRule)
@@ -80,14 +81,6 @@ public partial class Score : CanvasLayer
 
         _finishedRounds++;
         _timeSinceRoundStart = 0;
-    }
-
-    public void OnGameStart()
-    {
-        _score = 0;
-        _finishedRounds = 0;
-        _timeSinceRoundStart = 0;
-        _enabled = true;
     }
 
     private enum ScoringRule
