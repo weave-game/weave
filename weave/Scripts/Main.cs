@@ -33,13 +33,13 @@ public partial class Main : Node2D
     private Lobby _lobby = new();
     private Timer _playerDelayTimer;
 
-    [GetNode("ScoreDisplay")]
-    private Score _score;
-
     /// <summary>
     ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
+
+    [GetNode("ScoreDisplay")]
+    private Score _score;
 
     [GetNode("ScoreDisplay")]
     private Score _scoreDisplay;

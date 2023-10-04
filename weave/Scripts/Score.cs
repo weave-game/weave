@@ -6,10 +6,6 @@ namespace weave;
 
 public partial class Score : CanvasLayer
 {
-    // Change to switch between different scoring rules
-    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
-
-    public bool Enabled { set; get; }
     private const double PointsForSeconds = 25;
     private const double PointsForRound = 500;
     private const double MinPointsForRound = 150;
@@ -20,7 +16,12 @@ public partial class Score : CanvasLayer
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
 
+    // Change to switch between different scoring rules
+    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
+
     private double _timeSinceRoundStart;
+
+    public bool Enabled { set; get; }
 
     public override void _Ready()
     {
