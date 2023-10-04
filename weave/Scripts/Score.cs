@@ -19,6 +19,11 @@ public partial class Score : CanvasLayer
     // Change to switch between different scoring rules
     private ScoringRule _scoringRule = ScoringRule.TIME_ONLY_BASED_ON_ROUND;
 
+    public bool Enabled {
+        set { _enabled = value; }
+        get { return _enabled; }
+    }
+
     private bool _enabled = false;
     private double _score = 0;
     private double _timeSinceRoundStart = 0;
@@ -39,6 +44,8 @@ public partial class Score : CanvasLayer
 
     public override void _Process(double delta)
     {
+        _scoreLabel.Text = ((int)_score).ToString();
+
         if (!_enabled)
             return;
 
@@ -56,7 +63,6 @@ public partial class Score : CanvasLayer
         }
 
         _timeSinceRoundStart += delta;
-        _scoreLabel.Text = ((int)_score).ToString();
     }
 
     public void OnRoundComplete()
@@ -82,13 +88,5 @@ public partial class Score : CanvasLayer
 
         _finishedRounds++;
         _timeSinceRoundStart = 0;
-    }
-
-    public void OnGameStart()
-    {
-        _score = 0;
-        _finishedRounds = 0;
-        _timeSinceRoundStart = 0;
-        _enabled = true;
     }
 }
