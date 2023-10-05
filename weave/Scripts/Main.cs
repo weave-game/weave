@@ -266,13 +266,6 @@ public partial class Main : Node2D
         });
     }
 
-    private Vector2 GetRandomCoordinateInView(float margin)
-    {
-        var x = (float)GD.RandRange(margin, _width - margin);
-        var y = (float)GD.RandRange(margin, _height - margin);
-        return new Vector2(x, y);
-    }
-
     private List<Vector2> GetRandomPositionsInView(
         int n,
         List<Vector2> occupiedPositions = null,
