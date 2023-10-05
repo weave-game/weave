@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace weave.InputSources;
 
@@ -12,11 +13,14 @@ public sealed class Lobby
 
     public string LobbyCode;
     private const int _lobbyCodeLength = 5;
-    private const string _lobbyCodeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const string _lobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+    public ImageTexture LobbyQRCode;
 
     public Lobby()
     {
         LobbyCode = GenerateLobbyCode(_lobbyCodeCharacters, _lobbyCodeLength);
+        LobbyQRCode = GenerateLobbyQRCode($"localhost:3000/{LobbyCode}");
     }
 
     public void Join(IInputSource inputSource)
@@ -42,5 +46,10 @@ public sealed class Lobby
             result[i] = allowedCharacters[rnd.Next(allowedCharacters.Length - 1)];
         }
         return new string(result);
+    }
+
+    private static ImageTexture GenerateLobbyQRCode(string str)
+    {
+        return GDScriptHelper.GenerateQRCodeFromString(str);
     }
 }

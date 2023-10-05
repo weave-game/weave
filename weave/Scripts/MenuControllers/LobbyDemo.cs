@@ -22,11 +22,15 @@ public partial class LobbyDemo : Control
     [GetNode("LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
 
+    [GetNode("QRCodeTexture")]
+    private TextureRect _qrCodeTexture;
+
     public override void _Ready()
     {
         this.GetNodes();
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
+        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
 
         _button.Pressed += () =>
         {
@@ -137,4 +141,8 @@ public partial class LobbyDemo : Control
         _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
     }
 
+    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    {
+        _qrCodeTexture.Texture = newTexture;
+    }
 }
