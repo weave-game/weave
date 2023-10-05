@@ -246,13 +246,15 @@ public partial class Main : Node2D
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
-        // Spawn new goals
+        // Generate goal positions
         List<Vector2> playerPositions = new List<Vector2>();
         _players.ForEach(player =>
         {
             playerPositions.Add(player.Position);
         });
         List<Vector2> goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
+
+        // Spawn new goals
         _players.ForEach(player =>
         {
             var goal = Instanter.Instantiate<Goal>();
@@ -284,6 +286,8 @@ public partial class Main : Node2D
         if (n < 1 || gridWidth < 1 || gridHeight < 1)
             return points;
 
+        cellPaddingRatio = Mathf.Min(1, Mathf.Max(0, cellPaddingRatio));
+
         Vector2 cellSize = new Vector2(_width / gridWidth, _height / gridHeight);
         Vector2 padding = new Vector2(
             cellSize.X * cellPaddingRatio / 2,
@@ -294,6 +298,7 @@ public partial class Main : Node2D
             0 //(float)GD.RandRange(0, cellSize.Y)
         );
 
+        // Create grid cells from occupied positions, these cells will be omitted later
         var occupiedCells = new List<Vector2>();
         if (occupiedPositions != null)
         {
@@ -311,18 +316,22 @@ public partial class Main : Node2D
         if (n + (occupiedPositions == null ? 0 : occupiedPositions.Count) > gridWidth * gridHeight)
             return points;
 
+        // Create grid cells
         var cells = new List<Vector2>();
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                if (occupiedCells.Contains(new Vector2(x, y)))
+                Vector2 cell = new Vector2(x, y);
+
+                if (occupiedCells.Contains(cell))
                     continue;
 
-                cells.Add(new Vector2(x, y));
+                cells.Add(cell);
             }
         }
 
+        // Generate positions
         for (int i = 0; i < n; i++)
         {
             Vector2 selectedCell = cells[GD.RandRange(0, cells.Count - 1)];
@@ -332,13 +341,12 @@ public partial class Main : Node2D
                 (float)GD.RandRange(padding.Y, cellSize.Y - padding.Y)
             );
 
-            points.Add(
-                new Vector2(
-                    selectedCell.X * cellSize.X + pointInsideCell.X + offset.X,
-                    selectedCell.Y * cellSize.Y + pointInsideCell.Y + offset.Y
-                )
+            Vector2 point = new Vector2(
+                selectedCell.X * cellSize.X + pointInsideCell.X + offset.X,
+                selectedCell.Y * cellSize.Y + pointInsideCell.Y + offset.Y
             );
 
+            points.Add(point);
             cells.Remove(selectedCell);
         }
 
