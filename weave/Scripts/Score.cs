@@ -6,12 +6,14 @@ namespace weave;
 
 public partial class Score : CanvasLayer
 {
-    private const double PointsForSeconds = 25;
-    private const double PointsForRound = 500;
-    private const double MinPointsForRound = 150;
-    private const double RoundMultiplier = 1.1;
+    private const float PointsForSeconds = 25;
+    private const float PointsForRound = 500;
+    private const float MinPointsForRound = 150;
+    private const float RoundMultiplier = 1.1f;
+    private const float PlayerMultiplier = 1.5f;
     private int _finishedRounds;
-    private double _score;
+    private float _score;
+    private int _playerCount;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -35,14 +37,19 @@ public partial class Score : CanvasLayer
         if (!Enabled)
             return;
 
+        float scoreIncrease = 0;
+
         switch (_scoringRule)
         {
             case ScoringRule.TimeOnly:
             case ScoringRule.TimeAndRound:
-                _score += delta * PointsForSeconds;
+                scoreIncrease += (float)delta * PointsForSeconds;
                 break;
             case ScoringRule.TimeOnlyBasedOnRound:
-                _score += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
+                scoreIncrease +=
+                    (float)delta
+                    * PointsForSeconds
+                    * MathF.Pow(RoundMultiplier, _finishedRounds - 1);
                 break;
             case ScoringRule.RoundOnly:
                 break;
@@ -52,6 +59,8 @@ public partial class Score : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
+        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+
         _timeSinceRoundStart += delta;
     }
 
@@ -60,16 +69,18 @@ public partial class Score : CanvasLayer
         if (!Enabled)
             return;
 
+        float scoreIncrease = 0;
+
         switch (_scoringRule)
         {
             case ScoringRule.RoundOnly:
             case ScoringRule.TimeAndRound:
-                _score += PointsForRound;
+                scoreIncrease += PointsForRound;
                 break;
             case ScoringRule.RoundOnlyBasedOnTime:
-                _score += Math.Max(
+                scoreIncrease += MathF.Max(
                     MinPointsForRound,
-                    PointsForRound - _timeSinceRoundStart * PointsForSeconds
+                    PointsForRound - (float)_timeSinceRoundStart * PointsForSeconds
                 );
                 break;
             case ScoringRule.TimeOnly:
@@ -80,8 +91,15 @@ public partial class Score : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
+        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+
         _finishedRounds++;
         _timeSinceRoundStart = 0;
+    }
+
+    public void OnGameStart(int playerCount)
+    {
+        _playerCount = playerCount;
     }
 
     private enum ScoringRule

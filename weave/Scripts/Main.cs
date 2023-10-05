@@ -65,6 +65,8 @@ public partial class Main : Node2D
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
+
+        _score.OnGameStart(_players.Count);
     }
 
     public override void _Process(double delta)
