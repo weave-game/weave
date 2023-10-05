@@ -4,7 +4,7 @@ using GodotSharper.AutoGetNode;
 
 namespace weave;
 
-public partial class Score : CanvasLayer
+public partial class ScoreDisplay : CanvasLayer
 {
     private const float PointsForSeconds = 25;
     private const float PointsForRound = 500;
@@ -12,8 +12,9 @@ public partial class Score : CanvasLayer
     private const float RoundMultiplier = 1.1f;
     private const float PlayerMultiplier = 1.5f;
     private int _finishedRounds;
-    private float _score;
     private int _playerCount;
+
+    public float Score { get; private set; }
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -32,7 +33,7 @@ public partial class Score : CanvasLayer
 
     public override void _Process(double delta)
     {
-        _scoreLabel.Text = ((int)_score).ToString();
+        _scoreLabel.Text = ((int)Score).ToString();
 
         if (!Enabled)
             return;
@@ -59,7 +60,7 @@ public partial class Score : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        Score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
 
         _timeSinceRoundStart += delta;
     }
@@ -91,7 +92,7 @@ public partial class Score : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        Score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
 
         _finishedRounds++;
         _timeSinceRoundStart = 0;

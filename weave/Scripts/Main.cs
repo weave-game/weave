@@ -39,10 +39,7 @@ public partial class Main : Node2D
     private int _roundCompletions;
 
     [GetNode("ScoreDisplay")]
-    private Score _score;
-
-    [GetNode("ScoreDisplay")]
-    private Score _scoreDisplay;
+    private ScoreDisplay _scoreDisplay;
 
     private Timer _uiUpdateTimer;
     private int _width;
@@ -66,7 +63,7 @@ public partial class Main : Node2D
         ClearAndSpawnGoals();
         SetupLogger();
 
-        _score.OnGameStart(_players.Count);
+        _scoreDisplay.OnGameStart(_players.Count);
     }
 
     public override void _Process(double delta)
@@ -94,7 +91,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
-        _score.Enabled = true;
+        _scoreDisplay.Enabled = true;
     }
 
     private void DisablePlayerMovement()
@@ -102,7 +99,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
-        _score.Enabled = false;
+        _scoreDisplay.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -223,7 +220,7 @@ public partial class Main : Node2D
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
-        _score.OnRoundComplete();
+        _scoreDisplay.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
