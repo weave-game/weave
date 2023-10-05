@@ -115,10 +115,10 @@ public partial class LobbyDemo : Control
         if (deviceId < 0)
             return;
 
-        if (@event.IsActionPressed(ActionConstants.GamepadJoinAction))
+        if (@event.IsActionPressed(GodotConfig.GamepadJoinAction))
             _lobby.Join(new GamepadInputSource(deviceId));
 
-        if (@event.IsActionPressed(ActionConstants.GamepadLeaveAction))
+        if (@event.IsActionPressed(GodotConfig.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
     }
 

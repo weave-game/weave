@@ -202,7 +202,7 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GroupConstants.LineGroup);
+        line.AddToGroup(GodotConfig.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
@@ -227,7 +227,7 @@ public partial class Main : Node2D
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GroupConstants.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -236,7 +236,7 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GroupConstants.GoalGroup)
+            .GetNodesInGroup(GodotConfig.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
@@ -267,12 +267,12 @@ public partial class Main : Node2D
         {
             // FPS Logger
             new(
-                DevConstants.FpsLogFilePath,
+                Constants.FpsLogFilePath,
                 new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
             ),
             // Speed Logger
             new(
-                DevConstants.SpeedLogFilePath,
+                Constants.SpeedLogFilePath,
                 new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
             )
         };

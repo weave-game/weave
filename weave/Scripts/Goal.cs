@@ -1,11 +1,10 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Utils;
 
 namespace weave;
 
-[Scene(ObjectResources.GoalScene)]
+[Scene("res://Objects/Goal.tscn")]
 public partial class Goal : Node2D
 {
     /// <summary>
