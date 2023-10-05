@@ -24,7 +24,7 @@ public partial class StartScreen : Node2D
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
-            .GetNodesInGroup(GroupConstants.Firefly)
+            .GetNodesInGroup(GodotConfig.FireflyGroup)
             .Cast<Firefly>()
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }

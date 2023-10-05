@@ -42,7 +42,9 @@ public partial class Firefly : Path2D
         AddChild(_animationTimer);
 
         for (var i = 0; i < NrPoints; i++)
+        {
             _line.AddPoint(new Vector2());
+        }
     }
 
     public void SetColor(Color color)
