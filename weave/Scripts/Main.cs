@@ -15,6 +15,7 @@ using static weave.InputSources.KeyboardBindings;
 
 namespace weave;
 
+[Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
     private const float Acceleration = 3.5f;

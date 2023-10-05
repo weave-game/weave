@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using Godot;
 using GodotSharper.AutoGetNode;
+using GodotSharper.Instancing;
 using weave.InputSources;
 using weave.Utils;
 
@@ -25,7 +26,7 @@ public partial class LobbyDemo : Control
         _button.Pressed += () =>
         {
             GameConfig.Lobby = _lobby;
-            GetTree().ChangeSceneToFile(SceneResources.MainScene);
+            GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
         };
     }
 

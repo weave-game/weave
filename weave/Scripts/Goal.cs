@@ -5,7 +5,7 @@ using weave.Utils;
 
 namespace weave;
 
-[Instantiable(ObjectResources.GoalScene)]
+[Scene(ObjectResources.GoalScene)]
 public partial class Goal : Node2D
 {
     /// <summary>
