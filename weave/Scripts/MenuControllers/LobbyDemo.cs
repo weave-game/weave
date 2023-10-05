@@ -97,9 +97,7 @@ public partial class LobbyDemo : Control
         var i = 1;
         foreach (var inputSource in _lobby.InputSources)
         {
-            sb.AppendLine(
-                $"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}"
-            );
+            sb.AppendLine($"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}");
 
             if (inputSource is KeyboardInputSource k)
             {

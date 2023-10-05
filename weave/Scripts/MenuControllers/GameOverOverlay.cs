@@ -11,7 +11,7 @@ public partial class GameOverOverlay : CanvasLayer
 
     [GetNode("CenterContainer/VBox/MenuButton")]
     private Button _menuButton;
-    
+
     public override void _Ready()
     {
         this.GetNodes();
