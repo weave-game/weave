@@ -11,16 +11,17 @@ public sealed class Lobby
     public IReadOnlyList<IInputSource> InputSources => _inputSources.AsReadOnly();
     public int Count => _inputSources.Count;
 
-    public string LobbyCode;
+    public string LobbyCode { get; set; }
     private const int _lobbyCodeLength = 5;
     private const string _lobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-    public ImageTexture LobbyQRCode;
+    public ImageTexture LobbyQRCode { get; set; }
+    private const string _lobbyQRCodePath = "localhost:3000";
 
     public Lobby()
     {
         LobbyCode = GenerateLobbyCode(_lobbyCodeCharacters, _lobbyCodeLength);
-        LobbyQRCode = GenerateLobbyQRCode($"localhost:3000/{LobbyCode}");
+        LobbyQRCode = GenerateLobbyQRCode($"{_lobbyQRCodePath}/{LobbyCode}");
     }
 
     public void Join(IInputSource inputSource)
