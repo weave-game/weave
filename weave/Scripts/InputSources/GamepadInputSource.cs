@@ -17,12 +17,12 @@ public sealed class GamepadInputSource : IInputSource
 
     bool IInputSource.IsTurningLeft()
     {
-        return Input.GetJoyAxis(_deviceId, JoyAxis.LeftX) < -DeadZone;
+        return Input.GetJoyAxis(_deviceId, JoyAxis.TriggerLeft) > DeadZone;
     }
 
     bool IInputSource.IsTurningRight()
     {
-        return Input.GetJoyAxis(_deviceId, JoyAxis.LeftX) > DeadZone;
+        return Input.GetJoyAxis(_deviceId, JoyAxis.TriggerRight) > DeadZone;
     }
 
     public bool Equals(IInputSource other)

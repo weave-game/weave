@@ -8,7 +8,7 @@ namespace weave.InputSources;
 public sealed class Lobby
 {
     private readonly IList<IInputSource> _inputSources = new List<IInputSource>();
-    public IList<IInputSource> InputSources => _inputSources.ToList();
+    public IReadOnlyList<IInputSource> InputSources => _inputSources.AsReadOnly();
     public int Count => _inputSources.Count;
 
     public string LobbyCode;

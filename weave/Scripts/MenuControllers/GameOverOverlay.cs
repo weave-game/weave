@@ -6,11 +6,11 @@ namespace weave.MenuControllers;
 
 public partial class GameOverOverlay : CanvasLayer
 {
-    [GetNode("CenterContainer/VBox/RetryButton")]
-    private Button _retryButton;
-
     [GetNode("CenterContainer/VBox/MenuButton")]
     private Button _menuButton;
+
+    [GetNode("CenterContainer/VBox/RetryButton")]
+    private Button _retryButton;
 
     public override void _Ready()
     {

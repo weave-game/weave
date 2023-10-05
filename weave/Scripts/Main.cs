@@ -21,27 +21,31 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private Lobby _lobby = new();
-
-    [GetNode("GameOverOverlay")]
-    private GameOverOverlay _gameOverOverlay;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
-    [GetNode("ScoreDisplay")]
-    private Score _scoreDisplay;
+    [GetNode("GameOverOverlay")]
+    private GameOverOverlay _gameOverOverlay;
+
+    private Grid _grid;
+    private int _height;
+    private Lobby _lobby = new();
+    private Timer _playerDelayTimer;
 
     /// <summary>
     ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
 
-    private Grid _grid;
-    private int _width;
-    private int _height;
+    [GetNode("ScoreDisplay")]
+    private Score _score;
+
+    [GetNode("ScoreDisplay")]
+    private Score _scoreDisplay;
+
     private Timer _uiUpdateTimer;
-    private Timer _playerDelayTimer;
+    private int _width;
 
     public override void _Ready()
     {
@@ -50,7 +54,7 @@ public partial class Main : Node2D
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.InputSources.Count == 0)
-            _lobby.InputSources.Add(new KeyboardInputSource(Keybindings[0]));
+            _lobby.Join(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
@@ -88,6 +92,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
+        _score.Enabled = true;
     }
 
     private void DisablePlayerMovement()
@@ -95,6 +100,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
+        _score.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -107,13 +113,13 @@ public partial class Main : Node2D
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
-        _playerDelayTimer.Timeout += _scoreDisplay.OnGameStart;
         AddChild(_playerDelayTimer);
     }
 
     private void UpdateCountdown()
     {
-        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1).ToString();
+        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1)
+            .ToString(CultureInfo.InvariantCulture);
         _countdownLabel.UpdateLabelText(newText);
     }
 
@@ -129,9 +135,7 @@ public partial class Main : Node2D
                 player.GetRadius()
             );
             if (IsPlayerIntersecting(player, segments))
-            {
                 hasCollided = true;
-            }
         }
 
         if (hasCollided)
@@ -144,21 +148,13 @@ public partial class Main : Node2D
         {
             var pos = player.Position;
             if (pos.X < 0)
-            {
                 player.Position = new Vector2(_width, pos.Y);
-            }
             else if (pos.X > _width)
-            {
                 player.Position = new Vector2(0, pos.Y);
-            }
             else if (pos.Y < 0)
-            {
                 player.Position = new Vector2(pos.X, _height);
-            }
             else if (pos.Y > _height)
-            {
                 player.Position = new Vector2(pos.X, 0);
-            }
         }
     }
 
@@ -225,7 +221,7 @@ public partial class Main : Node2D
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
-        _scoreDisplay.OnRoundComplete();
+        _score.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
