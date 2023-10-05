@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using Godot;
@@ -179,7 +177,8 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var colorGenerator = new UniqueColorGenerator();
-        List<Vector2> playerPositions = GetRandomPointsInView(_lobby.InputSources.Count);
+
+        List<Vector2> playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
         _lobby.InputSources.ForEach(input =>
         {
@@ -245,10 +244,15 @@ public partial class Main : Node2D
         GetTree()
             .GetNodesInGroup(GroupConstants.GoalGroup)
             .ToList()
-            .ForEach(goal => goal.QueueFree());        
+            .ForEach(goal => goal.QueueFree());
 
         // Spawn new goals
-        List<Vector2> goalPositions = GetRandomPointsInView(_players.Count);
+        List<Vector2> playerPositions = new List<Vector2>();
+        _players.ForEach(player =>
+        {
+            playerPositions.Add(player.Position);
+        });
+        List<Vector2> goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
         _players.ForEach(player =>
         {
             var goal = Instanter.Instantiate<Goal>();
@@ -267,84 +271,78 @@ public partial class Main : Node2D
         return new Vector2(x, y);
     }
 
-    private List<Vector2> GetRandomPointsInView(int n, float minDistance = 300, float margin = 50) {
+    private List<Vector2> GetRandomPositionsInView(
+        int n,
+        List<Vector2> occupiedPositions = null,
+        int gridWidth = 6,
+        int gridHeight = 4,
+        float cellPaddingRatio = 0.5f
+    )
+    {
         List<Vector2> points = new List<Vector2>();
-        if (n < 1) return points;
 
-        const int maxTries = 1000;
+        if (n < 1 || gridWidth < 1 || gridHeight < 1)
+            return points;
 
-        Console.WriteLine($"Generating...");
+        Vector2 cellSize = new Vector2(_width / gridWidth, _height / gridHeight);
+        Vector2 padding = new Vector2(
+            cellSize.X * cellPaddingRatio / 2,
+            cellSize.Y * cellPaddingRatio / 2
+        );
+        Vector2 offset = new Vector2(
+            0, //(float)GD.RandRange(0, cellSize.X),
+            0 //(float)GD.RandRange(0, cellSize.Y)
+        );
 
-        // Create the first point anywhere
-        points.Add(GetRandomCoordinateInView(margin));
-        Console.WriteLine($"Position: {points[0]}");
-
-        // Then generate the rest
-        for (int pointsLeft = n - 1; pointsLeft > 0; pointsLeft--) {
-
-            // Pick a random existing point
-            Vector2 origo = points[GD.RandRange(0, points.Count - 1)];
-            Vector2 newPoint = new Vector2();
-
-            // Generate a random point around it
-            bool valid = false;
-            for (int tries = 0; tries <= maxTries && !valid; tries++) {
-                float radius = (float)GD.RandRange(minDistance, (_width + _height) / 2.0f);
-                float angle = (float)GD.RandRange(0, 2 * Math.PI);
-
-                newPoint = new Vector2(
-                    origo.X + radius * Mathf.Cos(angle),
-                    origo.Y + radius * Mathf.Sin(angle)
+        var occupiedCells = new List<Vector2>();
+        if (occupiedPositions != null)
+        {
+            occupiedPositions.ForEach(position =>
+            {
+                occupiedCells.Add(
+                    new Vector2(
+                        (int)((position.X - offset.X) / cellSize.X),
+                        (int)((position.Y - offset.Y) / cellSize.Y)
+                    )
                 );
+            });
+        }
 
-                while (origo.X < 0) origo.X += _width;
-                while (origo.Y < 0) origo.Y += _height;
-                while (origo.X >= _width) origo.X -= _width;
-                while (origo.Y >= _height) origo.Y -= _height;
+        if (n + (occupiedPositions == null ? 0 : occupiedPositions.Count) > gridWidth * gridHeight)
+            return points;
 
-                valid = true;
+        var cells = new List<Vector2>();
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                if (occupiedCells.Contains(new Vector2(x, y)))
+                    continue;
 
-                // Check if it is far away enough from other points
-                foreach (Vector2 point in points) {
-                    if (GetDistanceOfPointsInView(newPoint, point) < minDistance) {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                // Check if it is outside the margin
-                if (margin > newPoint.X || newPoint.X > _width - margin) valid = false;
-                if (margin > newPoint.Y || newPoint.Y > _height - margin) valid = false;
+                cells.Add(new Vector2(x, y));
             }
+        }
 
-            // If generation was not successful, add a random point instead
-            if (!valid) {
-                Console.WriteLine($"Generating failed from {maxTries} tries, using random coordinates.");
-                newPoint = GetRandomCoordinateInView(margin);
-            }
+        for (int i = 0; i < n; i++)
+        {
+            Vector2 selectedCell = cells[GD.RandRange(0, cells.Count - 1)];
 
-            points.Add(newPoint);   
+            Vector2 pointInsideCell = new Vector2(
+                (float)GD.RandRange(padding.X, cellSize.X - padding.X),
+                (float)GD.RandRange(padding.Y, cellSize.Y - padding.Y)
+            );
 
-            Console.WriteLine($"Position: {newPoint}");         
+            points.Add(
+                new Vector2(
+                    selectedCell.X * cellSize.X + pointInsideCell.X + offset.X,
+                    selectedCell.Y * cellSize.Y + pointInsideCell.Y + offset.Y
+                )
+            );
+
+            cells.Remove(selectedCell);
         }
 
         return points;
-    }
-
-    private float GetDistanceOfPointsInView(Vector2 a, Vector2 b) {
-        float distance = a.DistanceTo(b);
-
-        Vector2 bUp = new Vector2(b.X, b.Y - _height);
-        Vector2 bDown = new Vector2(b.X, b.Y + _height);
-        Vector2 bLeft = new Vector2(b.X - _width, b.Y);
-        Vector2 bRight = new Vector2(b.X + _width, b.Y);
-
-        if (distance > a.DistanceTo(bUp)) distance = a.DistanceTo(bUp);
-        if (distance > a.DistanceTo(bDown)) distance = a.DistanceTo(bDown);
-        if (distance > a.DistanceTo(bLeft)) distance = a.DistanceTo(bLeft);
-        if (distance > a.DistanceTo(bRight)) distance = a.DistanceTo(bRight);
-
-        return distance;
     }
 
     private void SetupLogger()
