@@ -7,8 +7,8 @@ using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputSources;
-using weave.Logger;
-using weave.Logger.Concrete;
+using weave.Logging;
+using weave.Logging.Concrete;
 using weave.MenuControllers;
 using weave.Scoring;
 using weave.Utils;
@@ -270,17 +270,19 @@ public partial class Main : Node2D
         var fpsDeltaLogger = new DeltaLogger();
         var speedDeltaLogger = new DeltaLogger();
 
-        var loggers = new List<Logger.Logger>
+        var loggers = new List<Logger>
         {
             // FPS Logger
             new(
                 Constants.FpsLogFilePath,
-                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
+                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger },
+                LoggerMode.Reset
             ),
             // Speed Logger
             new(
                 Constants.SpeedLogFilePath,
-                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
+                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger },
+                LoggerMode.Reset
             )
         };
 

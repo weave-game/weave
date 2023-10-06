@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using GodotSharper;
 
-namespace weave.Logger;
+namespace weave.Logging;
 
 public class Logger
 {
     private readonly string _filePath;
     private readonly IEnumerable<Func<Log>> _loggers;
+    private LoggerMode _loggerMode;
 
     /// <summary>
     ///     A list of logs to log. Each list of logs represents a single log event.
@@ -19,11 +20,12 @@ public class Logger
 
     private bool _firstPersist = true;
 
-    public Logger(string filePath, IEnumerable<Func<Log>> loggers)
+    public Logger(string filePath, IEnumerable<Func<Log>> loggers, LoggerMode loggerMode)
     {
         _logsToLog = new List<IList<Log>>();
         _filePath = filePath;
         _loggers = loggers;
+        _loggerMode = loggerMode;
     }
 
     public void Log()

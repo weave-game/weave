@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using weave.Logger;
+using weave.Logging;
 using weave.Scoring;
 using weave.Utils;
 
@@ -8,7 +8,7 @@ namespace weave;
 
 public sealed class ScoreManager : IScoreManager
 {
-    private Logger.Logger Logger { get; }
+    private Logger Logger { get; }
     private ISet<Score> Scores { get; }
     private ScoreUnit CurrentScore { get; set; }
 
@@ -23,7 +23,7 @@ public sealed class ScoreManager : IScoreManager
             () => new Log("name", CurrentScore.Name)
         };
 
-        Logger = new Logger.Logger(Constants.ScoreLogFilePath, loggers);
+        Logger = new Logger(Constants.ScoreLogFilePath, loggers, LoggerMode.Append);
     }
 
     public void Save(ScoreUnit score)
