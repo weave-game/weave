@@ -10,6 +10,7 @@ using weave.InputSources;
 using weave.Logger;
 using weave.Logger.Concrete;
 using weave.MenuControllers;
+using weave.Scoring;
 using weave.Utils;
 using static weave.InputSources.KeyboardBindings;
 
@@ -22,6 +23,7 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
+    private IScoreManager _scoreManager;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
@@ -51,6 +53,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _scoreManager = new ScoreManager();
         _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
@@ -164,6 +167,10 @@ public partial class Main : Node2D
         _gameOverOverlay.Visible = true;
         _gameOverOverlay.FocusRetryButton();
         ProcessMode = ProcessModeEnum.Disabled;
+        
+        // Save score
+        var score = new ScoreUnit(Guid.NewGuid().ToString(), _scoreDisplay.Points, UniqueNameGenerator.New());
+        _scoreManager.Save(score);
     }
 
     private ISet<SegmentShape2D> GetAllSegments()

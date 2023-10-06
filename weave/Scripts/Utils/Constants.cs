@@ -13,6 +13,7 @@ public static class Constants
 
     public const string FpsLogFilePath = "./Loggings/fps.csv";
     public const string SpeedLogFilePath = "./Loggings/speed.csv";
+    public const string ScoreLogFilePath = "./Loggings/score.csv";
 
     #endregion
 }

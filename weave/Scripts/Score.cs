@@ -11,7 +11,11 @@ public partial class Score : CanvasLayer
     private const double MinPointsForRound = 150;
     private const double RoundMultiplier = 1.1;
     private int _finishedRounds;
-    private double _score;
+    
+    /// <summary>
+    ///     The score. Internally stored as a double to allow for more precise calculations but when used externally its an int.
+    /// </summary>
+    public int Points => (int)_points;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -20,6 +24,7 @@ public partial class Score : CanvasLayer
     private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
 
     private double _timeSinceRoundStart;
+    private double _points;
 
     public bool Enabled { set; get; }
 
@@ -30,7 +35,7 @@ public partial class Score : CanvasLayer
 
     public override void _Process(double delta)
     {
-        _scoreLabel.Text = ((int)_score).ToString();
+        _scoreLabel.Text = ((int)Points).ToString();
 
         if (!Enabled)
             return;
@@ -39,10 +44,10 @@ public partial class Score : CanvasLayer
         {
             case ScoringRule.TimeOnly:
             case ScoringRule.TimeAndRound:
-                _score += delta * PointsForSeconds;
+                _points += delta * PointsForSeconds;
                 break;
             case ScoringRule.TimeOnlyBasedOnRound:
-                _score += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
+                _points += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
                 break;
             case ScoringRule.RoundOnly:
                 break;
@@ -64,10 +69,10 @@ public partial class Score : CanvasLayer
         {
             case ScoringRule.RoundOnly:
             case ScoringRule.TimeAndRound:
-                _score += PointsForRound;
+                _points += PointsForRound;
                 break;
             case ScoringRule.RoundOnlyBasedOnTime:
-                _score += Math.Max(
+                _points += Math.Max(
                     MinPointsForRound,
                     PointsForRound - _timeSinceRoundStart * PointsForSeconds
                 );
