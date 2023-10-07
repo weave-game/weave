@@ -8,7 +8,7 @@ namespace weave.MenuControllers;
 public partial class ScoreDemo : Node2D
 {
     private IScoreManager _scoreManager;
-    private ScoreUnit _score;
+    private ScoreRecord _score;
     
     [GetNode("Button")]
     private Button _button;
@@ -20,7 +20,7 @@ public partial class ScoreDemo : Node2D
     {
         this.GetNodes();
         _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
-        _score = new ScoreUnit(0, UniqueNameGenerator.New());
+        _score = new ScoreRecord(0, UniqueNameGenerator.New());
         _lineEdit.Text = _score.Name;
 
         _button.Pressed += OnButtonPressed;
@@ -30,10 +30,5 @@ public partial class ScoreDemo : Node2D
     {
         _score.Name = _lineEdit.Text;
         _scoreManager.Save(_score);
-    }
-
-    public override void _Process(double delta)
-    {
-        
     }
 }

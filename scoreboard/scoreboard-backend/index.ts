@@ -29,7 +29,6 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
   const readFile = util.promisify(fs.readFile);
 
   try {
-    console.log(`Reading scores from ${filePath}`);
     const data = await readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
     const scores: Score[] = [];

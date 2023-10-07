@@ -2,10 +2,9 @@ using System;
 
 namespace weave.Scoring;
 
-// TODO: Rename to Score once the other PR is merged
-public struct ScoreUnit
+public class ScoreRecord
 {
-    public ScoreUnit(int value, string name)
+    public ScoreRecord(int value, string name)
     {
         Id = Guid.NewGuid().ToString();
         Value = value;

@@ -6,5 +6,5 @@ public interface IScoreManager
     ///     Saves or updates the score if it has the same id.
     /// </summary>
     /// <param name="score">The score.</param>
-    void Save(ScoreUnit score);
+    void Save(ScoreRecord score);
 }

@@ -169,7 +169,7 @@ public partial class Main : Node2D
         ProcessMode = ProcessModeEnum.Disabled;
 
         // Save score
-        var score = new ScoreUnit(
+        var score = new ScoreRecord(
             _scoreDisplay.Points,
             UniqueNameGenerator.New()
         );
