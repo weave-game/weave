@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://c4u3ecsd5s5if" path="res://Assets/Music/weave.wav" id="4_dnn4g"]
 [ext_resource type="PackedScene" uid="uid://dfn3svkimd3s4" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
 [ext_resource type="Script" path="res://Scripts/CountdownLabel.cs" id="5_rrrp0"]
-[ext_resource type="PackedScene" path="res://UI/ScoreDisplay.tscn" id="6_6l1qm"]
+[ext_resource type="PackedScene" uid="uid://d1s5px2gej6oj" path="res://UI/ScoreDisplay.tscn" id="6_6l1qm"]
 
 [sub_resource type="Environment" id="Environment_0o2dr"]
 background_mode = 3
