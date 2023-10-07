@@ -53,7 +53,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        _scoreManager = new CsvScoreManager();
+        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
@@ -170,7 +170,6 @@ public partial class Main : Node2D
 
         // Save score
         var score = new ScoreUnit(
-            Guid.NewGuid().ToString(),
             _scoreDisplay.Points,
             UniqueNameGenerator.New()
         );
@@ -202,7 +201,7 @@ public partial class Main : Node2D
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + Constants.LineWidth / 2f;
+        var radius = player.GetRadius() + WeaveConstants.LineWidth / 2f;
 
         return segments.Any(
             segment =>
@@ -278,13 +277,13 @@ public partial class Main : Node2D
         {
             // FPS Logger
             new CsvLogger(
-                Constants.FpsLogFilePath,
+                WeaveConstants.FpsLogFileCsvPath,
                 new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger },
                 LoggerMode.Reset
             ),
             // Speed Logger
             new CsvLogger(
-                Constants.SpeedLogFilePath,
+                WeaveConstants.SpeedLogFileCsvPath,
                 new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger },
                 LoggerMode.Reset
             )
