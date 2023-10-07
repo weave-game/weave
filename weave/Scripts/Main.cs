@@ -8,7 +8,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using weave.InputSources;
 using weave.Logging;
-using weave.Logging.Concrete;
+using weave.Logging.ConcreteCsv;
 using weave.MenuControllers;
 using weave.Scoring;
 using weave.Utils;
@@ -53,7 +53,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        _scoreManager = new ScoreManager();
+        _scoreManager = new CsvScoreManager();
         _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
@@ -167,9 +167,13 @@ public partial class Main : Node2D
         _gameOverOverlay.Visible = true;
         _gameOverOverlay.FocusRetryButton();
         ProcessMode = ProcessModeEnum.Disabled;
-        
+
         // Save score
-        var score = new ScoreUnit(Guid.NewGuid().ToString(), _scoreDisplay.Points, UniqueNameGenerator.New());
+        var score = new ScoreUnit(
+            Guid.NewGuid().ToString(),
+            _scoreDisplay.Points,
+            UniqueNameGenerator.New()
+        );
         _scoreManager.Save(score);
     }
 
@@ -270,16 +274,16 @@ public partial class Main : Node2D
         var fpsDeltaLogger = new DeltaLogger();
         var speedDeltaLogger = new DeltaLogger();
 
-        var loggers = new List<Logger>
+        var loggers = new List<ICsvLogger>
         {
             // FPS Logger
-            new(
+            new CsvLogger(
                 Constants.FpsLogFilePath,
                 new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger },
                 LoggerMode.Reset
             ),
             // Speed Logger
-            new(
+            new CsvLogger(
                 Constants.SpeedLogFilePath,
                 new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger },
                 LoggerMode.Reset

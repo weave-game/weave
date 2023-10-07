@@ -1,21 +1,15 @@
 using System;
 using System.Collections.Generic;
 using weave.Logging;
-using weave.Scoring;
+using weave.Logging.ConcreteCsv;
 using weave.Utils;
 
-namespace weave;
+namespace weave.Scoring;
 
-public sealed class ScoreManager : IScoreManager
+public sealed class CsvScoreManager : IScoreManager
 {
-    private Logger Logger { get; }
-    private ISet<Score> Scores { get; }
-    private ScoreUnit CurrentScore { get; set; }
-
-    public ScoreManager()
+    public CsvScoreManager()
     {
-        Scores = new HashSet<Score>();
-
         var loggers = new List<Func<Log>>
         {
             () => new Log("id", CurrentScore.Id),
@@ -23,13 +17,16 @@ public sealed class ScoreManager : IScoreManager
             () => new Log("name", CurrentScore.Name)
         };
 
-        Logger = new Logger(Constants.ScoreLogFilePath, loggers, LoggerMode.Append);
+        CsvLogger = new CsvLogger(Constants.ScoreLogFilePath, loggers, LoggerMode.Append);
     }
+
+    private CsvLogger CsvLogger { get; }
+    private ScoreUnit CurrentScore { get; set; }
 
     public void Save(ScoreUnit score)
     {
         CurrentScore = score;
-        Logger.Log();
-        Logger.Persist();
+        CsvLogger.Log();
+        CsvLogger.Persist();
     }
 }

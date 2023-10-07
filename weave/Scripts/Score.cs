@@ -11,7 +11,7 @@ public partial class Score : CanvasLayer
     private const double MinPointsForRound = 150;
     private const double RoundMultiplier = 1.1;
     private int _finishedRounds;
-    
+
     /// <summary>
     ///     The score. Internally stored as a double to allow for more precise calculations but when used externally its an int.
     /// </summary>
@@ -47,7 +47,8 @@ public partial class Score : CanvasLayer
                 _points += delta * PointsForSeconds;
                 break;
             case ScoringRule.TimeOnlyBasedOnRound:
-                _points += delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
+                _points +=
+                    delta * PointsForSeconds * Math.Pow(RoundMultiplier, _finishedRounds - 1);
                 break;
             case ScoringRule.RoundOnly:
                 break;

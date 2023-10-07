@@ -2,7 +2,7 @@ using System;
 
 namespace weave.Scoring;
 
-// TODO: Rename to Score
+// TODO: Rename to Score once the other PR is merged
 public struct ScoreUnit
 {
     public ScoreUnit(string id, int value, string name)

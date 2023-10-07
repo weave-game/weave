@@ -7,67 +7,80 @@ namespace weave.Utils;
 public static class UniqueNameGenerator
 {
     private static ISet<string> UsedNames { get; } = new HashSet<string>();
+    private static int _backupIndex;
+    private const int MaxAttempts = 100;
 
-    private static IReadOnlySet<string> Prefixes { get; } = new HashSet<string>
-    {
-        "Red",
-        "Sinister",
-        "Wicked",
-        "Violet",
-        "Cruel",
-        "Dreaded",
-        "Malevolent",
-        "Shadowy",
-        "Gloomy",
-        "Bleak",
-        "Ominous",
-        "Twisted",
-        "Corrupt",
-        "Ruthless",
-        "Venomous",
-        "Fiery",
-        "Murky",
-        "Midnight",
-        "Savage",
-        "Noxious",
-        "Rancid",
-        "Poisoned"
-    };
+    private static IReadOnlySet<string> Prefixes { get; } =
+        new HashSet<string>
+        {
+            "Red",
+            "Sinister",
+            "Wicked",
+            "Violet",
+            "Cruel",
+            "Dreaded",
+            "Malevolent",
+            "Shadowy",
+            "Gloomy",
+            "Bleak",
+            "Ominous",
+            "Twisted",
+            "Corrupt",
+            "Ruthless",
+            "Venomous",
+            "Fiery",
+            "Murky",
+            "Midnight",
+            "Savage",
+            "Noxious",
+            "Rancid",
+            "Poisoned"
+        };
 
-    private static IReadOnlySet<string> Suffixes { get; } = new HashSet<string>
-    {
-        "Lemurs",
-        "Baboons",
-        "Capuchins",
-        "Marmosets",
-        "Tarsiers",
-        "Macaques",
-        "Gibbons",
-        "Mandrills",
-        "Chimpanzees",
-        "Orangutans",
-        "Gorillas",
-        "AyeAyes",
-        "Iguanas",
-        "Komodos",
-        "Cheetahs",
-        "Ocelots",
-        "Jaguars",
-        "Pangolins",
-        "Kinkajous",
-        "Bushbabys",
-        "Tamarins",
-        "Sifakas",
-        "Langurs",
-        "Guerezsa"
-    };
+    private static IReadOnlySet<string> Suffixes { get; } =
+        new HashSet<string>
+        {
+            "Lemurs",
+            "Baboons",
+            "Capuchins",
+            "Marmosets",
+            "Tarsiers",
+            "Macaques",
+            "Gibbons",
+            "Mandrills",
+            "Chimpanzees",
+            "Orangutans",
+            "Gorillas",
+            "AyeAyes",
+            "Iguanas",
+            "Komodos",
+            "Cheetahs",
+            "Ocelots",
+            "Jaguars",
+            "Pangolins",
+            "Kinkajous",
+            "Bushbabys",
+            "Tamarins",
+            "Sifakas",
+            "Langurs",
+            "Guerezsa"
+        };
 
     public static string New()
     {
+        var attemps = 0;
         var name = Generate();
 
         while (UsedNames.Contains(name))
+        {
+            if (attemps++ >= MaxAttempts)
+            {
+                name = $"{Generate()} {_backupIndex++}";
+                break;
+            }
+
             name = Generate();
+        }
 
         UsedNames.Add(name);
         return name;
