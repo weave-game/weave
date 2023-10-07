@@ -1,8 +1,8 @@
-import express, { Request, Response } from "express";
-import cors from "cors";
-import fs from "fs";
-import csv from "csv-parser";
 import bodyParser from "body-parser";
+import cors from "cors";
+import express, { Request, Response } from "express";
+import fs from "fs";
+import util from "util";
 
 const app = express();
 const PORT = 3000;
@@ -19,42 +19,42 @@ let cachedScores: Score[] = [];
 let lastSuccessfulReadTimestamp: string | null = null;
 
 /**
- * Reads scores from a CSV file and returns an array of Score objects.
+ * Reads scores from a JSON file and returns an array of Score objects.
  * @returns A promise that resolves with an array of Score objects.
  */
-const readScoresFromFile = async (): Promise<Score[]> => {
-  const scores: Score[] = [];
+const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
+  const readFile = util.promisify(fs.readFile);
 
-  return new Promise<Score[]>((resolve, reject) => {
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on("data", (data) => {
-        const teamName = data["team"];
-        const teamScore = data["score"];
+  try {
+    const data = await readFile(filePath, "utf8");
+    const jsonData = JSON.parse(data);
+    const scores: Score[] = [];
 
-        if (teamName && typeof teamScore !== "undefined") {
-          scores.push({
-            name: teamName,
-            score: parseInt(teamScore, 10),
-          });
-        } else {
-          reject(new Error("Badly formatted CSV data"));
-        }
-      })
-      .on("end", () => resolve(scores))
-      .on("error", (error) => reject(error));
-  });
+    for (const key in jsonData) {
+      const team = jsonData[key];
+      scores.push({
+        name: team.Name,
+        score: team.Value,
+      });
+    }
+
+    return scores;
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Error reading JSON file`);
+  }
 };
 
 /***************
  * CONTROLLERS *
  ***************/
 
-app.get("/scores", async (_: Request, res: Response) => {
+app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
   let errorDetail = null;
 
+  // Attempt to read scores
   try {
-    const scores = await readScoresFromFile();
+    const scores = await readScoresFromFile(filePath);
     cachedScores = scores;
     lastSuccessfulReadTimestamp = new Date().toISOString();
   } catch (error) {
@@ -63,37 +63,35 @@ app.get("/scores", async (_: Request, res: Response) => {
     };
   }
 
+  // Return new scores or cached scores
   res.json({
     timestamp: lastSuccessfulReadTimestamp,
     scores: cachedScores,
     error: errorDetail,
+    filePath,
   });
 });
 
-app.get("/settings/file-path", async (_: Request, res: Response) => {
+app.get("/settings/file-path", (_: Request, res: Response) => {
   res.json({
     filePath,
   });
 });
 
-app.put(
-  "/settings/file-path",
-  jsonParser,
-  async (req: Request, res: Response) => {
-    const newFilePath = req.body.filePath;
+app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
+  const newFilePath = req.body.filePath;
 
-    if (typeof newFilePath === "string") {
-      filePath = newFilePath;
-      res.json({
-        filePath,
-      });
-    } else {
-      res.status(400).json({
-        message: "File path must be a string",
-      });
-    }
+  if (typeof newFilePath === "string") {
+    filePath = newFilePath;
+    res.json({
+      filePath,
+    });
+  } else {
+    res.status(400).json({
+      message: "File path must be a string",
+    });
   }
-);
+});
 
 /*********
  * START *
