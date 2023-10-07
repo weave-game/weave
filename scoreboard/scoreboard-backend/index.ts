@@ -3,6 +3,7 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import util from "util";
+import { ConfigManager } from "./config-manager";
 
 const app = express();
 const PORT = 3000;
@@ -14,9 +15,11 @@ type Score = {
 };
 
 const jsonParser = bodyParser.json();
-let filePath = "scores.csv";
 let cachedScores: Score[] = [];
 let lastSuccessfulReadTimestamp: string | null = null;
+
+// Config
+const configManager = new ConfigManager();
 
 /**
  * Reads scores from a JSON file and returns an array of Score objects.
@@ -26,6 +29,7 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
   const readFile = util.promisify(fs.readFile);
 
   try {
+    console.log(`Reading scores from ${filePath}`);
     const data = await readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
     const scores: Score[] = [];
@@ -54,7 +58,7 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
 
   // Attempt to read scores
   try {
-    const scores = await readScoresFromFile(filePath);
+    const scores = await readScoresFromFile(configManager.getFilePath());
     cachedScores = scores;
     lastSuccessfulReadTimestamp = new Date().toISOString();
   } catch (error) {
@@ -68,13 +72,13 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
     timestamp: lastSuccessfulReadTimestamp,
     scores: cachedScores,
     error: errorDetail,
-    filePath,
+    filePath: configManager.getFilePath(),
   });
 });
 
 app.get("/settings/file-path", (_: Request, res: Response) => {
   res.json({
-    filePath,
+    filePath: configManager.getFilePath(),
   });
 });
 
@@ -82,9 +86,10 @@ app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
   const newFilePath = req.body.filePath;
 
   if (typeof newFilePath === "string") {
-    filePath = newFilePath;
+    configManager.setFilePath(newFilePath);
+
     res.json({
-      filePath,
+      filePath: configManager.getFilePath(),
     });
   } else {
     res.status(400).json({
