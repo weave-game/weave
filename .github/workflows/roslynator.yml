@@ -28,6 +28,9 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: x
+        run: roslynator analyze "./weave.csproj"
+
       - name: Run Roslynator and Save Output
         run: |
           output=$(roslynator analyze "./weave.csproj")
