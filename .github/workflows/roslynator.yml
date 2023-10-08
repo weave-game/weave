@@ -29,17 +29,15 @@ jobs:
         run: dotnet restore
 
       - name: Run Roslynator and Capture Output
-        continue-on-error: true # Allow next steps to run even if this fails
+        continue-on-error: true
         run: |
           roslynator analyze "./weave.csproj" > roslynator_output.txt
 
-      - name: CAT Roslynator Output
-        run: cat roslynator_output.txt
-
-      - name: Comment PR if Roslynator Fails
-        uses: mshick/add-pr-comment@v2
+      - name: Store Roslynator Output
         if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "ROS_OUTPUT=$(cat roslynator_output.txt)" >> $GITHUB_ENV
+
+      - name: Add PR Comment
+        uses: mshick/add-pr-comment@v2
         with:
-          message-path: "./roslynator_output.txt"
+          message: ${{ env.ROS_OUTPUT }}
