@@ -19,9 +19,19 @@ public partial class LobbyDemo : Control
     [GetNode("TextEdit")]
     private TextEdit _textEdit;
 
+    [GetNode("LobbyCodeLabel")]
+    private RichTextLabel _lobbyCodeLabel;
+
+    [GetNode("QRCodeTexture")]
+    private TextureRect _qrCodeTexture;
+
     public override void _Ready()
     {
         this.GetNodes();
+
+        SetLobbyCodeLabelText(_lobby.LobbyCode);
+        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
+
         _button.Pressed += () =>
         {
             GameConfig.Lobby = _lobby;
@@ -122,4 +132,14 @@ public partial class LobbyDemo : Control
     }
 
     #endregion
+
+    private void SetLobbyCodeLabelText(string newCode)
+    {
+        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+    }
+
+    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    {
+        _qrCodeTexture.Texture = newTexture;
+    }
 }

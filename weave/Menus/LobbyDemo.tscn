@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://suha7hqfnwef"]
+[gd_scene load_steps=3 format=3 uid="uid://suha7hqfnwef"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/LobbyDemo.cs" id="1_5iwbe"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="2_i4alu"]
 
 [node name="LobbyDemo" type="Control"]
 layout_mode = 3
@@ -28,3 +29,21 @@ offset_bottom = 541.0
 mouse_filter = 2
 placeholder_text = "Players here..."
 editable = false
+
+[node name="LobbyCodeLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 1159.0
+offset_top = 185.0
+offset_right = 1339.0
+offset_bottom = 240.0
+bbcode_enabled = true
+text = "[center]Lobby code: abc123[/center]"
+
+[node name="QRCodeTexture" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 1183.0
+offset_top = 247.0
+offset_right = 1439.0
+offset_bottom = 503.0
+texture = ExtResource("2_i4alu")
