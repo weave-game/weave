@@ -28,17 +28,18 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: x
-        run: roslynator analyze "./weave.csproj"
-
-      - name: Run Roslynator and Save Output
+      - name: Run Roslynator and Capture Output
+        continue-on-error: true # Allow next steps to run even if this fails
         run: |
-          output=$(roslynator analyze "./weave.csproj")
-          echo "Roslynator Output: $output" >> roslynator_output.txt
+          roslynator analyze "./weave.csproj" > roslynator_output.txt || echo "Roslynator failed" > roslynator_fail.txt
 
-      - name: Comment PR with Roslynator Output
+      - name: Comment PR if Roslynator Fails
+        if: always() # This ensures that this step is executed regardless of the previous step's outcome
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          output=$(cat roslynator_output.txt)
-          gh pr comment --body "$output"
+          if [ -f roslynator_fail.txt ]; then
+            output=$(cat roslynator_output.txt)
+            gh pr comment --body "$output"
+            exit 1
+          fi
