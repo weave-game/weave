@@ -19,7 +19,9 @@ public partial class ScoreDisplay : CanvasLayer
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
 
-    // Change to switch between different scoring rules
+    /// <summary>
+    /// Change to switch between different scoring rules
+    /// </summary>
     private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
 
     private double _timeSinceRoundStart;
@@ -53,7 +55,6 @@ public partial class ScoreDisplay : CanvasLayer
                     * MathF.Pow(RoundMultiplier, _finishedRounds - 1);
                 break;
             case ScoringRule.RoundOnly:
-                break;
             case ScoringRule.RoundOnlyBasedOnTime:
                 break;
             default:
@@ -85,7 +86,6 @@ public partial class ScoreDisplay : CanvasLayer
                 );
                 break;
             case ScoringRule.TimeOnly:
-                break;
             case ScoringRule.TimeOnlyBasedOnRound:
                 break;
             default:

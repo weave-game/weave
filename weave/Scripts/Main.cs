@@ -311,5 +311,5 @@ public partial class Main : Node2D
         );
     }
 
-    #endregion
+    #endregion Loggers
 }
