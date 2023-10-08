@@ -17,4 +17,9 @@
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
     </ItemGroup>
+
+    <PropertyGroup>
+      <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+      <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    </PropertyGroup>
 </Project>
