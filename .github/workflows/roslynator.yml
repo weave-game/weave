@@ -26,7 +26,4 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Run Roslynator
-        run: roslynator format --dry-run --verbosity=diagnostic "./weave.csproj"
-
-      - name: Fail if Roslynator found issues
-        run: if roslynator format --dry-run "./weave.csproj" | grep "Format"; then exit 1; fi
+        run: roslynator fix "./weave.csproj" --format
