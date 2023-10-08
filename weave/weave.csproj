@@ -10,4 +10,10 @@
             <HintPath>Libraries/GodotSharper.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="SIPSorcery" Version="6.0.12" />
+      <PackageReference Include="SIPSorceryMedia.Encoders" Version="0.0.12-pre" />
+    </ItemGroup>
 </Project>

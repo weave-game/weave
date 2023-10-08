@@ -139,3 +139,17 @@ curve = SubResource("Curve2D_bm1nx")
 
 [node name="CanvasGlow" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1k2n6")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 555.313
+offset_top = 213.731
+offset_right = 608.313
+offset_bottom = 244.731
+text = "Broadcast start game"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 538.425
+offset_top = 307.49
+offset_right = 712.425
+offset_bottom = 338.49
+text = "Broadcast end game"
