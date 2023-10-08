@@ -28,8 +28,10 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Run Roslynator and Capture Output
-        run: roslynator analyze "./weave.csproj" > roslynator_output.txt
+      - name: Run Roslynator and Save Output
+        run: |
+          output=$(roslynator analyze "./weave.csproj")
+          echo "Roslynator Output: $output" >> roslynator_output.txt
 
       - name: Comment PR with Roslynator Output
         env:
