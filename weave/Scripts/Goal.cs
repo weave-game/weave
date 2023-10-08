@@ -35,7 +35,7 @@ public partial class Goal : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        var area = GetNode<Area2D>("Area2D");
+        Area2D area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
     }
 
