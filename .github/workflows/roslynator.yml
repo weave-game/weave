@@ -33,11 +33,13 @@ jobs:
         run: |
           roslynator analyze "./weave.csproj" > roslynator_output.txt
 
+      - name: CAT Roslynator Output
+        run: cat roslynator_output.txt
+
       - name: Comment PR if Roslynator Fails
         uses: mshick/add-pr-comment@v2
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          message-path: |
-            roslynator_output.txt
+          message-path: roslynator_output.txt
