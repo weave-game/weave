@@ -24,24 +24,24 @@ public partial class CurveSpawner : Node2D
         InitializeTimers();
     }
 
-    public override void _Process(double delta)
-    {
-        Step();
-    }
+public override void _Process(double delta)
+{
+Step();
+}
 
-    private void Step()
-    {
-        // Don't draw line on first iteration (first line will otherwise originate from (0,0))
-        if (_hasStarted && IsDrawing)
-            SpawnLine(_lastPoint, GlobalPosition);
-        else
-            _hasStarted = true;
+private void Step()
+{
+// Don't draw line on first iteration (first line will otherwise originate from (0,0))
+if (_hasStarted && IsDrawing)
+SpawnLine(_lastPoint, GlobalPosition);
+else
+_hasStarted = true;
 
-        _lastPoint = GlobalPosition;
-    }
+_lastPoint = GlobalPosition;
+}
 
-    private void InitializeTimers()
-    {
+private void InitializeTimers()
+{
         _drawTimer = new Timer { WaitTime = TimeBetweenGaps, OneShot = true };
         _drawTimer.Timeout += HandleDrawTimerTimeout;
         AddChild(_drawTimer);
