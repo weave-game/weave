@@ -25,5 +25,8 @@ jobs:
       - name: Add Roslynator to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
+      - name: Restore dependencies
+        run: dotnet restore
+
       - name: Run Roslynator
         run: roslynator fix "./weave.csproj" --format
