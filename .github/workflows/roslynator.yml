@@ -28,5 +28,12 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Run Roslynator
-        run: roslynator fix "./weave.csproj" --format
+      - name: Run Roslynator and Capture Output
+        run: roslynator analyze "./weave.csproj" > roslynator_output.txt
+
+      - name: Comment PR with Roslynator Output
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          output=$(cat roslynator_output.txt)
+          gh pr comment --body "$output"
