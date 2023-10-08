@@ -1,0 +1,32 @@
+name: Roslynator Check
+
+on:
+  pull_request: {}
+
+jobs:
+  roslynator-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: weave
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "7.x"
+
+      - name: Install Roslynator
+        run: dotnet tool install -g roslynator.dotnet.cli
+
+      - name: Add Roslynator to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Run Roslynator
+        run: roslynator format --dry-run --verbosity=diagnostic "./weave.csproj"
+
+      - name: Fail if Roslynator found issues
+        run: if roslynator format --dry-run "./weave.csproj" | grep "Format"; then exit 1; fi
