@@ -31,15 +31,13 @@ jobs:
       - name: Run Roslynator and Capture Output
         continue-on-error: true # Allow next steps to run even if this fails
         run: |
-          roslynator analyze "./weave.csproj" > roslynator_output.txt || echo "Roslynator failed" > roslynator_fail.txt
+          roslynator analyze "./weave.csproj" > roslynator_output.txt
 
       - name: Comment PR if Roslynator Fails
-        if: always() # This ensures that this step is executed regardless of the previous step's outcome
+        uses: mshick/add-pr-comment@v2
+        if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ -f roslynator_fail.txt ]; then
-            output=$(cat roslynator_output.txt)
-            gh pr comment --body "$output"
-            exit 1
-          fi
+        with:
+          message-path: |
+            roslynator_output.txt
