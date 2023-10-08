@@ -81,7 +81,7 @@ public partial class ScoreDisplay : CanvasLayer
             case ScoringRule.RoundOnlyBasedOnTime:
                 scoreIncrease += MathF.Max(
                     MinPointsForRound,
-                    PointsForRound - (float)_timeSinceRoundStart * PointsForSeconds
+                    PointsForRound - ((float)_timeSinceRoundStart * PointsForSeconds)
                 );
                 break;
             case ScoringRule.TimeOnly:

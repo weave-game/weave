@@ -5,33 +5,59 @@
 </div>
 
 - [weave 🧵🕹️ (Game) ](#weave-️-game-)
-  - [What is weave](#what-is-weave)
-  - [Development](#development)
-    - [Formatting (CSharpier \> EditorConfig)](#formatting-csharpier--editorconfig)
-      - [CSharpier](#csharpier)
+  - [About](#about)
+  - [Formatting](#formatting)
+    - [CLI](#cli)
+    - [Plugins](#plugins)
 
-## What is weave
+## About
 
 Steer your line without crashing into each other, work together to get the highest score.
 
 A game made in the Game Development Project course at Chalmers/GU.
 
-<div align="center">
-  <img width="700" src="readme/start-screen.png">
-</div>
+<center>
+  <table>
+    <tr>
+      <td>
+        <img width="300" src="readme/start-screen.png">
+      </td>
+      <td>
+        <img width="300" src="readme/in-game.png">
+      </td>
+    </tr>
+    <tr>
+      <td>Start screen</td>
+      <td>Gameplay</td>
+    </tr>
+  </table>
+</center>
 
-<div align="center">
-  <img width="700" src="readme/in-game.png">
-</div>
+## Formatting
 
-## Development
+The project uses [EditorConfig](https://editorconfig.org/) and [Roslynator](https://github.com/dotnet/roslynator) to enforce code style. This allows formatting and analysis independent of IDE.
 
-### Formatting (CSharpier > EditorConfig)
+### CLI
 
-1. (Optional) Format with [EditorConfig](https://editorconfig.org/) in your editor of choice (.editorconfig is based on Roslyn's).
-2. Format with CSharpier. **CSharpier has the final say on formatting.**
+Install:
 
-#### CSharpier
+```bash
+dotnet tool install -g roslynator.dotnet.cli
+```
 
-1. Install: `dotnet tool install --global CSharpier`
-2. Run: `dotnet-csharpier .` in the weave directory.
+Analyze project (inside the weave directory):
+
+```bash
+roslynator analyze .\weave.csproj
+```
+
+Fix and format project (inside the weave directory):
+
+```bash
+roslynator fix .\weave.csproj --format
+```
+
+### Plugins
+
+- Install [Roslynator](https://marketplace.visualstudio.com/items?itemName=josefpihrt-vscode.roslynator) plugin for VSCode (or your preferred IDE).
+- Install [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) plugin for VSCode (or your preferred IDE).

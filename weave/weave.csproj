@@ -10,4 +10,11 @@
             <HintPath>Libraries/GodotSharper.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+    </ItemGroup>
 </Project>
