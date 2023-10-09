@@ -12,7 +12,7 @@ public partial class Firefly : Path2D
     private const float MinSpeed = 5;
     private const int NrPoints = 30;
     private const float DistanceBetweenPoints = 5;
-    private Timer _animationTimer;
+    private Godot.Timer _animationTimer;
 
     [GetNode("PathFollow2D/Area2D")]
     private Area2D _area;
@@ -37,7 +37,7 @@ public partial class Firefly : Path2D
         _line.Width = Constants.MenuLineWidth;
 
         var animationDelay = (GD.Randf() * 10) + 3;
-        _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
+        _animationTimer = new Godot.Timer { WaitTime = animationDelay, OneShot = true };
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 

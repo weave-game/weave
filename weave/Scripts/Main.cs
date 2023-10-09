@@ -32,7 +32,7 @@ public partial class Main : Node2D
     private Grid _grid;
     private int _height;
     private Lobby _lobby = new();
-    private Timer _playerDelayTimer;
+    private Godot.Timer _playerDelayTimer;
 
     /// <summary>
     ///     How many players have reached the goal during the current round.
@@ -42,7 +42,7 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
-    private Timer _uiUpdateTimer;
+    private Godot.Timer _uiUpdateTimer;
     private int _width;
 
     public override void _Ready()
@@ -106,12 +106,12 @@ public partial class Main : Node2D
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
+        _uiUpdateTimer = new Godot.Timer { WaitTime = 0.1 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
+        _playerDelayTimer = new Godot.Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
         AddChild(_playerDelayTimer);
     }
