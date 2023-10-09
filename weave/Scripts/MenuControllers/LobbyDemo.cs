@@ -9,7 +9,9 @@ using weave.Utils;
 
 namespace weave.MenuControllers;
 
-// NOTE: This will be moved to the original StartScreen once the changes are added
+/// <summary>
+/// NOTE: This will be moved to the original StartScreen once the changes are added
+/// </summary>
 public partial class LobbyDemo : Control
 {
     private readonly Lobby _lobby = new();
@@ -71,7 +73,7 @@ public partial class LobbyDemo : Control
         }
     }
 
-    #endregion
+    #endregion Keyboard
 
     /// <summary>
     ///     IMPORTANT: This is a hack, only used for debugging purposes
@@ -84,7 +86,7 @@ public partial class LobbyDemo : Control
         var i = 1;
         foreach (var inputSource in _lobby.InputSources)
         {
-            sb.AppendLine($"({i++}) Device ID: {inputSource.DeviceId}. Type: {inputSource.Type}");
+            sb.Append('(').Append(i++).Append(") Device ID: ").Append(inputSource.DeviceId).Append(". Type: ").Append(inputSource.Type).AppendLine();
 
             if (inputSource is KeyboardInputSource k)
             {
@@ -98,7 +100,7 @@ public partial class LobbyDemo : Control
                     .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
                     .GetValue(k);
 
-                sb.AppendLine($"Left: {left}. Right: {right}");
+                sb.Append("Left: ").Append(left).Append(". Right: ").Append(right).AppendLine();
             }
 
             sb.AppendLine("");
@@ -122,5 +124,5 @@ public partial class LobbyDemo : Control
             _lobby.Leave(new GamepadInputSource(deviceId));
     }
 
-    #endregion
+    #endregion Gamepad
 }

@@ -11,6 +11,7 @@ public partial class Goal : Node2D
     ///     This is the signal that will be emitted when a player reaches the goal.
     ///     Will only be emitted once.
     /// </summary>
+    /// <param name="player">The player who reached the goal.</param>
     [Signal]
     public delegate void PlayerReachedGoalEventHandler(Player player);
 

@@ -41,10 +41,7 @@ public class Logger
         }
 
         var rows = _logsToLog.Select(logs => string.Join(",", logs.Select(log => log.Value)));
-        rows.ForEach(row =>
-        {
-            File.AppendAllText(_filePath, row + Environment.NewLine);
-        });
+        rows.ForEach(row => File.AppendAllText(_filePath, row + Environment.NewLine));
         _logsToLog.Clear();
     }
 
