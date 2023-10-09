@@ -1,4 +1,4 @@
-﻿namespace weave.Logger;
+﻿namespace Weave.Logger;
 
 public readonly struct Log
 {

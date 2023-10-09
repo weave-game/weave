@@ -2,9 +2,9 @@ using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave.MenuControllers;
+namespace Weave.MenuControllers;
 
 public partial class StartScreen : Node2D
 {

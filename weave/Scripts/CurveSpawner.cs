@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using Godot;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave;
+namespace Weave;
 
 public partial class CurveSpawner : Node2D
 {
@@ -10,8 +11,8 @@ public partial class CurveSpawner : Node2D
 
     private const float TimeBetweenGaps = 5;
     private const float TimeForGaps = 0.5f;
-    private Godot.Timer _drawTimer;
-    private Godot.Timer _gapTimer;
+    private Timer _drawTimer;
+    private Timer _gapTimer;
     private bool _hasStarted;
     private Vector2 _lastPoint;
     public Color Color { get; set; }
@@ -41,11 +42,11 @@ public partial class CurveSpawner : Node2D
 
     private void InitializeTimers()
     {
-        _drawTimer = new Godot.Timer { WaitTime = TimeBetweenGaps, OneShot = true };
+        _drawTimer = new Timer { WaitTime = TimeBetweenGaps, OneShot = true };
         _drawTimer.Timeout += HandleDrawTimerTimeout;
         AddChild(_drawTimer);
 
-        _gapTimer = new Godot.Timer { WaitTime = TimeForGaps, OneShot = true };
+        _gapTimer = new Timer { WaitTime = TimeForGaps, OneShot = true };
         _gapTimer.Timeout += HandleGapTimerTimeout;
         AddChild(_gapTimer);
 

@@ -1,9 +1,9 @@
 namespace WeaveTests;
 
-public class UnitTest1
+public sealed class SampleTest
 {
     [Fact]
-    public void Test1()
+    public void Sample()
     {
         Assert.True(true);
     }

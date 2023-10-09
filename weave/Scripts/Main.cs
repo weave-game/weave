@@ -6,14 +6,14 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Logger;
-using weave.Logger.Concrete;
-using weave.MenuControllers;
-using weave.Utils;
-using static weave.InputSources.KeyboardBindings;
+using Weave.InputSources;
+using Weave.Logger;
+using Weave.Logger.Concrete;
+using Weave.MenuControllers;
+using Weave.Utils;
+using static Weave.InputSources.KeyboardBindings;
 
-namespace weave;
+namespace Weave;
 
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
@@ -32,7 +32,7 @@ public partial class Main : Node2D
     private Grid _grid;
     private int _height;
     private Lobby _lobby = new();
-    private Godot.Timer _playerDelayTimer;
+    private Timer _playerDelayTimer;
 
     /// <summary>
     ///     How many players have reached the goal during the current round.
@@ -42,7 +42,7 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
-    private Godot.Timer _uiUpdateTimer;
+    private Timer _uiUpdateTimer;
     private int _width;
 
     public override void _Ready()
@@ -206,7 +206,7 @@ public partial class Main : Node2D
         AddChild(line);
     }
 
-    private void OnPlayerReachedGoal(Player player)
+    private void OnPlayerReachedGoal()
     {
         if (++_roundCompletions != _lobby.Count)
             return;
