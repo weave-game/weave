@@ -28,19 +28,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Run Roslynator and Encode Output
-        id: roslynator_step
+      - name: Run Roslynator and capture Output
         continue-on-error: true
         run: |
-          output=$(roslynator analyze "./weave.csproj")
-          encoded_output=$(echo "$output" | base64 -w 0)
-          echo "ENCODED_ROS_OUTPUT=$encoded_output" >> $GITHUB_ENV
-          echo "$ENCODED_ROS_OUTPUT"
+          roslynator analyze "./weave.csproj" > roslynator_output.txt
 
-      - name: Print output
-        run: echo "$ENCODED_ROS_OUTPUT"
+      - name: CAT Roslynator Output
+        run: cat roslynator_output.txt
 
-      - name: Add PR Comment
-        uses: mshick/add-pr-comment@v2
+      - name: PR comment with file
+        uses: thollander/actions-comment-pull-request@v2
         with:
-          message: ${{ steps.PREVIOUS_STEP_ID.outputs.ENCODED_ROS_OUTPUT }}
+          filePath: roslynator_output.txt
