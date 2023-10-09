@@ -35,7 +35,7 @@ jobs:
       - name: Run Roslynator and capture Output
         continue-on-error: true
         run: |
-          roslynator analyze "./weave.csproj" > roslynator_output.txt
+          roslynator analyze "./Weave.sln" > roslynator_output.txt
 
       - name: PR comment with file
         if: always()
