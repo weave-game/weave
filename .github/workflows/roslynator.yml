@@ -37,6 +37,19 @@ jobs:
         run: cat roslynator_output.txt
 
       - name: PR comment with file
+        if: always()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: ./roslynator_output.txt
+
+      - name: PR comment with file
+        if: always()
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: roslynator_output.txt
+
+      - name: PR comment with file
+        if: always()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: ./weave/roslynator_output.txt
