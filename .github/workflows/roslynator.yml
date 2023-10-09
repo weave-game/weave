@@ -34,8 +34,12 @@ jobs:
           output=$(roslynator analyze "./weave.csproj")
           encoded_output=$(echo "$output" | base64 -w 0)
           echo "ENCODED_ROS_OUTPUT=$encoded_output" >> $GITHUB_ENV
+          echo "$ENCODED_ROS_OUTPUT"
+
+      - name: Print output
+        run: echo "$ENCODED_ROS_OUTPUT"
 
       - name: Add PR Comment
         uses: mshick/add-pr-comment@v2
         with:
-          message: ${{ env.ENCODED_ROS_OUTPUT }}
+          message: ${{ $ENCODED_ROS_OUTPUT }}
