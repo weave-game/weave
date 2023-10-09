@@ -1,7 +1,11 @@
 name: Roslynator Check
 
 on:
-  pull_request: {}
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   roslynator-check:
