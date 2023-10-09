@@ -178,7 +178,7 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
-        List<Vector2> playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
+        var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
         _lobby.InputSources.ForEach(input =>
         {
@@ -247,12 +247,12 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Generate goal positions
-        List<Vector2> playerPositions = new List<Vector2>();
+        IList<Vector2> playerPositions = new List<Vector2>();
         _players.ForEach(player =>
         {
             playerPositions.Add(player.Position);
         });
-        List<Vector2> goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
+        var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
         // Spawn new goals
         _players.ForEach(player =>
@@ -266,84 +266,53 @@ public partial class Main : Node2D
         });
     }
 
-    private List<Vector2> GetRandomPositionsInView(
+    private IList<Vector2> GetRandomPositionsInView(
         int n,
-        List<Vector2> occupiedPositions = null,
-        int gridWidth = 6,
-        int gridHeight = 4,
-        float cellPaddingRatio = 0.5f
+        IList<Vector2> occupiedPositions = null,
+        float minDistance = 250,
+        float margin = 100
     )
     {
-        List<Vector2> points = new List<Vector2>();
-
-        if (n < 1 || gridWidth < 1 || gridHeight < 1)
-            return points;
-
-        cellPaddingRatio = Mathf.Min(1, Mathf.Max(0, cellPaddingRatio));
-
-        Vector2 cellSize = new Vector2(_width / gridWidth, _height / gridHeight);
-        Vector2 padding = new Vector2(
-            cellSize.X * cellPaddingRatio / 2,
-            cellSize.Y * cellPaddingRatio / 2
-        );
-        Vector2 offset = new Vector2(
-            0, //(float)GD.RandRange(0, cellSize.X),
-            0 //(float)GD.RandRange(0, cellSize.Y)
-        );
-
-        // Create grid cells from occupied positions, these cells will be omitted later
-        var occupiedCells = new List<Vector2>();
-        if (occupiedPositions != null)
-        {
-            occupiedPositions.ForEach(position =>
-            {
-                occupiedCells.Add(
-                    new Vector2(
-                        (int)((position.X - offset.X) / cellSize.X),
-                        (int)((position.Y - offset.Y) / cellSize.Y)
-                    )
-                );
-            });
-        }
-
-        if (n + (occupiedPositions == null ? 0 : occupiedPositions.Count) > gridWidth * gridHeight)
-            return points;
-
-        // Create grid cells
-        var cells = new List<Vector2>();
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                Vector2 cell = new Vector2(x, y);
-
-                if (occupiedCells.Contains(cell))
-                    continue;
-
-                cells.Add(cell);
-            }
-        }
+        IList<Vector2> positions = new List<Vector2>();
+        const int MaxAttempts = 1000;
 
         // Generate positions
-        for (int i = 0; i < n; i++)
+        for (var i = 0; i < n; i++)
         {
-            Vector2 selectedCell = cells[GD.RandRange(0, cells.Count - 1)];
+            var valid = false;
+            var attempt = 0;
+            Vector2 newPosition;
 
-            Vector2 pointInsideCell = new Vector2(
-                (float)GD.RandRange(padding.X, cellSize.X - padding.X),
-                (float)GD.RandRange(padding.Y, cellSize.Y - padding.Y)
-            );
+            do
+            {
+                attempt++;
 
-            Vector2 point = new Vector2(
-                selectedCell.X * cellSize.X + pointInsideCell.X + offset.X,
-                selectedCell.Y * cellSize.Y + pointInsideCell.Y + offset.Y
-            );
+                newPosition = new Vector2(
+                    (float)GD.RandRange(margin, _width - margin),
+                    (float)GD.RandRange(margin, _height - margin)
+                );
 
-            points.Add(point);
-            cells.Remove(selectedCell);
+                valid = true;
+
+                occupiedPositions?.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+
+                positions.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+            } while (!valid && attempt < MaxAttempts);
+
+            positions.Add(newPosition);
         }
 
-        return points;
+        return positions;
     }
 
     private void SetupLogger()
