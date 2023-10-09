@@ -20,6 +20,20 @@ public class UniqueNameGeneratorTests
         // Use GetValue to get the value of Suffixes
         var suffixes = (IEnumerable<string>)propertyInfo.GetValue(generator);
 
+        // set the mockSuffixes to return the suffixes
+        if (suffixes is List<string> l)
+        {
+            // remove all but one suffix
+            while (l.Any())
+                l.RemoveAt(0);
+            
+            l.Add("test");
+        }
+        else
+        {
+            Assert.Fail("Suffixes is not a List<string>, this test will not work");
+        }
+
         generator.New();
         // This name should have backup index
         Assert.Equal("OnlyPrefixOnlySuffix0", generator.New());
