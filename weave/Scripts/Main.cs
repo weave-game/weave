@@ -125,7 +125,7 @@ public partial class Main : Node2D
 
     private void DetectPlayerCollision()
     {
-        bool hasCollided = false;
+        var hasCollided = false;
 
         // Perform collision detection for players that are drawing
         foreach (var player in _players.Where(player => player.CurveSpawner.IsDrawing))
