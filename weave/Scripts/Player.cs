@@ -1,9 +1,9 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
+using Weave.InputSources;
 
-namespace weave;
+namespace Weave;
 
 [Scene("res://Objects/Player.tscn")]
 public partial class Player : CharacterBody2D

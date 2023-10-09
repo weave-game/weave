@@ -1,0 +1,44 @@
+name: Roslynator Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  roslynator-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: weave
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "7.x"
+
+      - name: Install Roslynator
+        run: dotnet tool install -g roslynator.dotnet.cli
+
+      - name: Add Roslynator to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run Roslynator and capture Output
+        continue-on-error: true
+        run: |
+          roslynator analyze "./Weave.sln" > roslynator_output.txt
+
+      - name: PR comment with file
+        if: always()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: ./weave/roslynator_output.txt

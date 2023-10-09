@@ -1,6 +1,6 @@
 using Godot;
 
-namespace weave;
+namespace Weave;
 
 public partial class CountdownLabel : RichTextLabel
 {

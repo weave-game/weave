@@ -6,15 +6,15 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Logging;
-using weave.Logging.ConcreteCsv;
-using weave.MenuControllers;
+using Weave.InputSources;
+using Weave.Logging;
+using Weave.Logging.ConcreteCsv;
+using Weave.MenuControllers;
 using weave.Scoring;
-using weave.Utils;
-using static weave.InputSources.KeyboardBindings;
+using Weave.Utils;
+using static Weave.InputSources.KeyboardBindings;
 
-namespace weave;
+namespace Weave;
 
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
@@ -109,12 +109,12 @@ public partial class Main : Node2D
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
+        _uiUpdateTimer = new Godot.Timer { WaitTime = 0.1 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
+        _playerDelayTimer = new Godot.Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
         AddChild(_playerDelayTimer);
     }
@@ -216,7 +216,7 @@ public partial class Main : Node2D
         AddChild(line);
     }
 
-    private void OnPlayerReachedGoal(Player player)
+    private void OnPlayerReachedGoal()
     {
         if (++_roundCompletions != _lobby.Count)
             return;

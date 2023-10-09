@@ -1,6 +1,6 @@
 using Godot;
 
-namespace weave.InputSources;
+namespace Weave.InputSources;
 
 public sealed class KeyboardInputSource : IInputSource
 {

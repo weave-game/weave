@@ -2,7 +2,7 @@ using System;
 using Godot;
 using GodotSharper.AutoGetNode;
 
-namespace weave;
+namespace Weave;
 
 public partial class ScoreDisplay : CanvasLayer
 {

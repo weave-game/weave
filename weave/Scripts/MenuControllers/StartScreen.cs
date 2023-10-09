@@ -3,9 +3,9 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave.MenuControllers;
+namespace Weave.MenuControllers;
 
 [Scene("res://Menus/StartScreen.tscn")]
 public partial class StartScreen : Node2D
