@@ -59,7 +59,7 @@ public sealed class CsvLogger : ICsvLogger
     {
         // Simplified check, but should be enough for our purposes
         return File.Exists(_filePath)
-            && !string.IsNullOrWhiteSpace(File.ReadAllLines(_filePath).First());
+            && !string.IsNullOrWhiteSpace(File.ReadAllLines(_filePath)[0]);
     }
 
     private void ClearFile()

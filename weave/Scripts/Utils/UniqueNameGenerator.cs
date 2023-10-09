@@ -73,13 +73,14 @@ public static class UniqueNameGenerator
 
         while (UsedNames.Contains(name))
         {
-            if (attemps++ >= MaxAttempts)
+            if (attemps >= MaxAttempts)
             {
                 name = $"{Generate()} {_backupIndex++}";
                 break;
             }
 
             name = Generate();
+            attemps++;
         }
 
         UsedNames.Add(name);
