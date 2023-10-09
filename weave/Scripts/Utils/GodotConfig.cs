@@ -7,7 +7,7 @@ public static class GodotConfig
     public const string GamepadJoinAction = "gamepad_join";
     public const string GamepadLeaveAction = "gamepad_leave";
 
-    #endregion
+    #endregion Inputs
 
     #region Groups
 
@@ -15,5 +15,5 @@ public static class GodotConfig
     public const string LineGroup = "line";
     public const string FireflyGroup = "firefly";
 
-    #endregion
+    #endregion Groups
 }

@@ -31,10 +31,10 @@ public sealed class UniqueColorGenerator
         var unusedColor = _defaultColors.Except(_usedColors).FirstOrDefault();
 
         if (unusedColor == default)
+        {
             do
-            {
-                unusedColor = new Color(GD.Randf(), GD.Randf(), GD.Randf());
-            } while (_usedColors.Contains(unusedColor));
+                unusedColor = new Color(GD.Randf(), GD.Randf(), GD.Randf()); while (_usedColors.Contains(unusedColor));
+        }
 
         _usedColors.Add(unusedColor);
         return unusedColor;

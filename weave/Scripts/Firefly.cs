@@ -36,15 +36,13 @@ public partial class Firefly : Path2D
         Visible = true;
         _line.Width = WeaveConstants.MenuLineWidth;
 
-        var animationDelay = GD.Randf() * 10 + 3;
+        var animationDelay = (GD.Randf() * 10) + 3;
         _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 
         for (var i = 0; i < NrPoints; i++)
-        {
             _line.AddPoint(new Vector2());
-        }
     }
 
     public void SetColor(Color color)
@@ -68,7 +66,7 @@ public partial class Firefly : Path2D
 
         // Reached goal speed, set new speed
         if (MathF.Abs(_currentSpeed - _goalSpeed) < (float)10e-5)
-            _goalSpeed = GD.Randf() * MaxSpeed + MinSpeed;
+            _goalSpeed = (GD.Randf() * MaxSpeed) + MinSpeed;
 
         // Make line follow the leading point
         if (_line.Points[0].DistanceTo(_area.GlobalPosition) >= DistanceBetweenPoints)
