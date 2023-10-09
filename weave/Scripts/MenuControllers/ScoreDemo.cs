@@ -20,7 +20,7 @@ public partial class ScoreDemo : Node2D
     {
         this.GetNodes();
         _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
-        _score = new ScoreRecord(0, UniqueNameGenerator.New());
+        _score = new ScoreRecord(0, UniqueNameGenerator.Instance.New());
         _lineEdit.Text = _score.Name;
 
         _button.Pressed += OnButtonPressed;

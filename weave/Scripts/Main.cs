@@ -170,7 +170,7 @@ public partial class Main : Node2D
         // Save score
         var score = new ScoreRecord(
             _scoreDisplay.Score,
-            UniqueNameGenerator.New()
+            UniqueNameGenerator.Instance.New()
         );
         _scoreManager.Save(score);
     }

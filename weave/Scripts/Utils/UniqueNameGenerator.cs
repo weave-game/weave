@@ -1,17 +1,20 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Weave.Utils;
 
-public static class UniqueNameGenerator
+public class UniqueNameGenerator
 {
     private static ISet<string> UsedNames { get; } = new HashSet<string>();
     private static int _backupIndex;
     private const int MaxAttempts = 100;
 
-    private static IReadOnlySet<string> Prefixes { get; } =
-        new HashSet<string>
+    /// <summary>
+    ///    A shared instance of the <see cref="UniqueNameGenerator" />.
+    /// </summary>
+    public static UniqueNameGenerator Instance { get; } = new();
+
+    private IEnumerable<string> Prefixes { get; } =
+        new List<string>
         {
             "Red",
             "Sinister",
@@ -37,8 +40,8 @@ public static class UniqueNameGenerator
             "Poisoned"
         };
 
-    private static IReadOnlySet<string> Suffixes { get; } =
-        new HashSet<string>
+    private IEnumerable<string> Suffixes { get; } =
+        new List<string>
         {
             "Lemurs",
             "Baboons",
@@ -66,7 +69,7 @@ public static class UniqueNameGenerator
             "Guerezsa"
         };
 
-    public static string New()
+    public string New()
     {
         var attemps = 0;
         var name = Generate();
@@ -87,17 +90,10 @@ public static class UniqueNameGenerator
         return name;
     }
 
-    private static string Generate()
+    private string Generate()
     {
         var prefix = Prefixes.Random();
         var suffix = Suffixes.Random();
         return prefix + suffix;
-    }
-
-    private static T Random<T>(this IEnumerable<T> enumerable)
-    {
-        var rnd = new Random();
-        var index = rnd.Next(0, enumerable.Count());
-        return enumerable.ElementAt(index);
     }
 }
