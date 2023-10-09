@@ -29,6 +29,7 @@ jobs:
         run: dotnet restore
 
       - name: Run Roslynator and Encode Output
+        id: roslynator_step
         continue-on-error: true
         run: |
           output=$(roslynator analyze "./weave.csproj")
@@ -42,4 +43,4 @@ jobs:
       - name: Add PR Comment
         uses: mshick/add-pr-comment@v2
         with:
-          message: ${{ $ENCODED_ROS_OUTPUT }}
+          message: ${{ steps.PREVIOUS_STEP_ID.outputs.ENCODED_ROS_OUTPUT }}
