@@ -2,12 +2,12 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <EnableDynamicLoading>true</EnableDynamicLoading>
-        <RootNamespace>weave</RootNamespace>
+        <RootNamespace>Weave</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <Reference Include="GodotSharper">
-            <HintPath>Libraries/GodotSharper.dll</HintPath>
+            <HintPath>../Libraries/GodotSharper.dll</HintPath>
         </Reference>
     </ItemGroup>
 
@@ -16,6 +16,14 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="WeaveTests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="WeaveTests\**" />
     </ItemGroup>
 
     <PropertyGroup>

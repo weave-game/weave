@@ -1,6 +1,6 @@
 using System;
 
-namespace weave.InputSources;
+namespace Weave.InputSources;
 
 public interface IInputSource : IEquatable<IInputSource>
 {

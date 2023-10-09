@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Godot;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave;
+namespace Weave;
 
 public partial class CurveSpawner : Node2D
 {

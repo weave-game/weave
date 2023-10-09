@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using GodotSharper;
 
-namespace weave.Logger;
+namespace Weave.Logger;
 
 public class Logger
 {

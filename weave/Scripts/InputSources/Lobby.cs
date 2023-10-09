@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace weave.InputSources;
+namespace Weave.InputSources;
 
 public sealed class Lobby
 {
