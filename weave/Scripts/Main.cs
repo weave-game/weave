@@ -31,6 +31,7 @@ public partial class Main : Node2D
     private Grid _grid;
     private int _height;
     private Lobby _lobby = new();
+    private Multiplayer.Manager _multiplayerManager;
     private Timer _playerDelayTimer;
 
     /// <summary>
@@ -51,6 +52,7 @@ public partial class Main : Node2D
     {
         this.GetNodes();
         _lobby = GameConfig.Lobby;
+        _multiplayerManager = GameConfig.MultiplayerManager;
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.InputSources.Count == 0)

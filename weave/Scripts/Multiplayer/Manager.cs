@@ -5,22 +5,33 @@ using WebSocketSharp.Server;
 using Godot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
+using weave.InputSources;
 
 namespace weave.Multiplayer;
 
-public class Manager
+public partial class Manager : Node
 {
-    private const int WEBSOCKET_PORT = 8081;
-    private WebSocketServer webSocketServer;
-    private ISet<Player> _players = new HashSet<Player>();
+    [Signal]
+    public delegate void PlayerJoinedEventHandler(WebInputSource source);
+    [Signal]
+    public delegate void PlayerLeftEventHandler(WebInputSource source);
 
-    public void StartServer(string lobbyCode)
+    private const int WEBSOCKET_PORT = 8081;
+    private string _lobbyCode;
+    private WebSocketServer webSocketServer;
+    private readonly Dictionary<string, WebInputSource> _playerSources = new();
+
+    public Manager(string lobbyCode)
+    {
+        _lobbyCode = lobbyCode;
+    }
+
+    public void StartServer()
     {
         GD.Print("Starting signaling server...");
 
         webSocketServer = new WebSocketServer(IPAddress.Any, WEBSOCKET_PORT);
-        webSocketServer.AddWebSocketService<WebRTCWebSocketPeer>($"/{lobbyCode}", (peer) => peer.CreatePeerConnection = () => CreatePeerConnection(peer.ID));
+        webSocketServer.AddWebSocketService<WebRTCWebSocketPeer>($"/{_lobbyCode}", (peer) => peer.CreatePeerConnection = () => CreatePeerConnection(peer.ID));
         webSocketServer.Start();
 
         GD.Print($"Waiting for web socket connections on {webSocketServer.Address}:{webSocketServer.Port}...");
@@ -33,10 +44,10 @@ public class Manager
         var dataChannel = await pc.createDataChannel("chat");
         dataChannel.onopen += () => HandlePlayerJoin(id);
         dataChannel.onclose += () => HandlePlayerLeave(id);
-        dataChannel.onmessage += (dc, protocol, data) => HandlePlayerInput(id, data.GetStringFromUtf8());
+        dataChannel.onmessage += (_, __, data) => HandlePlayerInput(id, data.GetStringFromUtf8());
         dataChannel.onerror += (error) => HandlePlayerError(id, error);
 
-        pc.onconnectionstatechange += async (state) =>
+        pc.onconnectionstatechange += (state) =>
         {
             GD.Print($"Peer connection state change to {state}.");
 
@@ -48,6 +59,8 @@ public class Manager
                     pc.Close("ice disconnection");
                     break;
                 case RTCPeerConnectionState.closed:
+                case RTCPeerConnectionState.disconnected:
+                    HandlePlayerLeave(id);
                     break;
             }
         };
@@ -57,38 +70,40 @@ public class Manager
 
     private void HandlePlayerJoin(string playerId)
     {
-        _players.Add(new Player(playerId));
+        var sourceToAdd = new WebInputSource(playerId);
+        EmitSignal(SignalName.PlayerJoined, sourceToAdd);
+        _playerSources.Add(playerId, sourceToAdd);
     }
 
     private void HandlePlayerLeave(string playerId)
     {
-        var itemToRemove = _players.FirstOrDefault(obj => obj.Id == playerId);
-
-        if (itemToRemove != null)
-        {
-            _players.Remove(itemToRemove);
-        }
+        var sourceToRemove = _playerSources.GetValueOrDefault(playerId);
+        EmitSignal(SignalName.PlayerLeft, sourceToRemove);
+        _playerSources.Remove(playerId);
     }
 
-    private void HandlePlayerInput(string playerId, string input)
+    private  void HandlePlayerInput(string playerId, string input)
     {
-        GD.Print($"{playerId}: {input}");
+        var source = _playerSources.GetValueOrDefault(playerId);
+        source.DirectionState = input;
     }
 
-    private void HandlePlayerError(string playerId, string error)
+    private static void HandlePlayerError(string playerId, string error)
     {
-        GD.Print("WebRTC data channel error: " + error);
+        GD.Print($"Error: {playerId} got error {error}");
     }
 
     public void NotifyStartGame()
     {
-        var message = new Message(MessageType.StartGame);
-        webSocketServer.WebSocketServices["/"].Sessions.Broadcast(JsonConvert.SerializeObject(message));
+        var messageObj = new Message(MessageType.StartGame);
+        var wrappedMessage = new { message = messageObj };
+        webSocketServer.WebSocketServices[$"/{_lobbyCode}"].Sessions.Broadcast(JsonConvert.SerializeObject(wrappedMessage));
     }
 
     public void NotifyEndGame()
     {
-        var message = new Message(MessageType.EndGame);
-        webSocketServer.WebSocketServices["/"].Sessions.Broadcast(JsonConvert.SerializeObject(message));
+        var messageObj = new Message(MessageType.EndGame);
+        var wrappedMessage = new { message = messageObj };
+        webSocketServer.WebSocketServices[$"/{_lobbyCode}"].Sessions.Broadcast(JsonConvert.SerializeObject(wrappedMessage));
     }
 }

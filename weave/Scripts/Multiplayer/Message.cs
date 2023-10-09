@@ -2,10 +2,8 @@ namespace weave.Multiplayer;
 
 public enum MessageType
 {
-    JoinLobby,
     StartGame,
     EndGame,
-    Input,
     Error,
     Success
 }

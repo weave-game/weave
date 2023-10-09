@@ -12,6 +12,7 @@ namespace weave.MenuControllers;
 public partial class LobbyDemo : Control
 {
     private readonly Lobby _lobby = new();
+    private Multiplayer.Manager _multiplayerManager;
 
     [GetNode("Button")]
     private Button _button;
@@ -32,9 +33,16 @@ public partial class LobbyDemo : Control
         SetLobbyCodeLabelText(_lobby.LobbyCode);
         SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
 
+        _multiplayerManager = new(_lobby.LobbyCode);
+        _multiplayerManager.StartServer();
+        _multiplayerManager.PlayerJoined += _lobby.Join;
+        _multiplayerManager.PlayerLeft += _lobby.Leave;
+
         _button.Pressed += () =>
         {
             GameConfig.Lobby = _lobby;
+            GameConfig.MultiplayerManager = _multiplayerManager;
+            _multiplayerManager.NotifyStartGame();
             GetTree().ChangeSceneToFile(SceneResources.MainScene);
         };
     }
