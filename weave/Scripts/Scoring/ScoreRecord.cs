@@ -11,7 +11,7 @@ public class ScoreRecord
         Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
-    public string Id { get; private set; }
-    public int Value { get; private set; }
+    public string Id { get; }
+    public int Value { get; }
     public string Name { get; set; }
 }

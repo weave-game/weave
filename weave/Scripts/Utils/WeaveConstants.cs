@@ -7,7 +7,7 @@ public static class WeaveConstants
     public const int LineWidth = 6;
     public const int MenuLineWidth = 14;
 
-    #endregion
+    #endregion Lines
 
     #region Logging
 
@@ -15,5 +15,5 @@ public static class WeaveConstants
     public const string SpeedLogFileCsvPath = "./Loggings/speed.csv";
     public const string ScoreLogFileJsonPath = "./Loggings/score.json";
 
-    #endregion
+    #endregion Logging
 }

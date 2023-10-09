@@ -9,10 +9,10 @@ public partial class ScoreDemo : Node2D
 {
     private IScoreManager _scoreManager;
     private ScoreRecord _score;
-    
+
     [GetNode("Button")]
     private Button _button;
-    
+
     [GetNode("LineEdit")]
     private LineEdit _lineEdit;
 

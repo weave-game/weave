@@ -90,7 +90,7 @@ public static class UniqueNameGenerator
     {
         var prefix = Prefixes.Random();
         var suffix = Suffixes.Random();
-        return $"{prefix}{suffix}";
+        return prefix + suffix;
     }
 
     private static T Random<T>(this IEnumerable<T> enumerable)
