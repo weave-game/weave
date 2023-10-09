@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace weave.Utils;
+namespace Weave.Utils;
 
 public static class UniqueNameGenerator
 {

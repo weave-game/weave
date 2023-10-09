@@ -1,4 +1,4 @@
-namespace weave.Scoring;
+namespace Weave.Scoring;
 
 public interface IScoreManager
 {

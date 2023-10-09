@@ -1,4 +1,4 @@
-namespace weave.Utils;
+namespace Weave.Utils;
 
 public static class WeaveConstants
 {

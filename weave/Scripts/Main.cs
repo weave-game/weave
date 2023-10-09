@@ -10,7 +10,7 @@ using Weave.InputSources;
 using Weave.Logging;
 using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
-using weave.Scoring;
+using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
 

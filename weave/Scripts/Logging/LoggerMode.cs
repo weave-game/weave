@@ -1,4 +1,4 @@
-namespace weave.Logging;
+namespace Weave.Logging;
 
 public enum LoggerMode
 {

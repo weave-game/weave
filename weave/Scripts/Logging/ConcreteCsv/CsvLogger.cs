@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using GodotSharper;
 
-namespace weave.Logging.ConcreteCsv;
+namespace Weave.Logging.ConcreteCsv;
 
 public sealed class CsvLogger : ICsvLogger
 {

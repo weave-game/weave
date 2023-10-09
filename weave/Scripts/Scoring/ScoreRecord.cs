@@ -1,6 +1,6 @@
 using System;
 
-namespace weave.Scoring;
+namespace Weave.Scoring;
 
 public class ScoreRecord
 {

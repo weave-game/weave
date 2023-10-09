@@ -1,9 +1,9 @@
 using Godot;
 using GodotSharper.AutoGetNode;
-using weave.Scoring;
-using weave.Utils;
+using Weave.Scoring;
+using Weave.Utils;
 
-namespace weave.MenuControllers;
+namespace Weave.MenuControllers;
 
 public partial class ScoreDemo : Node2D
 {

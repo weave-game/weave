@@ -37,7 +37,7 @@ public partial class Firefly : Path2D
         _line.Width = WeaveConstants.MenuLineWidth;
 
         var animationDelay = (GD.Randf() * 10) + 3;
-        _animationTimer = new Godot.Timer { WaitTime = animationDelay, OneShot = true };
+        _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 
