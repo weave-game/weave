@@ -4,9 +4,9 @@
 [ext_resource type="StyleBox" uid="uid://m7ol4vvsflr4" path="res://Themes/base_button.tres" id="1_xvkqr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8jkh"]
-content_margin_left = 32.0
+content_margin_left = 16.0
 content_margin_top = 16.0
-content_margin_right = 32.0
+content_margin_right = 16.0
 content_margin_bottom = 16.0
 bg_color = Color(1, 0.164706, 0.427451, 1)
 border_width_left = 4
@@ -20,9 +20,9 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d6dlm"]
-content_margin_left = 32.0
+content_margin_left = 16.0
 content_margin_top = 16.0
-content_margin_right = 32.0
+content_margin_right = 16.0
 content_margin_bottom = 16.0
 draw_center = false
 border_width_left = 4
@@ -36,9 +36,9 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12c4k"]
-content_margin_left = 32.0
+content_margin_left = 16.0
 content_margin_top = 16.0
-content_margin_right = 32.0
+content_margin_right = 16.0
 content_margin_bottom = 16.0
 bg_color = Color(1, 1, 1, 1)
 border_width_left = 4
@@ -57,6 +57,7 @@ AccentedButton/colors/font_color = Color(1, 0.164706, 0.427451, 1)
 AccentedButton/colors/font_hover_color = Color(1, 1, 1, 1)
 AccentedButton/colors/icon_hover_color = Color(1, 1, 1, 1)
 AccentedButton/colors/icon_normal_color = Color(1, 0.164706, 0.427451, 1)
+AccentedButton/constants/h_separation = 16
 AccentedButton/styles/hover = SubResource("StyleBoxFlat_k8jkh")
 AccentedButton/styles/normal = SubResource("StyleBoxFlat_d6dlm")
 Button/colors/font_hover_color = Color(0, 0, 0, 1)

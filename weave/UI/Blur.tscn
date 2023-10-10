@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dno5ieppnsdfv"]
+[gd_scene load_steps=2 format=3 uid="uid://cgb58y31ghkln"]
 
-[ext_resource type="Material" uid="uid://cvwd2c60d05yc" path="res://Materials/blur-material.tres" id="1_7rips"]
+[ext_resource type="Material" uid="uid://btsr45t6gbvt2" path="res://Materials/blur-material.tres" id="1_7rips"]
 
 [node name="Blurrer" type="CanvasLayer"]
 

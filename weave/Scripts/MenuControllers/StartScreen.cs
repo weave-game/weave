@@ -8,13 +8,22 @@ namespace weave.MenuControllers;
 
 public partial class StartScreen : Node2D
 {
-    private PackedScene _gameScene = GD.Load<PackedScene>("res://Menus/LobbyDemo.tscn");
+    private PackedScene _gameScene = GD.Load<PackedScene>("res://Menus/Lobby.tscn");
 
-    [GetNode("CanvasLayer/MarginContainer/VBoxContainer/Quit")]
+    [GetNode("UI/MarginContainer/VBoxContainer/Start")]
+    private Button _startButton;
+
+    [GetNode("UI/MarginContainer/VBoxContainer/Options")]
+    private Button _optionsButton;
+
+    [GetNode("UI/MarginContainer/VBoxContainer/Quit")]
     private Button _quitButton;
 
-    [GetNode("CanvasLayer/MarginContainer/VBoxContainer/Start")]
-    private Button _startButton;
+    [GetNode("BlurLayer")] private CanvasLayer _blurLayer;
+
+    private string _startButtonText = "START";
+    private string _optionsButtonText = "OPTIONS";
+    private string _quitButtonText = "QUIT";
 
     public override void _Ready()
     {
@@ -31,11 +40,26 @@ public partial class StartScreen : Node2D
 
     private void OnStartButtonPressed()
     {
-        GetTree().ChangeSceneToPacked(_gameScene);
+        _blurLayer.Visible = true;
+        HideButtonText();
     }
 
     private void OnQuitButtonPressed()
     {
         GetTree().Quit();
+    }
+
+    private void ShowButtonText()
+    {
+        _startButton.Text = _startButtonText;
+        _optionsButton.Text = _optionsButtonText;
+        _quitButton.Text = _quitButtonText;
+    }
+
+    private void HideButtonText()
+    {
+        _startButton.Text = "";
+        _optionsButton.Text = "";
+        _quitButton.Text = "";
     }
 }
