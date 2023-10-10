@@ -30,7 +30,7 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore .\Weave.sln
 
       - name: Run Roslynator and capture Output
         continue-on-error: true
