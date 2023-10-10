@@ -5,12 +5,14 @@ using System.Text;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
+using GodotSharper.Instancing;
 using Weave.Utils;
 using Weave.InputSources;
 using GodotSharper.Instancing;
 
 namespace Weave.MenuControllers;
 
+[Scene("res://Menus/StartScreen.tscn")]
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();

@@ -106,12 +106,12 @@ public partial class Main : Node2D
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Godot.Timer { WaitTime = 0.1 };
+        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new Godot.Timer { WaitTime = PlayerStartDelay, OneShot = true };
+        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
         AddChild(_playerDelayTimer);
     }
