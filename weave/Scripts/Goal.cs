@@ -51,7 +51,7 @@ public partial class Goal : Node2D
 
         _reached = true;
         _sprite.Modulate = Colors.Black;
-        EmitSignal(SignalName.PlayerReachedGoal, player);
+        EmitSignal(SignalName.PlayerReachedGoal);
         QueueFree();
     }
 }

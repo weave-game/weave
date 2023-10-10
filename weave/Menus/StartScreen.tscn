@@ -1,11 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=15 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
 [ext_resource type="PackedScene" uid="uid://13krjegt6uqn" path="res://Objects/Firefly.tscn" id="3_r76ru"]
+[ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="4_8y3os"]
 [ext_resource type="Texture2D" uid="uid://8rd510i1ect" path="res://Assets/bg_pattern.png" id="4_cecwe"]
+[ext_resource type="PackedScene" uid="uid://cgb58y31ghkln" path="res://UI/Blur.tscn" id="4_v148g"]
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
-[ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/neon_theme.tres" id="5_gh586"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
 
@@ -43,14 +44,16 @@ glow_bloom = 0.2
 glow_blend_mode = 1
 adjustment_enabled = true
 
-[node name="StartScreen" type="Node2D"]
+[node name="StartScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 scale = Vector2(1.00664, 0.991901)
 script = ExtResource("1_bb43u")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="Background" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="bg-pattern" type="TextureRect" parent="CanvasLayer"]
+[node name="bg-pattern" type="TextureRect" parent="Background"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -59,7 +62,7 @@ grow_vertical = 2
 texture = ExtResource("4_cecwe")
 expand_mode = 1
 
-[node name="weave-logo" type="TextureRect" parent="CanvasLayer"]
+[node name="weave-logo" type="TextureRect" parent="Background"]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -76,7 +79,14 @@ size_flags_vertical = 4
 texture = ExtResource("2_gitg2")
 expand_mode = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="BlurLayer" parent="." instance=ExtResource("4_v148g")]
+layer = -1
+visible = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -87,39 +97,64 @@ theme_override_constants/margin_top = 64
 theme_override_constants/margin_right = 64
 theme_override_constants/margin_bottom = 64
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
-custom_minimum_size = Vector2(250, 2.08165e-12)
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme = ExtResource("5_gh586")
+theme = ExtResource("4_8y3os")
+
+[node name="ButtonContainer" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = ExtResource("4_8y3os")
 alignment = 1
 
-[node name="Start" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+[node name="Play" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
-theme = ExtResource("5_gh586")
+theme = ExtResource("4_8y3os")
 theme_type_variation = &"AccentedButton"
 text = "PLAY"
 icon = ExtResource("5_76tk4")
 alignment = 0
 
-[node name="Options" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+[node name="Options" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
 visible = false
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
-theme = ExtResource("5_gh586")
+theme = ExtResource("4_8y3os")
 text = "OPTIONS"
 icon = ExtResource("6_bndfp")
 alignment = 0
 
-[node name="Quit" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+[node name="Quit" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
-theme = ExtResource("5_gh586")
+theme = ExtResource("4_8y3os")
 text = "QUIT"
 icon = ExtResource("7_6tkco")
 alignment = 0
 
+[node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="UI/MarginContainer/HBoxContainer/PlayerList"]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 2
+editable = false
+
+[node name="Start" type="Button" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("4_8y3os")
+text = "START GAME"
+
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -1
+visible = false
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
