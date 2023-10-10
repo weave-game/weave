@@ -174,6 +174,8 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
+        var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
+
         _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
@@ -182,7 +184,8 @@ public partial class Main : Node2D
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
-            player.GlobalPosition = GetRandomCoordinateInView(100);
+            player.GlobalPosition = playerPositions[0];
+            playerPositions.RemoveAt(0);
             _players.Add(player);
         });
     }
@@ -239,22 +242,73 @@ public partial class Main : Node2D
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
+        // Generate goal positions
+        IList<Vector2> playerPositions = new List<Vector2>();
+        _players.ForEach(player =>
+        {
+            playerPositions.Add(player.Position);
+        });
+        var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
+
         // Spawn new goals
         _players.ForEach(player =>
         {
             var goal = Instanter.Instantiate<Goal>();
             CallDeferred("add_child", goal);
-            goal.GlobalPosition = GetRandomCoordinateInView(100);
+            goal.GlobalPosition = goalPositions[0];
+            goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
         });
     }
 
-    private Vector2 GetRandomCoordinateInView(float margin)
+    private IList<Vector2> GetRandomPositionsInView(
+        int n,
+        IList<Vector2> occupiedPositions = null,
+        float minDistance = 250,
+        float margin = 100
+    )
     {
-        var x = (float)GD.RandRange(margin, GetViewportRect().Size.X - margin);
-        var y = (float)GD.RandRange(margin, GetViewportRect().Size.Y - margin);
-        return new Vector2(x, y);
+        IList<Vector2> positions = new List<Vector2>();
+        const int MaxAttempts = 1000;
+
+        // Generate positions
+        for (var i = 0; i < n; i++)
+        {
+            var valid = false;
+            var attempt = 0;
+            Vector2 newPosition;
+
+            do
+            {
+                attempt++;
+
+                newPosition = new Vector2(
+                    (float)GD.RandRange(margin, _width - margin),
+                    (float)GD.RandRange(margin, _height - margin)
+                );
+
+                valid = true;
+
+                occupiedPositions?.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+
+                positions.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+            } while (!valid && attempt < MaxAttempts);
+
+            positions.Add(newPosition);
+        }
+
+        return positions;
     }
 
     private void SetupLogger()
