@@ -72,19 +72,13 @@ public sealed class UniqueNameGenerator
     public string New()
     {
         var attemps = 0;
-        var name = Generate();
+        string name;
 
-        while (UsedNames.Contains(name))
-        {
-            if (attemps >= MaxAttempts)
-            {
-                name = $"{Generate()} {_backupIndex++}";
-                break;
-            }
+        do name = Generate();
+        while (UsedNames.Contains(name) && ++attemps < MaxAttempts);
 
-            name = Generate();
-            attemps++;
-        }
+        if (UsedNames.Contains(name))
+            name += $" {_backupIndex++}";
 
         UsedNames.Add(name);
         return name;
