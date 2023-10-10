@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-namespace weave;
+namespace Weave;
 
 public class Grid
 {
@@ -52,9 +52,7 @@ public class Grid
             for (var j = 0; j < _nrRows; j++)
             {
                 if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
-                {
                     playerSegments.UnionWith(_cells[i][j].Segments);
-                }
             }
         }
 
@@ -83,9 +81,7 @@ public class Grid
     )
     {
         if (rectangle.HasPoint(circleCenter))
-        {
             return true;
-        }
 
         var closestX = Mathf.Clamp(
             circleCenter.X,

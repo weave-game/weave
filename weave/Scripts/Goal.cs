@@ -1,11 +1,10 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.Utils;
 
-namespace weave;
+namespace Weave;
 
-[Instantiable(ObjectResources.GoalScene)]
+[Scene("res://Objects/Goal.tscn")]
 public partial class Goal : Node2D
 {
     /// <summary>
@@ -13,7 +12,7 @@ public partial class Goal : Node2D
     ///     Will only be emitted once.
     /// </summary>
     [Signal]
-    public delegate void PlayerReachedGoalEventHandler(Player player);
+    public delegate void PlayerReachedGoalEventHandler();
 
     private Color _color;
 
@@ -52,6 +51,7 @@ public partial class Goal : Node2D
 
         _reached = true;
         _sprite.Modulate = Colors.Black;
-        EmitSignal(SignalName.PlayerReachedGoal, player);
+        EmitSignal(SignalName.PlayerReachedGoal);
+        QueueFree();
     }
 }

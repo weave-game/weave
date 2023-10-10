@@ -6,42 +6,44 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Logger;
-using weave.Logger.Concrete;
-using weave.MenuControllers;
-using weave.Utils;
-using static weave.InputSources.KeyboardBindings;
+using Weave.InputSources;
+using Weave.Logger;
+using Weave.Logger.Concrete;
+using Weave.MenuControllers;
+using Weave.Utils;
+using static Weave.InputSources.KeyboardBindings;
 
-namespace weave;
+namespace Weave;
 
+[Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
-    private Lobby _lobby = new();
-
-    [GetNode("GameOverOverlay")]
-    private GameOverOverlay _gameOverOverlay;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
-    [GetNode("ScoreDisplay")]
-    private Score _scoreDisplay;
+    [GetNode("GameOverOverlay")]
+    private GameOverOverlay _gameOverOverlay;
+
+    private Grid _grid;
+    private int _height;
+    private Lobby _lobby = new();
+    private Timer _playerDelayTimer;
 
     /// <summary>
     ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
 
-    private Grid _grid;
-    private int _width;
-    private int _height;
+    [GetNode("ScoreDisplay")]
+    private ScoreDisplay _scoreDisplay;
+
     private Timer _uiUpdateTimer;
-    private Timer _playerDelayTimer;
+    private int _width;
 
     public override void _Ready()
     {
@@ -50,7 +52,7 @@ public partial class Main : Node2D
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.InputSources.Count == 0)
-            _lobby.InputSources.Add(new KeyboardInputSource(Keybindings[0]));
+            _lobby.Join(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
@@ -61,6 +63,8 @@ public partial class Main : Node2D
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
+
+        _scoreDisplay.OnGameStart(_players.Count);
     }
 
     public override void _Process(double delta)
@@ -88,6 +92,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
+        _scoreDisplay.Enabled = true;
     }
 
     private void DisablePlayerMovement()
@@ -95,6 +100,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
+        _scoreDisplay.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -107,13 +113,13 @@ public partial class Main : Node2D
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
         _playerDelayTimer.Timeout += EnablePlayerMovement;
-        _playerDelayTimer.Timeout += _scoreDisplay.OnGameStart;
         AddChild(_playerDelayTimer);
     }
 
     private void UpdateCountdown()
     {
-        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1).ToString();
+        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1)
+            .ToString(CultureInfo.InvariantCulture);
         _countdownLabel.UpdateLabelText(newText);
     }
 
@@ -129,9 +135,7 @@ public partial class Main : Node2D
                 player.GetRadius()
             );
             if (IsPlayerIntersecting(player, segments))
-            {
                 hasCollided = true;
-            }
         }
 
         if (hasCollided)
@@ -144,21 +148,13 @@ public partial class Main : Node2D
         {
             var pos = player.Position;
             if (pos.X < 0)
-            {
                 player.Position = new Vector2(_width, pos.Y);
-            }
             else if (pos.X > _width)
-            {
                 player.Position = new Vector2(0, pos.Y);
-            }
             else if (pos.Y < 0)
-            {
                 player.Position = new Vector2(pos.X, _height);
-            }
             else if (pos.Y > _height)
-            {
                 player.Position = new Vector2(pos.X, 0);
-            }
         }
     }
 
@@ -197,7 +193,7 @@ public partial class Main : Node2D
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + Constants.LineWidth / 2f;
+        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
@@ -208,12 +204,12 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GroupConstants.LineGroup);
+        line.AddToGroup(GodotConfig.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
 
-    private void OnPlayerReachedGoal(Player player)
+    private void OnPlayerReachedGoal()
     {
         if (++_roundCompletions != _lobby.Count)
             return;
@@ -233,7 +229,7 @@ public partial class Main : Node2D
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GroupConstants.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -242,7 +238,7 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GroupConstants.GoalGroup)
+            .GetNodesInGroup(GodotConfig.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
@@ -324,12 +320,12 @@ public partial class Main : Node2D
         {
             // FPS Logger
             new(
-                DevConstants.FpsLogFilePath,
+                Constants.FpsLogFilePath,
                 new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
             ),
             // Speed Logger
             new(
-                DevConstants.SpeedLogFilePath,
+                Constants.SpeedLogFilePath,
                 new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
             )
         };
@@ -369,5 +365,5 @@ public partial class Main : Node2D
         );
     }
 
-    #endregion
+    #endregion Loggers
 }
