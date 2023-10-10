@@ -2,7 +2,7 @@ using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 
-namespace weave.MenuControllers;
+namespace Weave.MenuControllers;
 
 public partial class GameOverOverlay : CanvasLayer
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Godot;
 
-namespace weave.Utils;
+namespace Weave.Utils;
 
 /// <summary>
 ///     Generates unique colors.

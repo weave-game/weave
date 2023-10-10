@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-namespace weave;
+namespace Weave;
 
 public class Grid
 {

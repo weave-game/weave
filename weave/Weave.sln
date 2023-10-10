@@ -1,6 +1,8 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "weave", "weave.csproj", "{77082760-BAE2-43EB-9C8D-54736BB60437}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaveGame", "WeaveGame.csproj", "{77082760-BAE2-43EB-9C8D-54736BB60437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaveTests", "WeaveTests\WeaveTests.csproj", "{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,5 +17,11 @@ Global
 		{77082760-BAE2-43EB-9C8D-54736BB60437}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{77082760-BAE2-43EB-9C8D-54736BB60437}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{77082760-BAE2-43EB-9C8D-54736BB60437}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F99D709-F13B-42A0-8809-7A7E0C6BF0DE}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

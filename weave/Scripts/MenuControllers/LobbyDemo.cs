@@ -4,10 +4,10 @@ using System.Text;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Utils;
+using Weave.InputSources;
+using Weave.Utils;
 
-namespace weave.MenuControllers;
+namespace Weave.MenuControllers;
 
 /// <summary>
 /// NOTE: This will be moved to the original StartScreen once the changes are added

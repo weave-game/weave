@@ -25,7 +25,7 @@ window/stretch/mode="canvas_items"
 
 [dotnet]
 
-project/assembly_name="weave"
+project/assembly_name="WeaveGame"
 
 [input]
 
