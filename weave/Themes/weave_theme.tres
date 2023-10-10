@@ -69,4 +69,5 @@ Button/styles/focus = ExtResource("1_xvkqr")
 Button/styles/hover = SubResource("StyleBoxFlat_12c4k")
 Button/styles/normal = ExtResource("1_xvkqr")
 Button/styles/pressed = ExtResource("1_xvkqr")
+HBoxContainer/constants/separation = 16
 VBoxContainer/constants/separation = 16

@@ -44,7 +44,9 @@ glow_bloom = 0.2
 glow_blend_mode = 1
 adjustment_enabled = true
 
-[node name="StartScreen" type="Node2D"]
+[node name="StartScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 scale = Vector2(1.00664, 0.991901)
 script = ExtResource("1_bb43u")
 
@@ -97,6 +99,9 @@ theme_override_constants/margin_bottom = 64
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme = ExtResource("4_8y3os")
 
 [node name="ButtonContainer" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -105,18 +110,18 @@ size_flags_vertical = 4
 theme = ExtResource("4_8y3os")
 alignment = 1
 
-[node name="Start" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(0, 66)
+[node name="Play" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 theme_type_variation = &"AccentedButton"
-text = "START"
+text = "PLAY"
 icon = ExtResource("5_76tk4")
 alignment = 0
 
 [node name="Options" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
 visible = false
-custom_minimum_size = Vector2(0, 66)
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 text = "OPTIONS"
@@ -124,7 +129,7 @@ icon = ExtResource("6_bndfp")
 alignment = 0
 
 [node name="Quit" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(0, 66)
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 text = "QUIT"
@@ -132,8 +137,20 @@ icon = ExtResource("7_6tkco")
 alignment = 0
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="UI/MarginContainer/HBoxContainer/PlayerList"]
+custom_minimum_size = Vector2(300, 400)
+layout_mode = 2
+editable = false
+
+[node name="Start" type="Button" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 4
+theme = ExtResource("4_8y3os")
+text = "START GAME"
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -1
