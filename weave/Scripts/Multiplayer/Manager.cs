@@ -6,6 +6,7 @@ using Godot;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using weave.InputSources;
+using System.Security.Cryptography.X509Certificates;
 
 namespace weave.Multiplayer;
 
