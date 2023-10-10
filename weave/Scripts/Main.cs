@@ -23,8 +23,8 @@ public partial class Main : Node2D
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
 
-    [GetNode("AudioStreamPlayer2D")]
-    private AudioStreamPlayer2D _audioStreamPlayer2D;
+    [GetNode("AudioStreamPlayer")]
+    private AudioStreamPlayer _audioStreamPlayer;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
@@ -166,7 +166,7 @@ public partial class Main : Node2D
         _gameOverOverlay.DisplayGameOver();
         ProcessMode = ProcessModeEnum.Disabled;
 
-        _audioStreamPlayer2D.PitchScale = 0.5f;
+        _audioStreamPlayer.PitchScale = 0.5f;
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
