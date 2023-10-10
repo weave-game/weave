@@ -244,10 +244,7 @@ public partial class Main : Node2D
 
         // Generate goal positions
         IList<Vector2> playerPositions = new List<Vector2>();
-        _players.ForEach(player =>
-        {
-            playerPositions.Add(player.Position);
-        });
+        _players.ForEach(player => playerPositions.Add(player.Position));
         var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
         // Spawn new goals
@@ -269,7 +266,7 @@ public partial class Main : Node2D
         float margin = 100
     )
     {
-        IList<Vector2> positions = new List<Vector2>();
+        var positions = new List<Vector2>();
         const int MaxAttempts = 1000;
 
         // Generate positions
