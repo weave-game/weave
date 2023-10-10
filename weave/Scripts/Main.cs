@@ -163,8 +163,7 @@ public partial class Main : Node2D
 
     private void GameOver()
     {
-        _gameOverOverlay.Visible = true;
-        _gameOverOverlay.FocusRetryButton();
+        _gameOverOverlay.DisplayGameOver();
         ProcessMode = ProcessModeEnum.Disabled;
 
         _audioStreamPlayer2D.PitchScale = 0.5f;

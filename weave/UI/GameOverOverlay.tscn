@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfn3svkimd3s4"]
+[gd_scene load_steps=3 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
+[ext_resource type="AudioStream" uid="uid://drclr0x038ndn" path="res://Assets/SFX/explosion.mp3" id="2_3og4l"]
 
 [node name="GameOverOverlay" type="CanvasLayer"]
 script = ExtResource("1_xbr3w")
@@ -36,3 +37,7 @@ text = "Retry"
 layout_mode = 2
 text = "Menu
 "
+
+[node name="ExplosionPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_3og4l")
+volume_db = -5.943
