@@ -221,10 +221,11 @@ public partial class Main : Node2D
     {
         _roundCompletions = 0;
 
+        _scoreDisplay.OnRoundComplete();
+
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
-        _scoreDisplay.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
