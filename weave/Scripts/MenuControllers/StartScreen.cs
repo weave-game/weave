@@ -2,10 +2,12 @@ using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
+using GodotSharper.Instancing;
 using Weave.Utils;
 
 namespace Weave.MenuControllers;
 
+[Scene("res://Menus/StartScreen.tscn")]
 public partial class StartScreen : Node2D
 {
     private PackedScene _gameScene = GD.Load<PackedScene>("res://Menus/LobbyDemo.tscn");
