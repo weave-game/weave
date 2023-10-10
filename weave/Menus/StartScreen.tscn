@@ -154,7 +154,6 @@ text = "START GAME"
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -1
-visible = false
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
