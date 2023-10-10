@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Scripts\WeaveGame.csproj" />
+      <ProjectReference Include="..\WeaveGame.csproj" />
     </ItemGroup>
 
 </Project>

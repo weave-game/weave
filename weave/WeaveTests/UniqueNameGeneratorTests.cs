@@ -1,41 +1,67 @@
 ﻿using System.Reflection;
-using Moq;
 using Weave.Utils;
 
 namespace WeaveTests;
 
-public class UniqueNameGeneratorTests
+public sealed class UniqueNameGeneratorTests
 {
     [Fact]
-    public void New_GeneratesUniqueNamesIncludingBackup()
+    private void GeneratesRandomNames()
+    {
+        const int times = 10_000;
+        var generatedNames = new List<string>();
+
+        for (var i = 0; i < times; i++)
+        {
+            var name = UniqueNameGenerator.Instance.New();
+            Assert.DoesNotContain(name, generatedNames);
+            generatedNames.Add(name);
+        }
+    }
+
+    [Fact]
+    private void UsesBackupId()
     {
         var generator = UniqueNameGenerator.Instance;
+        const string prefix = "prefix";
+        const string suffix = "suffix";
 
-        // Get the Type of the instance
         var type = generator.GetType();
-            
-        // Retrieve PropertyInfo for the Suffixes property
-        var propertyInfo = type.GetProperty("Suffixes", BindingFlags.NonPublic | BindingFlags.Instance);
+        var backupIndexField = type.GetField("_backupIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+        var prefixesProperty = type.GetProperty("Prefixes", BindingFlags.NonPublic | BindingFlags.Instance);
+        var suffixesProperty = type.GetProperty("Suffixes", BindingFlags.NonPublic | BindingFlags.Instance);
+        var prefixes = (IEnumerable<string>)prefixesProperty?.GetValue(generator)!;
+        var suffixes = (IEnumerable<string>)suffixesProperty?.GetValue(generator)!;
 
-        // Use GetValue to get the value of Suffixes
-        var suffixes = (IEnumerable<string>)propertyInfo.GetValue(generator);
+        // set backup index
+        backupIndexField?.SetValue(generator, 1);
 
-        // set the mockSuffixes to return the suffixes
-        if (suffixes is List<string> l)
+        if (prefixes is List<string> prefixesList)
         {
-            // remove all but one suffix
-            while (l.Any())
-                l.RemoveAt(0);
-            
-            l.Add("test");
+            while (prefixesList.Any())
+                prefixesList.RemoveAt(0);
+
+            prefixesList.Add(prefix);
+        }
+        else
+        {
+            Assert.Fail("Prefixes is not a List<string>, this test will not work");
+        }
+
+        if (suffixes is List<string> suffixesList)
+        {
+            while (suffixesList.Any())
+                suffixesList.RemoveAt(0);
+
+            suffixesList.Add(suffix);
         }
         else
         {
             Assert.Fail("Suffixes is not a List<string>, this test will not work");
         }
 
-        generator.New();
-        // This name should have backup index
-        Assert.Equal("OnlyPrefixOnlySuffix0", generator.New());
+        Assert.Equal(prefix + suffix, generator.New());
+        Assert.Equal(prefix + suffix + " 1", generator.New());
+        Assert.Equal(prefix + suffix + " 2", generator.New());
     }
 }

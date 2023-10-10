@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace Weave.Utils;
 
-public class UniqueNameGenerator
+public sealed class UniqueNameGenerator
 {
-    private static ISet<string> UsedNames { get; } = new HashSet<string>();
-    private static int _backupIndex;
+    private ISet<string> UsedNames { get; } = new HashSet<string>();
+    private int _backupIndex = 1;
     private const int MaxAttempts = 100;
 
     /// <summary>
