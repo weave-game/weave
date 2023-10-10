@@ -31,7 +31,9 @@ public partial class Manager : Node
     {
         GD.Print("Starting signaling server...");
 
-        webSocketServer = new WebSocketServer(IPAddress.Any, WEBSOCKET_PORT);
+        webSocketServer = new WebSocketServer(IPAddress.Any, WEBSOCKET_PORT, true);
+        webSocketServer.SslConfiguration.ServerCertificate = new X509Certificate2("Scripts/Multiplayer/Certificates/certificate.pfx", "123");
+        webSocketServer.SslConfiguration.CheckCertificateRevocation = false;
         webSocketServer.AddWebSocketService<WebRTCWebSocketPeer>($"/{_lobbyCode}", (peer) => peer.CreatePeerConnection = () => CreatePeerConnection(peer.ID));
         webSocketServer.Start();
 
