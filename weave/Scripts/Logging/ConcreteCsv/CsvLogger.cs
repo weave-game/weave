@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using GodotSharper;
 
-namespace Weave.Logger;
+namespace Weave.Logging.ConcreteCsv;
 
-public class Logger
+public sealed class CsvLogger : ICsvLogger
 {
     private readonly string _filePath;
+    private readonly LoggerMode _loggerMode;
     private readonly IEnumerable<Func<Log>> _loggers;
 
     /// <summary>
@@ -19,11 +20,12 @@ public class Logger
 
     private bool _firstPersist = true;
 
-    public Logger(string filePath, IEnumerable<Func<Log>> loggers)
+    public CsvLogger(string filePath, IEnumerable<Func<Log>> loggers, LoggerMode loggerMode)
     {
         _logsToLog = new List<IList<Log>>();
         _filePath = filePath;
         _loggers = loggers;
+        _loggerMode = loggerMode;
     }
 
     public void Log()
@@ -35,14 +37,29 @@ public class Logger
     {
         if (_firstPersist)
         {
-            ClearFile();
-            WriteHeaders();
+            HandleFirstPersist();
             _firstPersist = false;
         }
 
         var rows = _logsToLog.Select(logs => string.Join(",", logs.Select(log => log.Value)));
         rows.ForEach(row => File.AppendAllText(_filePath, row + Environment.NewLine));
         _logsToLog.Clear();
+    }
+
+    private void HandleFirstPersist()
+    {
+        if (_loggerMode == LoggerMode.Append && HasFileHeaders())
+            return;
+
+        ClearFile();
+        WriteHeaders();
+    }
+
+    private bool HasFileHeaders()
+    {
+        // Simplified check, but should be enough for our purposes
+        return File.Exists(_filePath)
+            && !string.IsNullOrWhiteSpace(File.ReadAllLines(_filePath)[0]);
     }
 
     private void ClearFile()
