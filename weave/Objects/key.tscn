@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpu0w1a614j3k"]
+
+[ext_resource type="Texture2D" uid="uid://cc88j7gesskgd" path="res://Assets/Icons/keyboard_key.svg" id="1_5nscd"]
+
+[node name="KeyControl" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="KeyTexture" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("1_5nscd")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 10.0
+offset_right = 104.0
+offset_bottom = 104.0
+theme_override_font_sizes/font_size = 48
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1

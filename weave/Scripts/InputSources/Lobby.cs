@@ -9,6 +9,8 @@ public sealed class Lobby
     public IReadOnlyList<IInputSource> InputSources => _inputSources.AsReadOnly();
     public int Count => _inputSources.Count;
 
+    public bool Open { get; set; }
+
     public void Join(IInputSource inputSource)
     {
         var alreadyExists = _inputSources.FirstOrDefault(input => input.Equals(inputSource));

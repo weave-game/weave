@@ -30,16 +30,13 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/MarginContainer/HBoxContainer/PlayerList/TextEdit")]
-    private TextEdit _textEdit;
-
     [GetNode("UI/MarginContainer/HBoxContainer/Start")]
     private Button _startButton;
 
     public override void _Ready()
     {
         this.GetNodes();
-        _playButton.Pressed += OnPlayButtonPressed;
+        _playButton.Pressed += OpenLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
@@ -55,8 +52,10 @@ public partial class StartScreen : Control
         PrintInputSources();
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
+        if (!_lobby.Open)
+            return;
         switch (@event)
         {
             case InputEventJoypadButton button:
@@ -68,12 +67,22 @@ public partial class StartScreen : Control
         }
     }
 
-    private void OnPlayButtonPressed()
+    private void OpenLobby()
     {
-        _blurLayer.Visible = true;
-        _playerList.Visible = true;
-        _startButton.Visible = true;
+        _lobby.Open = true;
+        _blurLayer.Visible = _lobby.Open;
+        _playerList.Visible = _lobby.Open;
+        _startButton.Visible = _lobby.Open;
         CollapseButtons();
+    }
+
+    private void CloseLobby()
+    {
+        _lobby.Open = false;
+        _blurLayer.Visible = false;
+        _playerList.Visible = false;
+        _startButton.Visible = false;
+        ExpandButtons();
     }
 
     private void OnQuitButtonPressed()
@@ -138,7 +147,7 @@ public partial class StartScreen : Control
             sb.AppendLine("");
         }
 
-        _textEdit.Text = sb.ToString();
+        // _textEdit.Text = sb.ToString();
     }
 
     #region Keyboard

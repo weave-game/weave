@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://umlna72c8tix"]
+
+[ext_resource type="Texture2D" uid="uid://rnb2i6nax7a2" path="res://Assets/Sprites/player.png" id="1_5f2mh"]
+[ext_resource type="PackedScene" uid="uid://cpu0w1a614j3k" path="res://Objects/key.tscn" id="2_a6c8x"]
+
+[node name="Control" type="Control"]
+modulate = Color(1, 1, 0, 1)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 576.0
+offset_bottom = 128.0
+
+[node name="PlayerCharacter" type="TextureRect" parent="."]
+layout_mode = 2
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("1_5f2mh")
+expand_mode = 1
+
+[node name="Right" parent="." instance=ExtResource("2_a6c8x")]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 448.0
+offset_right = 448.0
+
+[node name="Left" parent="." instance=ExtResource("2_a6c8x")]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 256.0
+offset_right = 256.0
