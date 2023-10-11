@@ -31,8 +31,16 @@ public partial class Main : Node2D
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
+    [GetNode("AudioStreamPlayer2D")]
+    private AudioStreamPlayer2D _musicPlayer;
+
+    [GetNode("ScoreDisplay")]
+    private ScoreDisplay _scoreDisplay;
+
     private Grid _grid;
+    private int _width;
     private int _height;
+    private bool _gameIsRunning;
     private Lobby _lobby = new();
     private Timer _playerDelayTimer;
 
@@ -41,11 +49,7 @@ public partial class Main : Node2D
     /// </summary>
     private int _roundCompletions;
 
-    [GetNode("ScoreDisplay")]
-    private ScoreDisplay _scoreDisplay;
-
     private Timer _uiUpdateTimer;
-    private int _width;
 
     public override void _Ready()
     {
@@ -61,17 +65,20 @@ public partial class Main : Node2D
         _height = (int)GetViewportRect().Size.Y;
 
         InitializeTimers();
-        DisablePlayerMovement();
-        CreateMapGrid();
+        StartPreparationPhase();
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
 
         _scoreDisplay.OnGameStart(_players.Count);
+
+        _gameIsRunning = true;
     }
 
     public override void _Process(double delta)
     {
+        if (!_gameIsRunning) return;
+
         _players.ForEach(p =>
         {
             p.MovementSpeed += Acceleration * (float)delta;
@@ -81,6 +88,8 @@ public partial class Main : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!_gameIsRunning) return;
+
         DetectPlayerCollision();
         DetectPlayerOutOfBounds();
     }
@@ -90,20 +99,17 @@ public partial class Main : Node2D
         _grid = new Grid(10, 10, _width, _height);
     }
 
-    private void EnablePlayerMovement()
+    private void SetPlayerMovement(bool enabled)
     {
-        _players.ForEach(player => player.IsMoving = true);
+        _players.ForEach(player => player.IsMoving = enabled);
+    }
+
+    private void StartRound()
+    {
+        SetPlayerMovement(true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
         _scoreDisplay.Enabled = true;
-    }
-
-    private void DisablePlayerMovement()
-    {
-        _players.ForEach(player => player.IsMoving = false);
-        _uiUpdateTimer.Timeout += UpdateCountdown;
-        _playerDelayTimer.Start();
-        _scoreDisplay.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -115,7 +121,7 @@ public partial class Main : Node2D
 
         // Countdown timer
         _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
-        _playerDelayTimer.Timeout += EnablePlayerMovement;
+        _playerDelayTimer.Timeout += StartRound;
         AddChild(_playerDelayTimer);
     }
 
@@ -163,9 +169,14 @@ public partial class Main : Node2D
 
     private void GameOver()
     {
+        _gameIsRunning = false;
         _gameOverOverlay.Visible = true;
         _gameOverOverlay.FocusRetryButton();
-        ProcessMode = ProcessModeEnum.Disabled;
+        _musicPlayer.Stop();
+        SetPlayerMovement(false);
+        //ProcessMode = ProcessModeEnum.Disabled;
+
+        _scoreDisplay.OnGameEnd();
 
         // Save score
         var score = new ScoreRecord(
@@ -224,18 +235,19 @@ public partial class Main : Node2D
         if (++_roundCompletions != _lobby.Count)
             return;
 
-        HandleRoundComplete();
+        _roundCompletions = 0;
+        _scoreDisplay.OnRoundComplete();
+        StartPreparationPhase();
     }
 
-    private void HandleRoundComplete()
+    private void StartPreparationPhase()
     {
-        _roundCompletions = 0;
-
-        _scoreDisplay.OnRoundComplete();
-
-        DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
+        SetPlayerMovement(false);
+        _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.Start();
+        _scoreDisplay.Enabled = false;
     }
 
     private void ClearLinesAndSegments()
