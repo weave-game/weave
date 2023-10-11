@@ -58,6 +58,7 @@ script = ExtResource("5_rrrp0")
 [node name="ScoreDisplay" parent="." instance=ExtResource("6_6l1qm")]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
 stream = ExtResource("4_4yh78")
 volume_db = -8.419
 autoplay = true
