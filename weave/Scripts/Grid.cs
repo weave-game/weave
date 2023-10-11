@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-namespace weave;
+namespace Weave;
 
 public class Grid
 {
@@ -48,9 +48,13 @@ public class Grid
         var playerSegments = new HashSet<SegmentShape2D>();
 
         for (var i = 0; i < _nrCols; i++)
+        {
             for (var j = 0; j < _nrRows; j++)
+            {
                 if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
                     playerSegments.UnionWith(_cells[i][j].Segments);
+            }
+        }
 
         return playerSegments;
     }

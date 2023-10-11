@@ -1,7 +1,7 @@
 using System.Globalization;
 using Godot;
 
-namespace weave.Logger.Concrete;
+namespace Weave.Logging.ConcreteCsv;
 
 public sealed class DeltaLogger
 {

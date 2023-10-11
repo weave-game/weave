@@ -1,8 +1,8 @@
 using Godot;
 using GodotSharper.AutoGetNode;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave;
+namespace Weave;
 
 public partial class Firefly : Path2D
 {
@@ -32,10 +32,10 @@ public partial class Firefly : Path2D
         this.GetNodes();
 
         Visible = true;
-        _line.Width = Constants.MenuLineWidth;
+        _line.Width = WeaveConstants.MenuLineWidth;
 
-        var animationDelay = GD.Randf() * 10 + 3;
-        _animationTimer = new Godot.Timer { WaitTime = animationDelay, OneShot = true };
+        var animationDelay = (GD.Randf() * 10) + 3;
+        _animationTimer = new Timer { WaitTime = animationDelay, OneShot = true };
         _animationTimer.Timeout += HandleTimerTimeout;
         AddChild(_animationTimer);
 
@@ -64,7 +64,7 @@ public partial class Firefly : Path2D
 
         // Reached goal speed, set new speed
         if (MathF.Abs(_currentSpeed - _goalSpeed) < (float)10e-5)
-            _goalSpeed = GD.Randf() * MaxSpeed + MinSpeed;
+            _goalSpeed = (GD.Randf() * MaxSpeed) + MinSpeed;
 
         // Make line follow the leading point
         if (_line.Points[0].DistanceTo(_area.GlobalPosition) >= DistanceBetweenPoints)

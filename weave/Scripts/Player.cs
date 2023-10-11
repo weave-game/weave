@@ -1,12 +1,11 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Utils;
+using Weave.InputSources;
 
-namespace weave;
+namespace Weave;
 
-[Instantiable(ObjectResources.PlayerScene)]
+[Scene("res://Objects/Player.tscn")]
 public partial class Player : CharacterBody2D
 {
     private bool _isMoving;

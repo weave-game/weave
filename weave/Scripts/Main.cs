@@ -3,21 +3,24 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using weave.InputSources;
-using weave.Logger;
-using weave.Logger.Concrete;
-using weave.MenuControllers;
-using weave.Utils;
-using static weave.InputSources.KeyboardBindings;
+using Weave.InputSources;
+using Weave.Logging;
+using Weave.Logging.ConcreteCsv;
+using Weave.MenuControllers;
+using Weave.Scoring;
+using Weave.Utils;
+using static Weave.InputSources.KeyboardBindings;
 
-namespace weave;
+namespace Weave;
 
+[Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
+    private IScoreManager _scoreManager;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
@@ -37,10 +40,7 @@ public partial class Main : Node2D
     private int _roundCompletions;
 
     [GetNode("ScoreDisplay")]
-    private Score _score;
-
-    [GetNode("ScoreDisplay")]
-    private Score _scoreDisplay;
+    private ScoreDisplay _scoreDisplay;
 
     private Godot.Timer _uiUpdateTimer;
     private int _width;
@@ -48,6 +48,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
         _multiplayerManager = GameConfig.MultiplayerManager;
 
@@ -64,6 +65,8 @@ public partial class Main : Node2D
         SpawnPlayers();
         ClearAndSpawnGoals();
         SetupLogger();
+
+        _scoreDisplay.OnGameStart(_players.Count);
     }
 
     public override void _Process(double delta)
@@ -91,7 +94,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
         _countdownLabel.UpdateLabelText("");
-        _score.Enabled = true;
+        _scoreDisplay.Enabled = true;
     }
 
     private void DisablePlayerMovement()
@@ -99,7 +102,7 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
-        _score.Enabled = false;
+        _scoreDisplay.Enabled = false;
     }
 
     private void InitializeTimers()
@@ -162,6 +165,13 @@ public partial class Main : Node2D
         _gameOverOverlay.Visible = true;
         _gameOverOverlay.FocusRetryButton();
         ProcessMode = ProcessModeEnum.Disabled;
+
+        // Save score
+        var score = new ScoreRecord(
+            _scoreDisplay.Score,
+            UniqueNameGenerator.Instance.New()
+        );
+        _scoreManager.Save(score);
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
@@ -173,6 +183,8 @@ public partial class Main : Node2D
     {
         var colorGenerator = new UniqueColorGenerator();
 
+        var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
+
         _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
@@ -181,7 +193,8 @@ public partial class Main : Node2D
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
-            player.GlobalPosition = GetRandomCoordinateInView(100);
+            player.GlobalPosition = playerPositions[0];
+            playerPositions.RemoveAt(0);
             _players.Add(player);
         });
     }
@@ -189,7 +202,7 @@ public partial class Main : Node2D
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + Constants.LineWidth / 2f;
+        var radius = player.GetRadius() + (WeaveConstants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
@@ -200,12 +213,12 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GroupConstants.LineGroup);
+        line.AddToGroup(GodotConfig.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
 
-    private void OnPlayerReachedGoal(Player player)
+    private void OnPlayerReachedGoal()
     {
         if (++_roundCompletions != _lobby.Count)
             return;
@@ -217,15 +230,16 @@ public partial class Main : Node2D
     {
         _roundCompletions = 0;
 
+        _scoreDisplay.OnRoundComplete();
+
         DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
-        _score.OnRoundComplete();
     }
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GroupConstants.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -234,26 +248,74 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GroupConstants.GoalGroup)
+            .GetNodesInGroup(GodotConfig.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
+
+        // Generate goal positions
+        IList<Vector2> playerPositions = new List<Vector2>();
+        _players.ForEach(player => playerPositions.Add(player.Position));
+        var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
         // Spawn new goals
         _players.ForEach(player =>
         {
             var goal = Instanter.Instantiate<Goal>();
             CallDeferred("add_child", goal);
-            goal.GlobalPosition = GetRandomCoordinateInView(100);
+            goal.GlobalPosition = goalPositions[0];
+            goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
         });
     }
 
-    private Vector2 GetRandomCoordinateInView(float margin)
+    private IList<Vector2> GetRandomPositionsInView(
+        int n,
+        IList<Vector2> occupiedPositions = null,
+        float minDistance = 250,
+        float margin = 100
+    )
     {
-        var x = (float)GD.RandRange(margin, GetViewportRect().Size.X - margin);
-        var y = (float)GD.RandRange(margin, GetViewportRect().Size.Y - margin);
-        return new Vector2(x, y);
+        var positions = new List<Vector2>();
+        const int MaxAttempts = 1000;
+
+        // Generate positions
+        for (var i = 0; i < n; i++)
+        {
+            var valid = false;
+            var attempt = 0;
+            Vector2 newPosition;
+
+            do
+            {
+                attempt++;
+
+                newPosition = new Vector2(
+                    (float)GD.RandRange(margin, _width - margin),
+                    (float)GD.RandRange(margin, _height - margin)
+                );
+
+                valid = true;
+
+                occupiedPositions?.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+
+                positions.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+            } while (!valid && attempt < MaxAttempts);
+
+            positions.Add(newPosition);
+        }
+
+        return positions;
     }
 
     private void SetupLogger()
@@ -261,17 +323,19 @@ public partial class Main : Node2D
         var fpsDeltaLogger = new DeltaLogger();
         var speedDeltaLogger = new DeltaLogger();
 
-        var loggers = new List<Logger.Logger>
+        var loggers = new List<ICsvLogger>
         {
             // FPS Logger
-            new(
-                DevConstants.FpsLogFilePath,
-                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
+            new CsvLogger(
+                WeaveConstants.FpsLogFileCsvPath,
+                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger },
+                LoggerMode.Reset
             ),
             // Speed Logger
-            new(
-                DevConstants.SpeedLogFilePath,
-                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
+            new CsvLogger(
+                WeaveConstants.SpeedLogFileCsvPath,
+                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger },
+                LoggerMode.Reset
             )
         };
 
@@ -310,5 +374,5 @@ public partial class Main : Node2D
         );
     }
 
-    #endregion
+    #endregion Loggers
 }

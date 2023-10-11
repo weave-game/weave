@@ -1,7 +1,7 @@
 using Godot;
-using weave.Utils;
+using Weave.Utils;
 
-namespace weave;
+namespace Weave;
 
 public partial class CurveSpawner : Node2D
 {
@@ -73,7 +73,7 @@ public partial class CurveSpawner : Node2D
             return;
 
         // Line that is drawn to screen
-        var line = new Line2D { DefaultColor = Color, Width = Constants.LineWidth };
+        var line = new Line2D { DefaultColor = Color, Width = WeaveConstants.LineWidth };
         line.AddPoint(from);
         line.AddPoint(to);
 
