@@ -75,20 +75,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="text-neutral-500 font-bold">
-    <p>Fetching scores in: {{ countdown }} seconds</p>
+  <div class="text-neutral-700 font-bold">
+    <p class="my-mono">Update in {{ countdown }}...</p>
   </div>
 
-  <table class="text-white w-full text-3xl font-black my-32 border-solid border-2 border-neutral-800">
-    <thead>
-      <tr>
-        <th></th>
-        <th class="text-left">Name</th>
-        <th class="text-left">Score</th>
-        <!-- <th></th> -->
-      </tr>
-    </thead>
-
+  <table class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800">
     <tbody>
       <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px"
         :class="{ 'bg-neutral-800': index % 2 === 0, 'bg-neutral-900': index % 2 === 1 }">

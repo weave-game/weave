@@ -7,9 +7,10 @@ using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.InputSources;
-using Weave.Logger;
-using Weave.Logger.Concrete;
+using Weave.Logging;
+using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
+using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
 
@@ -22,6 +23,7 @@ public partial class Main : Node2D
     private const int TurnAcceleration = 5;
     private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
+    private IScoreManager _scoreManager;
 
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
@@ -48,6 +50,7 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
+        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
@@ -163,6 +166,13 @@ public partial class Main : Node2D
         _gameOverOverlay.Visible = true;
         _gameOverOverlay.FocusRetryButton();
         ProcessMode = ProcessModeEnum.Disabled;
+
+        // Save score
+        var score = new ScoreRecord(
+            _scoreDisplay.Score,
+            UniqueNameGenerator.Instance.New()
+        );
+        _scoreManager.Save(score);
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
@@ -193,7 +203,7 @@ public partial class Main : Node2D
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
     {
         var position = player.CollisionShape2D.GlobalPosition;
-        var radius = player.GetRadius() + (Constants.LineWidth / 2f);
+        var radius = player.GetRadius() + (WeaveConstants.LineWidth / 2f);
 
         return segments.Any(
             segment =>
@@ -314,17 +324,19 @@ public partial class Main : Node2D
         var fpsDeltaLogger = new DeltaLogger();
         var speedDeltaLogger = new DeltaLogger();
 
-        var loggers = new List<Logger.Logger>
+        var loggers = new List<ICsvLogger>
         {
             // FPS Logger
-            new(
-                Constants.FpsLogFilePath,
-                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger }
+            new CsvLogger(
+                WeaveConstants.FpsLogFileCsvPath,
+                new[] { () => fpsDeltaLogger.Log(), FpsLogger, LineCountLogger },
+                LoggerMode.Reset
             ),
             // Speed Logger
-            new(
-                Constants.SpeedLogFilePath,
-                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger }
+            new CsvLogger(
+                WeaveConstants.SpeedLogFileCsvPath,
+                new[] { () => speedDeltaLogger.Log(), SpeedLogger, TurnRadiusLogger },
+                LoggerMode.Reset
             )
         };
 

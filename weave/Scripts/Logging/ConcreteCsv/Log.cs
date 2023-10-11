@@ -1,4 +1,4 @@
-﻿namespace Weave.Logger;
+namespace Weave.Logging.ConcreteCsv;
 
 public readonly struct Log
 {

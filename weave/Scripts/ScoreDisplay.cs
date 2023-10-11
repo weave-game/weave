@@ -13,8 +13,12 @@ public partial class ScoreDisplay : CanvasLayer
     private const float PlayerMultiplier = 1.5f;
     private int _finishedRounds;
     private int _playerCount;
+    private float _score;
 
-    public float Score { get; private set; }
+    /// <summary>
+    ///     The score. Internally stored as a float to allow for more precise calculations but when used externally its an int.
+    /// </summary>
+    public int Score => (int)_score;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -25,6 +29,7 @@ public partial class ScoreDisplay : CanvasLayer
     private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
 
     private double _timeSinceRoundStart;
+    private double _points;
 
     public bool Enabled { set; get; }
 
@@ -35,7 +40,7 @@ public partial class ScoreDisplay : CanvasLayer
 
     public override void _Process(double delta)
     {
-        _scoreLabel.Text = ((int)Score).ToString();
+        _scoreLabel.Text = ((int)_score).ToString();
 
         if (!Enabled)
             return;
@@ -61,7 +66,7 @@ public partial class ScoreDisplay : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        Score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
 
         _timeSinceRoundStart += delta;
     }
@@ -92,7 +97,7 @@ public partial class ScoreDisplay : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        Score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
 
         _finishedRounds++;
         _timeSinceRoundStart = 0;
