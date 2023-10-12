@@ -6,10 +6,10 @@ namespace Weave.MenuControllers;
 
 public partial class GameOverOverlay : CanvasLayer
 {
-    [GetNode("CenterContainer/VBox/MenuButton")]
+    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/MenuButton")]
     private Button _menuButton;
 
-    [GetNode("CenterContainer/VBox/RetryButton")]
+    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
     private Button _retryButton;
 
     [GetNode("ExplosionPlayer")]

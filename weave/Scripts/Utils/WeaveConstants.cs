@@ -9,6 +9,12 @@ public static class WeaveConstants
 
     #endregion Lines
 
+    #region Countdown
+
+    public const int CountdownLength = 2;
+
+    #endregion Countdown
+
     #region Logging
 
     public const string FpsLogFileCsvPath = "./Loggings/fps.csv";
