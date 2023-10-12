@@ -9,7 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
-[ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
+[ext_resource type="AudioStream" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
+[ext_resource type="PackedScene" uid="uid://dg5bmrcaihsvl" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
 
 [sub_resource type="Curve2D" id="Curve2D_b5vkc"]
 _data = {
@@ -34,16 +35,6 @@ _data = {
 "points": PackedVector2Array(-228.356, 119.356, 228.356, -119.356, -182, 0, -155.544, -61.8105, 155.544, 61.8105, 344, 285, -136.364, -55.4701, 136.364, 55.4701, 844, 174, -45.8669, 150.054, 45.8669, -150.054, 1320, 257, -125.521, -20.7385, 125.521, 20.7385, 1591, 80, 68.3913, -202.324, -68.3913, 202.324, 1562, 714, 282.114, 11.3986, -282.114, -11.3986, 549, 1011, 241.777, -9.6594, -241.777, 9.6594, -31, 618)
 }
 point_count = 8
-
-[sub_resource type="Environment" id="Environment_1k2n6"]
-background_mode = 3
-glow_enabled = true
-glow_normalized = true
-glow_intensity = 1.05
-glow_strength = 0.9
-glow_bloom = 0.2
-glow_blend_mode = 1
-adjustment_enabled = true
 
 [node name="StartScreen" type="Control"]
 layout_mode = 3
@@ -172,8 +163,7 @@ curve = SubResource("Curve2D_ifgwf")
 visible = false
 curve = SubResource("Curve2D_bm1nx")
 
-[node name="CanvasGlow" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1k2n6")
+[node name="Glowifier" parent="." instance=ExtResource("10_hkd0d")]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_4fvpc")

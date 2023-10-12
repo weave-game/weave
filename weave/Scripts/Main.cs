@@ -18,8 +18,8 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private const float Acceleration = 3.5f;
-    private const int TurnAcceleration = 5;
+    private const float Acceleration = 1.75f;
+    private const float TurnAcceleration = 2.5f;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
