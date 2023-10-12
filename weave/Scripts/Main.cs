@@ -292,7 +292,7 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Generate goal positions
-        IList<Vector2> playerPositions = new List<Vector2>();
+        var playerPositions = new List<Vector2>();
         _players.ForEach(player => playerPositions.Add(player.Position));
         var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
@@ -305,6 +305,7 @@ public partial class Main : Node2D
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+            goal.HasLock = WeaveConstants.HasLock;
         });
     }
 
