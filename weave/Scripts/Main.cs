@@ -25,6 +25,9 @@ public partial class Main : Node2D
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
+    [GetNode("AudioStreamPlayer")]
+    private AudioStreamPlayer _audioStreamPlayer;
+
     [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
     private CountdownLabel _countdownLabel;
 
@@ -163,9 +166,8 @@ public partial class Main : Node2D
 
     private void GameOver()
     {
-        _gameOverOverlay.Visible = true;
-        _gameOverOverlay.FocusRetryButton();
-        ProcessMode = ProcessModeEnum.Disabled;
+        _gameOverOverlay.DisplayGameOver();
+        _audioStreamPlayer.PitchScale = 0.5f;
 
         // Save score
         var score = new ScoreRecord(
@@ -173,6 +175,8 @@ public partial class Main : Node2D
             UniqueNameGenerator.Instance.New()
         );
         _scoreManager.Save(score);
+
+        ProcessMode = ProcessModeEnum.Disabled;
     }
 
     private ISet<SegmentShape2D> GetAllSegments()
