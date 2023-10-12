@@ -38,5 +38,5 @@ public static class WeaveConstants
 
     #endregion Groups
 
-    public static bool HasLock => true;
+    public static bool LockedGoals => true;
 }
