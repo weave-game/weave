@@ -38,6 +38,9 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
+    [GetNode("ClearedLevelPlayer")]
+    private AudioStreamPlayer _clearedLevelPlayer;
+
     private Grid _grid;
     private int _width;
     private int _height;
@@ -256,6 +259,7 @@ public partial class Main : Node2D
             return;
 
         _roundCompletions = 0;
+        _clearedLevelPlayer.Play();
         _scoreDisplay.OnRoundComplete();
         StartPreparationPhase();
     }

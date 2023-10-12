@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=11 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
-[ext_resource type="AudioStream" path="res://Assets/Music/weave.mp3" id="4_4yh78"]
+[ext_resource type="AudioStream" uid="uid://c1v30d3rogeso" path="res://Assets/Music/weave.mp3" id="4_4yh78"]
 [ext_resource type="PackedScene" uid="uid://dfn3svkimd3s4" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="5_1pvgl"]
 [ext_resource type="PackedScene" uid="uid://d1s5px2gej6oj" path="res://UI/ScoreDisplay.tscn" id="6_6l1qm"]
 [ext_resource type="PackedScene" uid="uid://dg5bmrcaihsvl" path="res://Objects/Glowifier.tscn" id="7_trvja"]
+[ext_resource type="AudioStream" uid="uid://c4yf6ykqyp4rd" path="res://Assets/SFX/complete.mp3" id="7_wjcpy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wip0u"]
 font = ExtResource("5_1pvgl")
@@ -90,3 +91,7 @@ volume_db = -8.419
 autoplay = true
 
 [node name="Glowifier" parent="." instance=ExtResource("7_trvja")]
+
+[node name="ClearedLevelPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_wjcpy")
+volume_db = -10.311

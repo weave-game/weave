@@ -1,3 +1,4 @@
+using System;
 using Weave.InputSources;
 
 namespace Weave;
@@ -12,10 +13,13 @@ public static class GameConfig
 
     public static float GetInitialPlayerMovement(int nPlayers)
     {
-        if (nPlayers <= 2)
-            return 100;
-
-        return 70;
+        return nPlayers switch
+        {
+            <= 2 => 130,
+            3 => 100,
+            > 4 => 70,
+            _ => throw new ArgumentOutOfRangeException(nameof(nPlayers), nPlayers, "Invalid number of players")
+        };
     }
 
     public static float GetInitialAcceleration(int nPlayers)
