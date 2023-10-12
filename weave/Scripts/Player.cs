@@ -13,8 +13,11 @@ public partial class Player : CharacterBody2D
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    public float MovementSpeed { get; set; } = 100;
-    public float TurnRadius { get; set; } = 120;
+    [GetNode("PlayerName")]
+    private Label _playerName;
+
+    public float MovementSpeed { get; set; } = 70;
+    public float TurnRadius { get; set; } = 80;
 
     private CircleShape2D CircleShape { get; set; }
 
@@ -36,6 +39,10 @@ public partial class Player : CharacterBody2D
             _isMoving = value;
             CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
         }
+    }
+
+    public void SetPlayerName(string name) {
+        _playerName.Text = name;
     }
 
     public bool IsTurning { get; set; }

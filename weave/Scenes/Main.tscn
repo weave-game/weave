@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=10 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
-[ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
 [ext_resource type="AudioStream" path="res://Assets/Music/weave.mp3" id="4_4yh78"]
 [ext_resource type="PackedScene" uid="uid://dfn3svkimd3s4" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="5_1pvgl"]
@@ -47,9 +46,6 @@ _data = {
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
-
-[node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
-visible = false
 
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
 visible = false

@@ -26,13 +26,13 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="0.3788363"
-     inkscape:cx="615.04138"
-     inkscape:cy="640.11818"
-     inkscape:window-width="1266"
-     inkscape:window-height="1029"
-     inkscape:window-x="640"
-     inkscape:window-y="12"
+     inkscape:zoom="0.7576726"
+     inkscape:cx="460.62112"
+     inkscape:cy="701.49033"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -45,6 +45,7 @@
        style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:48.1897;stroke-dasharray:none;stroke-opacity:1"
        d="M 152.38244,64.442863 58.82045,271.41221 h 185.70657 z"
        id="path1"
-       sodipodi:nodetypes="cccc" />
+       sodipodi:nodetypes="cccc"
+       inkscape:label="path1" />
   </g>
 </svg>

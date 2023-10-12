@@ -18,8 +18,8 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private const float Acceleration = 1.75f;
-    private const float TurnAcceleration = 2.5f;
+    private const float Acceleration = 0.9f;
+    private const float TurnAcceleration = 1.25f;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
@@ -205,6 +205,7 @@ public partial class Main : Node2D
 
         var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
+        var playerNumber = 1;
         _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
@@ -214,6 +215,7 @@ public partial class Main : Node2D
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = playerPositions[0];
+            player.SetPlayerName(playerNumber++.ToString());
             playerPositions.RemoveAt(0);
             _players.Add(player);
         });
