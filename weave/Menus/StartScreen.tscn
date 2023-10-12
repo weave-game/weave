@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
-[ext_resource type="PackedScene" uid="uid://umlna72c8tix" path="res://Objects/LobbyPlayer.tscn" id="9_ghypo"]
+[ext_resource type="PackedScene" uid="uid://orutuw8atx3r" path="res://Objects/LobbyPlayer.tscn" id="9_ghypo"]
 
 [sub_resource type="Curve2D" id="Curve2D_b5vkc"]
 _data = {
@@ -100,8 +100,10 @@ theme_override_constants/margin_bottom = 64
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 4
 theme = ExtResource("4_8y3os")
+theme_override_constants/separation = 64
 
 [node name="ButtonContainer" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -137,9 +139,26 @@ icon = ExtResource("7_6tkco")
 alignment = 0
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 16
 
 [node name="Control" parent="UI/MarginContainer/HBoxContainer/PlayerList" instance=ExtResource("9_ghypo")]
+modulate = Color(0.780392, 0.996078, 0, 1)
+layout_mode = 2
+
+[node name="Control2" parent="UI/MarginContainer/HBoxContainer/PlayerList" instance=ExtResource("9_ghypo")]
+modulate = Color(1, 0.164706, 0.427451, 1)
+layout_mode = 2
+
+[node name="Control3" parent="UI/MarginContainer/HBoxContainer/PlayerList" instance=ExtResource("9_ghypo")]
+modulate = Color(0.443137, 0.156863, 0.737255, 1)
+layout_mode = 2
+
+[node name="Control4" parent="UI/MarginContainer/HBoxContainer/PlayerList" instance=ExtResource("9_ghypo")]
+modulate = Color(0.372348, 0.372348, 2.99226e-07, 1)
 layout_mode = 2
 
 [node name="Start" type="Button" parent="UI/MarginContainer/HBoxContainer"]
