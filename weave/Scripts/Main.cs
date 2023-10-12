@@ -259,11 +259,9 @@ public partial class Main : Node2D
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
-        Task.Run(async delegate
-        {
-            await Task.Delay(TimeSpan.FromSeconds(WeaveConstants.CountdownLength / 2.0));
-            _round++;
-        });
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0, () => _round++)
+        );
 
         _animationPlayer.Play(name: "Preparation", customSpeed: 2.0f / WeaveConstants.CountdownLength);
     }

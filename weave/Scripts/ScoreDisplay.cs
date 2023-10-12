@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using Weave.Utils;
 
@@ -107,11 +108,10 @@ public partial class ScoreDisplay : CanvasLayer
 
         _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2.0f / WeaveConstants.CountdownLength);
 
-        Task.Run(async delegate
-        {
-            await Task.Delay(TimeSpan.FromSeconds(WeaveConstants.CountdownLength / 2.0));
-            _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
-        });
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0,
+                () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1))
+        );
     }
 
     public void OnGameStart(int playerCount)
