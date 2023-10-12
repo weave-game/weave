@@ -46,7 +46,7 @@ public partial class StartScreen : Control
         _startButton.Pressed += OnStartButtonPressed;
 
         _multiplayerManager = new(_lobby.LobbyCode);
-        Manager.StartClientAsync();
+        _multiplayerManager.StartClientAsync();
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
