@@ -18,8 +18,8 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private const float Acceleration = 0.9f;
-    private const float TurnAcceleration = 1.25f;
+    private float _acceleration = 1.1f;
+    private float _turnAcceleration = 1.25f;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
@@ -88,8 +88,11 @@ public partial class Main : Node2D
 
         _players.ForEach(p =>
         {
-            p.MovementSpeed += Acceleration * (float)delta;
-            p.TurnRadius += TurnAcceleration * (float)delta;
+            _acceleration -= 0.01f * _acceleration * (float)delta;
+            _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
+
+            p.MovementSpeed += _acceleration * (float)delta;
+            p.TurnRadius += _turnAcceleration * (float)delta;
         });
     }
 

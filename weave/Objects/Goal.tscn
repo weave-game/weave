@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scripts/Goal.cs" id="1_6mak8"]
 [ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_i56br"]
 [ext_resource type="Texture2D" uid="uid://bvfltom6qhsi0" path="res://Assets/Sprites/lock.svg" id="3_5ksq6"]
-[ext_resource type="Texture2D" uid="uid://svc8yg2enxvf" path="res://Assets/Sprites/hollow_circle.png" id="4_1om8h"]
+[ext_resource type="Texture2D" uid="uid://cxq7dg4fje2dj" path="res://Assets/Sprites/hollow_circle.svg" id="4_1ov3k"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4mcuf"]
 radius = 12.0
@@ -52,5 +52,5 @@ scale = Vector2(1.11667, 1.11667)
 texture = ExtResource("3_5ksq6")
 
 [node name="LockAreaSprite" type="Sprite2D" parent="."]
-scale = Vector2(1.9, 1.9)
-texture = ExtResource("4_1om8h")
+scale = Vector2(0.232209, 0.232209)
+texture = ExtResource("4_1ov3k")
