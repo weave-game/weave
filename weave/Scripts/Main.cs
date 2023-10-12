@@ -224,12 +224,12 @@ public partial class Main : Node2D
         });
 
         // Config speed
-        var speed = ScalingBrain.GetInitialPlayerMovement(nPlayers);
+        var speed = ScalingBrain.GetInitialPlayerMovement(_lobby.Count);
         _players.ForEach(p => p.MovementSpeed = speed);
 
         // Config acceleration
-        _acceleration = ScalingBrain.GetInitialAcceleration(nPlayers);
-        _turnAcceleration = ScalingBrain.GetInitialTurnAcceleration(nPlayers);
+        _acceleration = ScalingBrain.GetInitialAcceleration(_lobby.Count);
+        _turnAcceleration = ScalingBrain.GetInitialTurnAcceleration(_lobby.Count);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
