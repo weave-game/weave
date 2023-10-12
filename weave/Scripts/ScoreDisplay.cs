@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;

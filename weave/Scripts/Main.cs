@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -306,7 +304,7 @@ public partial class Main : Node2D
     )
     {
         var positions = new List<Vector2>();
-        const int MaxAttempts = 1000;
+        const int maxAttempts = 1000;
 
         // Generate positions
         for (var i = 0; i < n; i++)
@@ -339,7 +337,7 @@ public partial class Main : Node2D
                     if (distance < minDistance)
                         valid = false;
                 });
-            } while (!valid && attempt < MaxAttempts);
+            } while (!valid && attempt < maxAttempts);
 
             positions.Add(newPosition);
         }
