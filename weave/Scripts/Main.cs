@@ -31,11 +31,11 @@ public partial class Main : Node2D
     [GetNode("CountdownLayer/CenterContainer/RoundLabel")]
     private Label _roundLabel;
 
+    [GetNode("AudioStreamPlayer")]
+    private AudioStreamPlayer _audioStreamPlayer;
+
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
-
-    [GetNode("AudioStreamPlayer2D")]
-    private AudioStreamPlayer2D _musicPlayer;
 
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
@@ -182,14 +182,11 @@ public partial class Main : Node2D
     private void GameOver()
     {
         _gameIsRunning = false;
-        _gameOverOverlay.Visible = true;
-        _gameOverOverlay.FocusRetryButton();
-        _musicPlayer.Stop();
         SetPlayerMovement(false);
         SetPlayerTurning(false);
-        //ProcessMode = ProcessModeEnum.Disabled;
-
         _scoreDisplay.OnGameEnd();
+        _gameOverOverlay.DisplayGameOver();
+        _audioStreamPlayer.PitchScale = 0.5f;
 
         // Save score
         var score = new ScoreRecord(

@@ -12,6 +12,9 @@ public partial class GameOverOverlay : CanvasLayer
     [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
     private Button _retryButton;
 
+    [GetNode("ExplosionPlayer")]
+    private AudioStreamPlayer _explosionPlayer;
+
     public override void _Ready()
     {
         this.GetNodes();
@@ -23,8 +26,10 @@ public partial class GameOverOverlay : CanvasLayer
         ProcessMode = ProcessModeEnum.Always;
     }
 
-    public void FocusRetryButton()
+    public void DisplayGameOver()
     {
+        _explosionPlayer.Play();
         _retryButton.GrabFocus();
+        Show();
     }
 }

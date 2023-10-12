@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=16 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
+[ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
 
 [sub_resource type="Curve2D" id="Curve2D_b5vkc"]
 _data = {
@@ -173,3 +174,8 @@ curve = SubResource("Curve2D_bm1nx")
 
 [node name="CanvasGlow" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1k2n6")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_4fvpc")
+volume_db = -5.943
+autoplay = true

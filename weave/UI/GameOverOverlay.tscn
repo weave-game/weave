@@ -1,24 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dfn3svkimd3s4"]
+[gd_scene load_steps=3 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
-[ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="2_5xrrk"]
-[ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="3_0cm3s"]
-[ext_resource type="FontFile" uid="uid://cubowpt0beb6k" path="res://Assets/Fonts/Open_Sans/static/OpenSans-Bold.ttf" id="3_aqw47"]
-[ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="4_ci4ui"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_rm0a5"]
-font = ExtResource("3_aqw47")
-font_size = 100
-
-[sub_resource type="Environment" id="Environment_sdlp0"]
-background_mode = 3
-glow_enabled = true
-glow_normalized = true
-glow_intensity = 1.05
-glow_strength = 0.9
-glow_bloom = 0.2
-glow_blend_mode = 1
-adjustment_enabled = true
+[ext_resource type="AudioStream" uid="uid://drclr0x038ndn" path="res://Assets/SFX/explosion.mp3" id="2_3og4l"]
 
 [node name="GameOverOverlay" type="CanvasLayer"]
 script = ExtResource("1_xbr3w")
@@ -78,8 +61,7 @@ layout_mode = 2
 theme = ExtResource("2_5xrrk")
 text = "Menu
 "
-icon = ExtResource("4_ci4ui")
-alignment = 0
 
-[node name="CanvasGlow" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_sdlp0")
+[node name="ExplosionPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_3og4l")
+volume_db = -5.943
