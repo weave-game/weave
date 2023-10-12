@@ -106,10 +106,9 @@ public partial class ScoreDisplay : CanvasLayer
 
         _animationPlayer.Play("ScoreDisplayShine");
 
-        var task = Task.Run(async delegate
+        Task.Run(async delegate
         {
             await Task.Delay(TimeSpan.FromSeconds(1));
-
             _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
         });
     }

@@ -38,6 +38,8 @@ public partial class Player : CharacterBody2D
         }
     }
 
+    public bool IsTurning { get; set; }
+
     public override void _Ready()
     {
         this.GetNodes();
@@ -48,18 +50,20 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        Rotate(delta);
         Move(delta);
     }
 
     private void Move(double delta)
     {
-        Rotate(delta);
         if (_isMoving)
             Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
     }
 
     private void Rotate(double delta)
     {
+        if (!IsTurning) return;
+
         if (InputSource.IsTurningRight())
             RotationDegrees += TurnRadius * (float)delta;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -25,8 +26,11 @@ public partial class Main : Node2D
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
-    [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
-    private CountdownLabel _countdownLabel;
+    [GetNode("CountdownLayer/CenterContainer/RoundLabel/AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
+    [GetNode("CountdownLayer/CenterContainer/RoundLabel")]
+    private Label _roundLabel;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
@@ -49,6 +53,13 @@ public partial class Main : Node2D
     /// </summary>
     private int _roundCompletions;
 
+    /// <summary>
+    ///     The current round, starts from 1.
+    /// </summary>
+    private int _round;
+
+    private string _roundLabelText;
+
     private Timer _uiUpdateTimer;
 
     public override void _Ready()
@@ -67,6 +78,7 @@ public partial class Main : Node2D
         InitializeTimers();
         StartPreparationPhase();
         SpawnPlayers();
+        SetPlayerTurning(true);
         ClearAndSpawnGoals();
         SetupLogger();
 
@@ -104,18 +116,23 @@ public partial class Main : Node2D
         _players.ForEach(player => player.IsMoving = enabled);
     }
 
+    private void SetPlayerTurning(bool enabled)
+    {
+        _players.ForEach(player => player.IsTurning = enabled);
+    }
+
     private void StartRound()
     {
         SetPlayerMovement(true);
         _uiUpdateTimer.Timeout -= UpdateCountdown;
-        _countdownLabel.UpdateLabelText("");
+        _roundLabel.Text = "";
         _scoreDisplay.Enabled = true;
     }
 
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
+        _uiUpdateTimer = new Timer { WaitTime = 0.02 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
@@ -127,9 +144,7 @@ public partial class Main : Node2D
 
     private void UpdateCountdown()
     {
-        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1)
-            .ToString(CultureInfo.InvariantCulture);
-        _countdownLabel.UpdateLabelText(newText);
+        _roundLabel.Text = _roundLabelText;
     }
 
     private void DetectPlayerCollision()
@@ -174,6 +189,7 @@ public partial class Main : Node2D
         _gameOverOverlay.FocusRetryButton();
         _musicPlayer.Stop();
         SetPlayerMovement(false);
+        SetPlayerTurning(false);
         //ProcessMode = ProcessModeEnum.Disabled;
 
         _scoreDisplay.OnGameEnd();
@@ -248,6 +264,18 @@ public partial class Main : Node2D
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
+
+        _round++;
+
+        Task.Run(async delegate
+        {
+            var round = _round;
+            _roundLabelText = "ROUND " + (round - 1);
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            _roundLabelText = "ROUND " + round;
+        });
+
+        _animationPlayer.Play("Preparation");
     }
 
     private void ClearLinesAndSegments()

@@ -29,10 +29,10 @@ tracks/1/path = NodePath(".:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.1, 1.2, 2),
+"times": PackedFloat32Array(0, 1, 1.1, 1.5),
 "transitions": PackedFloat32Array(3, 1, 1, 1),
 "update": 0,
-"values": [Color(0.333333, 0.333333, 0.333333, 1), Color(0.466667, 0.466667, 0.466667, 1), Color(1, 1, 1, 1), Color(0.333333, 0.333333, 0.333333, 1)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 0.901961, 0.294118, 1), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_0skkr"]
@@ -117,7 +117,7 @@ pivot_offset = Vector2(500, 0)
 
 [node name="ScoreLabel" type="Label" parent="CenterContainer"]
 layout_mode = 2
-text = "WHAT"
+text = "SCORE"
 label_settings = SubResource("LabelSettings_aqukg")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="CenterContainer/ScoreLabel"]
@@ -141,3 +141,7 @@ modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 text = "SCORE"
 label_settings = SubResource("LabelSettings_iamb2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
