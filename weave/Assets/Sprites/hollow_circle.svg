@@ -2,16 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="300mm"
-   height="300mm"
-   viewBox="0 0 300 300"
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
    version="1.1"
    id="svg1"
    inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
-   sodipodi:docname="player.svg"
-   inkscape:export-filename="../weave/Assets/Sprites/player.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96"
+   sodipodi:docname="hollow_circle.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,16 +21,16 @@
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
-     inkscape:deskcolor="#505050"
+     inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.3788363"
-     inkscape:cx="615.04138"
-     inkscape:cy="640.11818"
-     inkscape:window-width="1266"
-     inkscape:window-height="1029"
-     inkscape:window-x="640"
-     inkscape:window-y="12"
-     inkscape:window-maximized="1"
+     inkscape:zoom="2.0953931"
+     inkscape:cx="158.44282"
+     inkscape:cy="194.47425"
+     inkscape:window-width="1936"
+     inkscape:window-height="1237"
+     inkscape:window-x="313"
+     inkscape:window-y="80"
+     inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
@@ -41,10 +38,11 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <path
-       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:48.1897;stroke-dasharray:none;stroke-opacity:1"
-       d="M 152.38244,64.442863 58.82045,271.41221 h 185.70657 z"
+    <circle
+       style="fill:none;stroke:#ffffff;stroke-width:2.9821;stroke-dasharray:none;stroke-opacity:1"
        id="path1"
-       sodipodi:nodetypes="cccc" />
+       cx="49.939419"
+       cy="50.065689"
+       r="47.675686" />
   </g>
 </svg>

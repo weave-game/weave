@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dg5bmrcaihsvl"]
+
+[sub_resource type="Environment" id="Environment_1k2n6"]
+background_mode = 3
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 1.05
+glow_strength = 0.9
+glow_bloom = 0.2
+glow_blend_mode = 1
+adjustment_enabled = true
+
+[node name="Glowifier" type="WorldEnvironment"]
+environment = SubResource("Environment_1k2n6")

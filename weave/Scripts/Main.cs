@@ -18,8 +18,8 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private const float Acceleration = 3.5f;
-    private const int TurnAcceleration = 5;
+    private float _acceleration;
+    private float _turnAcceleration;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
@@ -88,8 +88,11 @@ public partial class Main : Node2D
 
         _players.ForEach(p =>
         {
-            p.MovementSpeed += Acceleration * (float)delta;
-            p.TurnRadius += TurnAcceleration * (float)delta;
+            _acceleration -= 0.01f * _acceleration * (float)delta;
+            _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
+
+            p.MovementSpeed += _acceleration * (float)delta;
+            p.TurnRadius += _turnAcceleration * (float)delta;
         });
     }
 
@@ -202,9 +205,9 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var colorGenerator = new UniqueColorGenerator();
-
         var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
+        var playerNumber = 1;
         _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
@@ -214,9 +217,18 @@ public partial class Main : Node2D
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = playerPositions[0];
+            player.SetPlayerName(playerNumber++.ToString());
             playerPositions.RemoveAt(0);
             _players.Add(player);
         });
+
+        // Config speed
+        var speed = GameConfig.GetInitialPlayerMovement(_lobby.Count);
+        _players.ForEach(p => p.MovementSpeed = speed);
+
+        // Config acceleration
+        _acceleration = GameConfig.GetInitialAcceleration(_lobby.Count);
+        _turnAcceleration = GameConfig.GetInitialTurnAcceleration(_lobby.Count);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -233,7 +245,7 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GodotConfig.LineGroup);
+        line.AddToGroup(WeaveConstants.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
@@ -266,7 +278,7 @@ public partial class Main : Node2D
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(WeaveConstants.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -275,7 +287,7 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GodotConfig.GoalGroup)
+            .GetNodesInGroup(WeaveConstants.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
 

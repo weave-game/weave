@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dfn3svkimd3s4"]
+[gd_scene load_steps=8 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
 [ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="2_5xrrk"]
@@ -10,16 +10,6 @@
 [sub_resource type="LabelSettings" id="LabelSettings_rm0a5"]
 font = ExtResource("3_aqw47")
 font_size = 100
-
-[sub_resource type="Environment" id="Environment_sdlp0"]
-background_mode = 3
-glow_enabled = true
-glow_normalized = true
-glow_intensity = 1.05
-glow_strength = 0.9
-glow_bloom = 0.2
-glow_blend_mode = 1
-adjustment_enabled = true
 
 [node name="GameOverOverlay" type="CanvasLayer"]
 script = ExtResource("1_xbr3w")
@@ -81,9 +71,6 @@ text = "Menu
 "
 icon = ExtResource("4_ci4ui")
 alignment = 0
-
-[node name="CanvasGlow" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_sdlp0")
 
 [node name="ExplosionPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_3if2j")
