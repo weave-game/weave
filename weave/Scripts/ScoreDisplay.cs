@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Godot;
 using GodotSharper.AutoGetNode;
+using Weave.Utils;
 
 namespace Weave;
 
@@ -104,11 +105,11 @@ public partial class ScoreDisplay : CanvasLayer
         _finishedRounds++;
         _timeSinceRoundStart = 0;
 
-        _animationPlayer.Play("ScoreDisplayShine");
+        _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2.0f / WeaveConstants.CountdownLength);
 
         Task.Run(async delegate
         {
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Task.Delay(TimeSpan.FromSeconds(WeaveConstants.CountdownLength / 2.0));
             _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
         });
     }

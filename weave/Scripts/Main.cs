@@ -22,7 +22,6 @@ public partial class Main : Node2D
 {
     private const float Acceleration = 3.5f;
     private const int TurnAcceleration = 5;
-    private const int PlayerStartDelay = 2;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
@@ -57,8 +56,6 @@ public partial class Main : Node2D
     ///     The current round, starts from 1.
     /// </summary>
     private int _round;
-
-    private string _roundLabelText;
 
     private Timer _uiUpdateTimer;
 
@@ -137,14 +134,14 @@ public partial class Main : Node2D
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
+        _playerDelayTimer = new Timer { WaitTime = WeaveConstants.CountdownLength, OneShot = true };
         _playerDelayTimer.Timeout += StartRound;
         AddChild(_playerDelayTimer);
     }
 
     private void UpdateCountdown()
     {
-        _roundLabel.Text = _roundLabelText;
+        _roundLabel.Text = "ROUND " + _round;
     }
 
     private void DetectPlayerCollision()
@@ -265,17 +262,13 @@ public partial class Main : Node2D
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
-        _round++;
-
         Task.Run(async delegate
         {
-            var round = _round;
-            _roundLabelText = "ROUND " + (round - 1);
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            _roundLabelText = "ROUND " + round;
+            await Task.Delay(TimeSpan.FromSeconds(WeaveConstants.CountdownLength / 2.0));
+            _round++;
         });
 
-        _animationPlayer.Play("Preparation");
+        _animationPlayer.Play(name: "Preparation", customSpeed: 2.0f / WeaveConstants.CountdownLength);
     }
 
     private void ClearLinesAndSegments()
