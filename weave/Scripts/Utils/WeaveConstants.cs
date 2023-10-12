@@ -22,4 +22,19 @@ public static class WeaveConstants
     public const string ScoreLogFileJsonPath = "./Loggings/score.json";
 
     #endregion Logging
+
+    #region Inputs
+
+    public const string GamepadJoinAction = "gamepad_join";
+    public const string GamepadLeaveAction = "gamepad_leave";
+
+    #endregion Inputs
+
+    #region Groups
+
+    public const string GoalGroup = "goal";
+    public const string LineGroup = "line";
+    public const string FireflyGroup = "firefly";
+
+    #endregion Groups
 }

@@ -224,12 +224,12 @@ public partial class Main : Node2D
         });
 
         // Config speed
-        var speed = ScalingBrain.GetInitialPlayerMovement(_lobby.Count);
+        var speed = GameConfig.GetInitialPlayerMovement(_lobby.Count);
         _players.ForEach(p => p.MovementSpeed = speed);
 
         // Config acceleration
-        _acceleration = ScalingBrain.GetInitialAcceleration(_lobby.Count);
-        _turnAcceleration = ScalingBrain.GetInitialTurnAcceleration(_lobby.Count);
+        _acceleration = GameConfig.GetInitialAcceleration(_lobby.Count);
+        _turnAcceleration = GameConfig.GetInitialTurnAcceleration(_lobby.Count);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -246,7 +246,7 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GodotConfig.LineGroup);
+        line.AddToGroup(WeaveConstants.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
@@ -279,7 +279,7 @@ public partial class Main : Node2D
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(WeaveConstants.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -288,7 +288,7 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GodotConfig.GoalGroup)
+            .GetNodesInGroup(WeaveConstants.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
