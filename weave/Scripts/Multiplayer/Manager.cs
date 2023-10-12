@@ -1,9 +1,12 @@
 using Godot;
 using SIPSorcery.Net;
 using Newtonsoft.Json;
-using weave.InputSources;
+using Weave.InputSources;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace weave.Multiplayer;
+namespace Weave.Multiplayer;
 
 public partial class Manager : Node
 {
@@ -21,8 +24,9 @@ public partial class Manager : Node
         _lobbyCode = lobbyCode;
     }
 
-    public async Task StartServer()
+    public static async Task StartClientAsync()
     {
+        GD.Print("starting client...");
         var cts = new CancellationToken();
         var client = new WebRTCWebSocketClient(SERVER_URL, CreatePeerConnection);
         await client.Start(cts);

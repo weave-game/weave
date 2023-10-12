@@ -7,6 +7,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Utils;
 using Weave.InputSources;
+using Weave.Multiplayer;
 
 namespace Weave.MenuControllers;
 
@@ -14,6 +15,7 @@ namespace Weave.MenuControllers;
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
+    private Manager _multiplayerManager;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
     private Button _playButton;
@@ -42,6 +44,9 @@ public partial class StartScreen : Control
         _playButton.Pressed += OnPlayButtonPressed;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
+
+        _multiplayerManager = new(_lobby.LobbyCode);
+        Manager.StartClientAsync();
 
         var colorGen = new UniqueColorGenerator();
         GetTree()

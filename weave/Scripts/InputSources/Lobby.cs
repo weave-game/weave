@@ -41,11 +41,9 @@ public sealed class Lobby
     private static string GenerateLobbyCode(string allowedCharacters, int length)
     {
         var rnd = new Random();
-        char[] result = new char[length];
-        for (int i = 0; i < length; i++)
-        {
+        var result = new char[length];
+        for (var i = 0; i < length; i++)
             result[i] = allowedCharacters[rnd.Next(allowedCharacters.Length - 1)];
-        }
         return new string(result);
     }
 

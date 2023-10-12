@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Godot;
 using GodotSharper.AutoGetNode;
 using Weave.Utils;
@@ -10,7 +12,7 @@ public partial class Firefly : Path2D
     private const float MinSpeed = 5;
     private const int NrPoints = 30;
     private const float DistanceBetweenPoints = 5;
-    private Godot.Timer _animationTimer;
+    private Timer _animationTimer;
 
     [GetNode("PathFollow2D/Area2D")]
     private Area2D _area;

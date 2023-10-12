@@ -8,5 +8,5 @@ namespace Weave;
 public static class GameConfig
 {
     public static Lobby Lobby { get; set; }
-    public static Multiplayer.Manager MultiplayerManager {get; set;}
+    public static Multiplayer.Manager MultiplayerManager { get; set; }
 }
