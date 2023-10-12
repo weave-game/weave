@@ -16,7 +16,7 @@ public partial class Player : CharacterBody2D
     [GetNode("PlayerName")]
     private Label _playerName;
 
-    public float MovementSpeed { get; set; } = 70;
+    public float MovementSpeed { get; set; }
     public float TurnRadius { get; set; } = 80;
 
     private CircleShape2D CircleShape { get; set; }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -18,8 +19,8 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private float _acceleration = 1.1f;
-    private float _turnAcceleration = 1.25f;
+    private float _acceleration;
+    private float _turnAcceleration;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
@@ -205,7 +206,6 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var colorGenerator = new UniqueColorGenerator();
-
         var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
         var playerNumber = 1;
@@ -222,6 +222,14 @@ public partial class Main : Node2D
             playerPositions.RemoveAt(0);
             _players.Add(player);
         });
+
+        // Config speed
+        var speed = ScalingBrain.GetInitialPlayerMovement(nPlayers);
+        _players.ForEach(p => p.MovementSpeed = speed);
+
+        // Config acceleration
+        _acceleration = ScalingBrain.GetInitialAcceleration(nPlayers);
+        _turnAcceleration = ScalingBrain.GetInitialTurnAcceleration(nPlayers);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
