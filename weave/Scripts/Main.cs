@@ -22,7 +22,6 @@ public partial class Main : Node2D
     private float _turnAcceleration;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
-    private const int NObstacles = 5;
 
     [GetNode("CountdownLayer/CenterContainer/RoundLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
@@ -75,14 +74,12 @@ public partial class Main : Node2D
         _height = (int)GetViewportRect().Size.Y;
 
         InitializeTimers();
-        StartPreparationPhase();
         SpawnPlayers();
         SetPlayerTurning(true);
-        ClearAndSpawnGoals();
         SetupLogger();
+        StartPreparationPhase();
 
         _scoreDisplay.OnGameStart(_players.Count);
-
         _gameIsRunning = true;
     }
 
@@ -98,6 +95,14 @@ public partial class Main : Node2D
             p.MovementSpeed += _acceleration * (float)delta;
             p.TurnRadius += _turnAcceleration * (float)delta;
         });
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (!WeaveConstants.DevButtonsEnabled) return;
+
+        if (@event is InputEventKey { Keycode: Key.Space, Pressed: true })
+            OnPlayerReachedGoal();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -268,7 +273,7 @@ public partial class Main : Node2D
     private void StartPreparationPhase()
     {
         ClearLinesAndSegments();
-        ClearAndSpawnGoals();
+        ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
@@ -288,12 +293,17 @@ public partial class Main : Node2D
         CreateMapGrid();
     }
 
-    private void ClearAndSpawnGoals()
+    /// <summary>
+    ///     Removes all existing goals and obstacles and spawns new ones.
+    /// </summary>
+    private void ResetMap()
     {
-        // union two sets
+        // --- CLEAR ---
         var goals = GetTree().GetNodesInGroup(WeaveConstants.GoalGroup);
         var obstacles = GetTree().GetNodesInGroup(WeaveConstants.ObstacleGroup);
         goals.Union(obstacles).ForEach(node => node.QueueFree());
+
+        // --- SPAWN GOALS ---
 
         // Generate goal positions
         var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position));
@@ -310,13 +320,12 @@ public partial class Main : Node2D
             goal.HasLock = WeaveConstants.LockedGoals;
         });
 
-        // ----------------
+        // --- SPAWN OBSTACLES ---
 
         // Add all player positions to goal positions:
-        var dontTake = goalPositions.ToList();
-        _players.ForEach(p => dontTake.Add(p.Position));
-
-        var obstaclePositions = GetRandomPositionsInView(NObstacles, dontTake);
+        var goalsAndPlayers = goalPositions.ToList();
+        _players.ForEach(p => goalsAndPlayers.Add(p.Position));
+        var obstaclePositions = GetRandomPositionsInView(GameConfig.GetNObstacles(_lobby.Count), goalsAndPlayers);
 
         obstaclePositions.ForEach(position =>
         {
@@ -336,7 +345,7 @@ public partial class Main : Node2D
             obstacle.RotationDegrees = GD.RandRange(0, 360);
 
             // Random scale
-            obstacle.Scale = new Vector2(
+            obstacle.SetObstacleSize(
                 GD.RandRange(3, 5),
                 GD.RandRange(3, 5)
             );

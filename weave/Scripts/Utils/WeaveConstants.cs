@@ -39,5 +39,6 @@ public static class WeaveConstants
 
     #endregion Groups
 
-    public static bool LockedGoals => false;
+    public static bool LockedGoals => true;
+    public static bool DevButtonsEnabled => true;
 }
