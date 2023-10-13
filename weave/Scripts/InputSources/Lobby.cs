@@ -8,8 +8,6 @@ namespace Weave.InputSources;
 
 public sealed class Lobby
 {
-    private readonly IList<IInputSource> _inputSources = new List<IInputSource>();
-
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
     public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();
 
@@ -19,11 +17,9 @@ public sealed class Lobby
 
     public void Join(IInputSource inputSource)
     {
-        var alreadyExists = _inputSources.FirstOrDefault(input => input.Equals(inputSource));
-        if (alreadyExists != null)
+        var alreadyExists = _playerInfos.Any(input => input.InputSource.Equals(inputSource));
+        if (alreadyExists)
             return;
-
-        _inputSources.Add(inputSource);
 
         var playerInfo = new PlayerInfo
         {
@@ -36,7 +32,6 @@ public sealed class Lobby
 
     public void Leave(IInputSource inputSource)
     {
-        _inputSources.Remove(inputSource);
         _playerInfos.RemoveWhere(info => info.InputSource.Equals(inputSource));
         UpdatePlayerInfos();
     }
