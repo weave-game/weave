@@ -1,62 +1,92 @@
-[gd_scene load_steps=8 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=10 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
-[ext_resource type="PackedScene" uid="uid://cx67qyh6kp47m" path="res://UI/Pixelizer.tscn" id="2_ll53l"]
-[ext_resource type="AudioStream" uid="uid://c4u3ecsd5s5if" path="res://Assets/Music/weave.wav" id="4_dnn4g"]
+[ext_resource type="AudioStream" path="res://Assets/Music/weave.mp3" id="4_4yh78"]
 [ext_resource type="PackedScene" uid="uid://dfn3svkimd3s4" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
-[ext_resource type="Script" path="res://Scripts/CountdownLabel.cs" id="5_rrrp0"]
+[ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="5_1pvgl"]
 [ext_resource type="PackedScene" uid="uid://d1s5px2gej6oj" path="res://UI/ScoreDisplay.tscn" id="6_6l1qm"]
+[ext_resource type="PackedScene" uid="uid://dg5bmrcaihsvl" path="res://Objects/Glowifier.tscn" id="7_trvja"]
 
-[sub_resource type="Environment" id="Environment_0o2dr"]
-background_mode = 3
-glow_enabled = true
-glow_levels/1 = 0.68
-glow_levels/2 = 1.17
-glow_levels/3 = 4.8
-glow_levels/4 = 2.24
-glow_levels/5 = 2.95
-glow_normalized = true
-glow_intensity = 0.86
-glow_strength = 1.35
-glow_bloom = 0.08
-glow_blend_mode = 1
-adjustment_enabled = true
-adjustment_brightness = 2.4
-adjustment_contrast = 2.31
+[sub_resource type="LabelSettings" id="LabelSettings_wip0u"]
+font = ExtResource("5_1pvgl")
+font_size = 64
+
+[sub_resource type="Animation" id="Animation_drqyu"]
+resource_name = "Preparation"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9, 1.5, 2),
+"transitions": PackedFloat32Array(2, 3, 3, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 1.1, 1.3, 2),
+"transitions": PackedFloat32Array(0.3, 0.33, 3, 7, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.75, 0.75), Vector2(1, 1), Vector2(0.95, 0.95), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_argyr"]
+_data = {
+"Preparation": SubResource("Animation_drqyu")
+}
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_x7cvk")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0o2dr")
-
-[node name="Pixelizer" parent="." instance=ExtResource("2_ll53l")]
-visible = false
-
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
 visible = false
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_dnn4g")
-autoplay = true
 
 [node name="CountdownLayer" type="CanvasLayer" parent="."]
 
 [node name="CenterContainer" type="CenterContainer" parent="CountdownLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -50.0
+offset_right = 200.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(200, 50)
 mouse_filter = 2
 
-[node name="CountdownLabel" type="RichTextLabel" parent="CountdownLayer/CenterContainer"]
-custom_minimum_size = Vector2(400, 400)
+[node name="RoundLabel" type="Label" parent="CountdownLayer/CenterContainer"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 51
-bbcode_enabled = true
-text = "[center]10.0s[/center]"
-script = ExtResource("5_rrrp0")
+text = "ROUND 1"
+label_settings = SubResource("LabelSettings_wip0u")
+horizontal_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CountdownLayer/CenterContainer/RoundLabel"]
+libraries = {
+"": SubResource("AnimationLibrary_argyr")
+}
 
 [node name="ScoreDisplay" parent="." instance=ExtResource("6_6l1qm")]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("4_4yh78")
+volume_db = -8.419
+autoplay = true
+
+[node name="Glowifier" parent="." instance=ExtResource("7_trvja")]
