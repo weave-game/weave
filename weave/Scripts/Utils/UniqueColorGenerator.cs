@@ -23,7 +23,6 @@ public sealed class UniqueColorGenerator
     };
 
     private readonly ISet<Color> _usedColors = new HashSet<Color>();
-    private int _counter;
 
     /// <summary>
     ///     Generates a new unique color that has not been used before.
@@ -31,7 +30,6 @@ public sealed class UniqueColorGenerator
     /// <returns>A new unique color.</returns>
     public Color NewColor()
     {
-        _counter++;
         var unusedColor = _defaultColors.Except(_usedColors).FirstOrDefault();
         var random = new Random(1337);
 
