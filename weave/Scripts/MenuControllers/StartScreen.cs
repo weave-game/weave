@@ -13,7 +13,7 @@ public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
 
-    private PackedScene _lobbyPlayer = ResourceLoader.Load("res://Objects/LobbyPlayer.tscn") as PackedScene;
+    private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
     private Button _playButton;
@@ -26,6 +26,9 @@ public partial class StartScreen : Control
 
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
+
+    [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
+    private VSeparator _vSeparator;
 
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
@@ -60,7 +63,6 @@ public partial class StartScreen : Control
                 KeyboardPressed();
                 break;
         }
-        PrintInputSources();
     }
 
     private void OpenLobby()
@@ -69,6 +71,7 @@ public partial class StartScreen : Control
         _blurLayer.Visible = _lobby.Open;
         _playerList.Visible = _lobby.Open;
         _startButton.Visible = _lobby.Open;
+        _vSeparator.Visible = _lobby.Open;
         CollapseButtons();
     }
 
@@ -78,6 +81,7 @@ public partial class StartScreen : Control
         _blurLayer.Visible = false;
         _playerList.Visible = false;
         _startButton.Visible = false;
+        _vSeparator.Visible = _lobby.Open;
         ExpandButtons();
     }
 
@@ -94,7 +98,7 @@ public partial class StartScreen : Control
 
     private void ExpandButtons()
     {
-        _playButton.Text = "START";
+        _playButton.Text = "PLAY";
         _optionsButton.Text = "OPTIONS";
         _quitButton.Text = "QUIT";
         _playButton.CustomMinimumSize = new Vector2(200, 0);
@@ -120,8 +124,12 @@ public partial class StartScreen : Control
             child.QueueFree();
         }
 
-        foreach (var inputSource in _lobby.InputSources)
-            _playerList.AddChild(_lobbyPlayer.Instantiate());
+        foreach (var playerInfo in _lobby.PlayerInfos)
+        {
+            var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
+            lobbyPlayer.Modulate = playerInfo.Color;
+            _playerList.AddChild(lobbyPlayer);
+        }
     }
 
     #region Keyboard
@@ -138,12 +146,14 @@ public partial class StartScreen : Control
                 continue;
 
             var kb = new KeyboardInputSource(keybindingTuple);
-            var alreadyExisting = _lobby.InputSources.FirstOrDefault(c => c.Equals(kb));
+            var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
 
             if (alreadyExisting != null)
                 _lobby.Leave(alreadyExisting);
             else
                 _lobby.Join(kb);
+
+            PrintInputSources();
         }
     }
 
@@ -162,6 +172,8 @@ public partial class StartScreen : Control
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
+
+        PrintInputSources();
     }
 
     #endregion Gamepad

@@ -64,7 +64,7 @@ public partial class Main : Node2D
         _lobby = GameConfig.Lobby;
 
         // Fallback to <- and -> if there are no keybindings
-        if (_lobby.InputSources.Count == 0)
+        if (_lobby.PlayerInfos.Count == 0)
             _lobby.Join(new KeyboardInputSource(Keybindings[0]));
 
         _width = (int)GetViewportRect().Size.X;
@@ -204,20 +204,16 @@ public partial class Main : Node2D
 
     private void SpawnPlayers()
     {
-        var colorGenerator = new UniqueColorGenerator();
-        var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
+        var playerPositions = GetRandomPositionsInView(_lobby.PlayerInfos.Count);
 
-        var playerNumber = 1;
-        _lobby.InputSources.ForEach(input =>
+        _lobby.PlayerInfos.ForEach(info =>
         {
             var player = Instanter.Instantiate<Player>();
-            player.Color = colorGenerator.NewColor();
-            player.InputSource = input;
+            player.PlayerInfo = info;
 
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = playerPositions[0];
-            player.SetPlayerName(playerNumber++.ToString());
             playerPositions.RemoveAt(0);
             _players.Add(player);
         });
@@ -304,7 +300,7 @@ public partial class Main : Node2D
             goal.GlobalPosition = goalPositions[0];
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
-            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+            goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
         });
     }
 

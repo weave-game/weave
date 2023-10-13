@@ -137,6 +137,7 @@ icon = ExtResource("7_6tkco")
 alignment = 0
 
 [node name="VSeparator" type="VSeparator" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_y8k07")
 
