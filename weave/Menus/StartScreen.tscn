@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
 [ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
-[ext_resource type="PackedScene" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
+[ext_resource type="PackedScene" uid="uid://dkboes8t2n1vr" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_y8k07"]
 color = Color(1, 0.164706, 0.427451, 0.392157)
@@ -85,10 +85,25 @@ visible = false
 [node name="UI" type="CanvasLayer" parent="."]
 layer = -1
 
+[node name="MemoriesLabel" type="RichTextLabel" parent="UI"]
+visible = false
+clip_contents = false
+offset_left = 640.0
+offset_top = 736.0
+offset_right = 901.0
+offset_bottom = 759.0
+bbcode_enabled = true
+text = "Ready to [b]weave[/b] some memories?"
+autowrap_mode = 0
+
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 64
@@ -111,7 +126,7 @@ theme = ExtResource("4_8y3os")
 alignment = 1
 
 [node name="Play" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(200, 66)
+custom_minimum_size = Vector2(192, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 theme_type_variation = &"AccentedButton"
@@ -121,7 +136,7 @@ alignment = 0
 
 [node name="Options" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
 visible = false
-custom_minimum_size = Vector2(200, 66)
+custom_minimum_size = Vector2(192, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 text = "OPTIONS"
@@ -129,7 +144,7 @@ icon = ExtResource("6_bndfp")
 alignment = 0
 
 [node name="Quit" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(200, 66)
+custom_minimum_size = Vector2(192, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 text = "QUIT"
@@ -142,16 +157,21 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_y8k07")
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 16
 
-[node name="Start" type="Button" parent="UI/MarginContainer/HBoxContainer"]
+[node name="StartButton" type="Button" parent="UI"]
 visible = false
-layout_mode = 2
+offset_left = 608.0
+offset_top = 768.0
+offset_right = 928.0
+offset_bottom = 853.0
 size_flags_vertical = 4
 theme = ExtResource("4_8y3os")
+theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]

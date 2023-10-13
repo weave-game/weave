@@ -33,9 +33,11 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/MarginContainer/HBoxContainer/Start")]
+    [GetNode("UI/StartButton")]
     private Button _startButton;
 
+    [GetNode("UI/MemoriesLabel")]
+    private RichTextLabel _memoriesLabel;
     public override void _Ready()
     {
         this.GetNodes();
@@ -68,10 +70,11 @@ public partial class StartScreen : Control
     private void OpenLobby()
     {
         _lobby.Open = true;
-        _blurLayer.Visible = _lobby.Open;
-        _playerList.Visible = _lobby.Open;
-        _startButton.Visible = _lobby.Open;
-        _vSeparator.Visible = _lobby.Open;
+        _blurLayer.Visible = true;
+        _playerList.Visible = true;
+        _startButton.Visible = true;
+        _vSeparator.Visible = true;
+        _memoriesLabel.Visible = true;
         CollapseButtons();
     }
 
@@ -81,7 +84,8 @@ public partial class StartScreen : Control
         _blurLayer.Visible = false;
         _playerList.Visible = false;
         _startButton.Visible = false;
-        _vSeparator.Visible = _lobby.Open;
+        _vSeparator.Visible = false;
+        _memoriesLabel.Visible = false;
         ExpandButtons();
     }
 
@@ -128,7 +132,8 @@ public partial class StartScreen : Control
         {
             var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
             lobbyPlayer.Modulate = playerInfo.Color;
-            lobbyPlayer.GetNode<Label>("HBoxContainer/Label").Text = $"← {playerInfo.InputSource.LeftInputString()} → {playerInfo.InputSource.RightInputString()}";
+            lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
+            lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
         }
     }
