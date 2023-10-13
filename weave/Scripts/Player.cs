@@ -13,7 +13,10 @@ public partial class Player : CharacterBody2D
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    [GetNode("PlayerName")]
+    [GetNode("PlayerNamePivot")]
+    private Node2D _playerNamePivot;
+
+    [GetNode("PlayerNamePivot/PlayerName")]
     private Label _playerName;
 
     public float MovementSpeed { get; set; }
@@ -59,6 +62,7 @@ public partial class Player : CharacterBody2D
     {
         Rotate(delta);
         Move(delta);
+        _playerNamePivot.RotationDegrees = -RotationDegrees;
     }
 
     private void Move(double delta)
