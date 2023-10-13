@@ -19,6 +19,9 @@ public partial class Player : CharacterBody2D
     [GetNode("PlayerNamePivot/PlayerName")]
     private Label _playerName;
 
+    [GetNode("Arrow")]
+    private Sprite2D _arrow;
+
     public float MovementSpeed { get; set; }
     public float TurnRadius { get; set; } = 80;
 
@@ -40,11 +43,13 @@ public partial class Player : CharacterBody2D
         set
         {
             _isMoving = value;
+            _arrow.Visible = !value;
             CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
         }
     }
 
-    public void SetPlayerName(string name) {
+    public void SetPlayerName(string name)
+    {
         _playerName.Text = name;
     }
 
@@ -56,6 +61,7 @@ public partial class Player : CharacterBody2D
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
         CurveSpawner.Color = Color;
         _sprite2D.Modulate = Color;
+        _arrow.Modulate = Color;
     }
 
     public override void _PhysicsProcess(double delta)
