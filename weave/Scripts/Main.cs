@@ -38,6 +38,9 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
+    [GetNode("ClearedLevelPlayer")]
+    private AudioStreamPlayer _clearedLevelPlayer;
+
     private Grid _grid;
     private int _width;
     private int _height;
@@ -252,6 +255,7 @@ public partial class Main : Node2D
             return;
 
         _roundCompletions = 0;
+        _clearedLevelPlayer.Play();
         _scoreDisplay.OnRoundComplete();
         StartPreparationPhase();
     }
@@ -288,7 +292,7 @@ public partial class Main : Node2D
             .ForEach(goal => goal.QueueFree());
 
         // Generate goal positions
-        IList<Vector2> playerPositions = new List<Vector2>();
+        var playerPositions = new List<Vector2>();
         _players.ForEach(player => playerPositions.Add(player.Position));
         var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
@@ -301,6 +305,8 @@ public partial class Main : Node2D
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
+            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+            goal.HasLock = WeaveConstants.LockedGoals;
         });
     }
 

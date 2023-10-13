@@ -14,18 +14,26 @@ public partial class Goal : Node2D
     [Signal]
     public delegate void PlayerReachedGoalEventHandler();
 
+    public bool HasLock { get; set; }
+
     private Color _color;
-    private bool _locked = true;
+    private bool _locked;
     private bool _reached;
 
     [GetNode("UnlockParticles")]
     private CpuParticles2D _unlockParticles;
+
+    [GetNode("CollectPlayer")]
+    private AudioStreamPlayer2D _collectSoundPlayer;
 
     [GetNode("GoalSprite")]
     private Sprite2D _goalSprite;
 
     [GetNode("LockSprite")]
     private Sprite2D _lockSprite;
+
+    [GetNode("UnlockPlayer")]
+    private AudioStreamPlayer2D _unlockSoundPlayer;
 
     [GetNode("LockAreaSprite")]
     private Sprite2D _lockAreaSprite;
@@ -46,10 +54,19 @@ public partial class Goal : Node2D
         var area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
 
-        var lockArea = GetNode<Area2D>("LockArea");
-        lockArea.BodyEntered += OnLockAreaBodyEntered;
-
-        _goalSprite.Hide();
+        if (HasLock)
+        {
+            _locked = true;
+            var lockArea = GetNode<Area2D>("LockArea");
+            lockArea.BodyEntered += OnLockAreaBodyEntered;
+            _goalSprite.Hide();
+        }
+        else
+        {
+            _locked = false;
+            _lockSprite.Hide();
+            _lockAreaSprite.Hide();
+        }
     }
 
     private void OnLockAreaBodyEntered(Node2D body)
@@ -64,6 +81,7 @@ public partial class Goal : Node2D
         _lockAreaSprite.Visible = false;
         _goalSprite.Show();
         _lockSprite.Hide();
+        _unlockSoundPlayer.Play();
     }
 
     private void OnBodyEntered(Node2D body)
@@ -75,6 +93,8 @@ public partial class Goal : Node2D
         _reached = true;
         _goalSprite.Modulate = Colors.Black;
         EmitSignal(SignalName.PlayerReachedGoal);
-        QueueFree();
+
+        _collectSoundPlayer.Finished += QueueFree;
+        _collectSoundPlayer.Play();
     }
 }

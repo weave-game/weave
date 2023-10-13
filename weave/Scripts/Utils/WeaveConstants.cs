@@ -37,4 +37,6 @@ public static class WeaveConstants
     public const string FireflyGroup = "firefly";
 
     #endregion Groups
+
+    public static bool LockedGoals => true;
 }
