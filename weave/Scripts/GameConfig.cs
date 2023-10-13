@@ -1,4 +1,3 @@
-using System;
 using Weave.InputSources;
 
 namespace Weave;
@@ -17,8 +16,7 @@ public static class GameConfig
         {
             <= 2 => 130,
             3 => 100,
-            > 4 => 70,
-            _ => throw new ArgumentOutOfRangeException(nameof(nPlayers), nPlayers, "Invalid number of players")
+            _ => 70
         };
     }
 
