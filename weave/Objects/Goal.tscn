@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwkcn26tiyvom"]
+[gd_scene load_steps=10 format=3 uid="uid://cwkcn26tiyvom"]
 
 [ext_resource type="Script" path="res://Scripts/Goal.cs" id="1_6mak8"]
 [ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_i56br"]
 [ext_resource type="Texture2D" uid="uid://bvfltom6qhsi0" path="res://Assets/Sprites/lock.svg" id="3_5ksq6"]
 [ext_resource type="Texture2D" uid="uid://cxq7dg4fje2dj" path="res://Assets/Sprites/hollow_circle.svg" id="4_1ov3k"]
+[ext_resource type="AudioStream" uid="uid://rxfcnweykhh5" path="res://Assets/SFX/ding.mp3" id="5_dflux"]
+[ext_resource type="AudioStream" uid="uid://bhtd4oj4j5dy8" path="res://Assets/SFX/ding2.mp3" id="5_spqf3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4mcuf"]
 radius = 12.0
@@ -54,3 +56,11 @@ texture = ExtResource("3_5ksq6")
 [node name="LockAreaSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.232209, 0.232209)
 texture = ExtResource("4_1ov3k")
+
+[node name="UnlockPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_spqf3")
+volume_db = -4.0
+
+[node name="CollectPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_dflux")
+volume_db = -4.571
