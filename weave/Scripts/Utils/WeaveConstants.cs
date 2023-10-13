@@ -35,8 +35,9 @@ public static class WeaveConstants
     public const string GoalGroup = "goal";
     public const string LineGroup = "line";
     public const string FireflyGroup = "firefly";
+    public const string ObstacleGroup = "obstacle";
 
     #endregion Groups
 
-    public static bool LockedGoals => true;
+    public static bool LockedGoals => false;
 }

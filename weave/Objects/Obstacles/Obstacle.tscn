@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://bykki7w6nu0rk"]
+
+[ext_resource type="Script" path="res://Scripts/Obstacle.cs" id="1_bpdmc"]
+[ext_resource type="Texture2D" uid="uid://boy6jkoltcyyn" path="res://Assets/Sprites/cube.svg" id="2_aejs4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wyxrf"]
+
+[node name="Obstracle" type="Area2D"]
+script = ExtResource("1_bpdmc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wyxrf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-0.00781393, -0.00781393)
+scale = Vector2(0.0252086, 0.0252086)
+texture = ExtResource("2_aejs4")

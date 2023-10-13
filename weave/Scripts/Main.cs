@@ -22,6 +22,7 @@ public partial class Main : Node2D
     private float _turnAcceleration;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
+    private const int NObstacles = 5;
 
     [GetNode("CountdownLayer/CenterContainer/RoundLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
@@ -289,16 +290,13 @@ public partial class Main : Node2D
 
     private void ClearAndSpawnGoals()
     {
-        // Remove existing goals
-        GetTree()
-            .GetNodesInGroup(WeaveConstants.GoalGroup)
-            .ToList()
-            .ForEach(goal => goal.QueueFree());
+        // union two sets
+        var goals = GetTree().GetNodesInGroup(WeaveConstants.GoalGroup);
+        var obstacles = GetTree().GetNodesInGroup(WeaveConstants.ObstacleGroup);
+        goals.Union(obstacles).ForEach(node => node.QueueFree());
 
         // Generate goal positions
-        var playerPositions = new List<Vector2>();
-        _players.ForEach(player => playerPositions.Add(player.Position));
-        var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
+        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position));
 
         // Spawn new goals
         _players.ForEach(player =>
@@ -311,17 +309,49 @@ public partial class Main : Node2D
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
             goal.HasLock = WeaveConstants.LockedGoals;
         });
+
+        // ----------------
+
+        // Add all player positions to goal positions:
+        var dontTake = goalPositions.ToList();
+        _players.ForEach(p => dontTake.Add(p.Position));
+
+        var obstaclePositions = GetRandomPositionsInView(NObstacles, dontTake);
+
+        obstaclePositions.ForEach(position =>
+        {
+            var obstacle = Instanter.Instantiate<Obstacle>();
+            obstacle.AddToGroup(WeaveConstants.ObstacleGroup);
+
+            obstacle.BodyEntered += node =>
+            {
+                if (node is not Player) return;
+                GameOver();
+            };
+
+            CallDeferred("add_child", obstacle);
+            obstacle.GlobalPosition = position;
+
+            // Random rotation
+            obstacle.RotationDegrees = GD.RandRange(0, 360);
+
+            // Random scale
+            obstacle.Scale = new Vector2(
+                GD.RandRange(3, 5),
+                GD.RandRange(3, 5)
+            );
+        });
     }
 
     private IList<Vector2> GetRandomPositionsInView(
         int n,
-        IList<Vector2> occupiedPositions = null,
-        float minDistance = 250,
-        float margin = 100
+        IEnumerable<Vector2> occupiedPositions = null
     )
     {
-        var positions = new List<Vector2>();
         const int maxAttempts = 1000;
+        const float minDistance = 250;
+        const float margin = 100;
+        var positions = new List<Vector2>();
 
         // Generate positions
         for (var i = 0; i < n; i++)
