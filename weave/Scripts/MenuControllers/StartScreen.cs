@@ -128,6 +128,7 @@ public partial class StartScreen : Control
         {
             var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
             lobbyPlayer.Modulate = playerInfo.Color;
+            lobbyPlayer.GetNode<Label>("HBoxContainer/Label").Text = $"← {playerInfo.InputSource.LeftInputString()} → {playerInfo.InputSource.RightInputString()}";
             _playerList.AddChild(lobbyPlayer);
         }
     }

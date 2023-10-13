@@ -17,3 +17,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("1_c6l0d")
 expand_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Mapping"
