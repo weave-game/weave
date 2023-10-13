@@ -1,6 +1,4 @@
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -14,6 +12,8 @@ namespace Weave.MenuControllers;
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
+
+    private PackedScene _lobbyPlayer = ResourceLoader.Load("res://Objects/LobbyPlayer.tscn") as PackedScene;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
     private Button _playButton;
@@ -47,11 +47,6 @@ public partial class StartScreen : Control
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
-    public override void _Process(double delta)
-    {
-        PrintInputSources();
-    }
-
     public override void _Input(InputEvent @event)
     {
         if (!_lobby.Open)
@@ -65,6 +60,7 @@ public partial class StartScreen : Control
                 KeyboardPressed();
                 break;
         }
+        PrintInputSources();
     }
 
     private void OpenLobby()
@@ -116,38 +112,16 @@ public partial class StartScreen : Control
         _quitButton.CustomMinimumSize = new Vector2(0, 0);
     }
 
-    /// <summary>
-    ///     IMPORTANT: This is a hack, only used for debugging purposes
-    /// </summary>
     private void PrintInputSources()
     {
-        // NO NEED TO REVIEW THIS; WILL BE REMOVED
-        var sb = new StringBuilder();
-
-        var i = 1;
-        foreach (var inputSource in _lobby.InputSources)
+        foreach (var child in _playerList.GetChildren())
         {
-            sb.Append("Player ").Append(i++).AppendLine(": ");
-
-            if (inputSource is KeyboardInputSource k)
-            {
-                // ReSharper disable once PossibleNullReferenceException
-                var left = typeof(KeyboardInputSource)
-                    .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(k);
-
-                // ReSharper disable once PossibleNullReferenceException
-                var right = typeof(KeyboardInputSource)
-                    .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(k);
-
-                sb.Append("L: ").Append(left).Append(" R: ").Append(right).AppendLine("");
-            }
-
-            sb.AppendLine("");
+            _playerList.RemoveChild(child);
+            child.QueueFree();
         }
 
-        // _textEdit.Text = sb.ToString();
+        foreach (var inputSource in _lobby.InputSources)
+            _playerList.AddChild(_lobbyPlayer.Instantiate());
     }
 
     #region Keyboard
