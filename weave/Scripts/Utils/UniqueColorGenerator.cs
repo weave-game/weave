@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -22,6 +23,7 @@ public sealed class UniqueColorGenerator
     };
 
     private readonly ISet<Color> _usedColors = new HashSet<Color>();
+    private int _counter;
 
     /// <summary>
     ///     Generates a new unique color that has not been used before.
@@ -29,12 +31,18 @@ public sealed class UniqueColorGenerator
     /// <returns>A new unique color.</returns>
     public Color NewColor()
     {
+        _counter++;
         var unusedColor = _defaultColors.Except(_usedColors).FirstOrDefault();
+        var random = new Random(1337);
 
         if (unusedColor == default)
         {
             do
-                unusedColor = new Color(GD.Randf(), GD.Randf(), GD.Randf()); while (_usedColors.Contains(unusedColor));
+            {
+                unusedColor = new Color((float)random.NextDouble(), (float)random.NextDouble(),
+                    (float)random.NextDouble());
+            }
+            while (_usedColors.Contains(unusedColor));
         }
 
         _usedColors.Add(unusedColor);
