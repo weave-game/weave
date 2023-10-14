@@ -13,8 +13,11 @@ public partial class Player : CharacterBody2D
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    public float MovementSpeed { get; set; } = 100;
-    public float TurnRadius { get; set; } = 120;
+    [GetNode("PlayerName")]
+    private Label _playerName;
+
+    public float MovementSpeed { get; set; }
+    public float TurnRadius { get; set; } = 80;
 
     private CircleShape2D CircleShape { get; set; }
 
@@ -38,6 +41,12 @@ public partial class Player : CharacterBody2D
         }
     }
 
+    public void SetPlayerName(string name) {
+        _playerName.Text = name;
+    }
+
+    public bool IsTurning { get; set; }
+
     public override void _Ready()
     {
         this.GetNodes();
@@ -48,18 +57,20 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        Rotate(delta);
         Move(delta);
     }
 
     private void Move(double delta)
     {
-        Rotate(delta);
         if (_isMoving)
             Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
     }
 
     private void Rotate(double delta)
     {
+        if (!IsTurning) return;
+
         if (InputSource.IsTurningRight())
             RotationDegrees += TurnRadius * (float)delta;
 

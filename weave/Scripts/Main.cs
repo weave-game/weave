@@ -1,7 +1,6 @@
-using System;
-using System.Linq;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -19,20 +18,33 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private const float Acceleration = 3.5f;
-    private const int TurnAcceleration = 5;
-    private const int PlayerStartDelay = 2;
+    private float _acceleration;
+    private float _turnAcceleration;
     private readonly ISet<Player> _players = new HashSet<Player>();
     private IScoreManager _scoreManager;
 
-    [GetNode("CountdownLayer/CenterContainer/CountdownLabel")]
-    private CountdownLabel _countdownLabel;
+    [GetNode("CountdownLayer/CenterContainer/RoundLabel/AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
+    [GetNode("CountdownLayer/CenterContainer/RoundLabel")]
+    private Label _roundLabel;
+
+    [GetNode("AudioStreamPlayer")]
+    private AudioStreamPlayer _audioStreamPlayer;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
+    [GetNode("ScoreDisplay")]
+    private ScoreDisplay _scoreDisplay;
+
+    [GetNode("ClearedLevelPlayer")]
+    private AudioStreamPlayer _clearedLevelPlayer;
+
     private Grid _grid;
+    private int _width;
     private int _height;
+    private bool _gameIsRunning;
     private Lobby _lobby = new();
     private Multiplayer.Manager _multiplayerManager;
     private Timer _playerDelayTimer;
@@ -42,11 +54,12 @@ public partial class Main : Node2D
     /// </summary>
     private int _roundCompletions;
 
-    [GetNode("ScoreDisplay")]
-    private ScoreDisplay _scoreDisplay;
+    /// <summary>
+    ///     The current round, starts from 1.
+    /// </summary>
+    private int _round;
 
     private Timer _uiUpdateTimer;
-    private int _width;
 
     public override void _Ready()
     {
@@ -63,26 +76,35 @@ public partial class Main : Node2D
         _height = (int)GetViewportRect().Size.Y;
 
         InitializeTimers();
-        DisablePlayerMovement();
-        CreateMapGrid();
+        StartPreparationPhase();
         SpawnPlayers();
+        SetPlayerTurning(true);
         ClearAndSpawnGoals();
         SetupLogger();
 
         _scoreDisplay.OnGameStart(_players.Count);
+
+        _gameIsRunning = true;
     }
 
     public override void _Process(double delta)
     {
+        if (!_gameIsRunning) return;
+
         _players.ForEach(p =>
         {
-            p.MovementSpeed += Acceleration * (float)delta;
-            p.TurnRadius += TurnAcceleration * (float)delta;
+            _acceleration -= 0.01f * _acceleration * (float)delta;
+            _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
+
+            p.MovementSpeed += _acceleration * (float)delta;
+            p.TurnRadius += _turnAcceleration * (float)delta;
         });
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!_gameIsRunning) return;
+
         DetectPlayerCollision();
         DetectPlayerOutOfBounds();
     }
@@ -92,40 +114,40 @@ public partial class Main : Node2D
         _grid = new Grid(10, 10, _width, _height);
     }
 
-    private void EnablePlayerMovement()
+    private void SetPlayerMovement(bool enabled)
     {
-        _players.ForEach(player => player.IsMoving = true);
-        _uiUpdateTimer.Timeout -= UpdateCountdown;
-        _countdownLabel.UpdateLabelText("");
-        _scoreDisplay.Enabled = true;
+        _players.ForEach(player => player.IsMoving = enabled);
     }
 
-    private void DisablePlayerMovement()
+    private void SetPlayerTurning(bool enabled)
     {
-        _players.ForEach(player => player.IsMoving = false);
-        _uiUpdateTimer.Timeout += UpdateCountdown;
-        _playerDelayTimer.Start();
-        _scoreDisplay.Enabled = false;
+        _players.ForEach(player => player.IsTurning = enabled);
+    }
+
+    private void StartRound()
+    {
+        SetPlayerMovement(true);
+        _uiUpdateTimer.Timeout -= UpdateCountdown;
+        _roundLabel.Text = "";
+        _scoreDisplay.Enabled = true;
     }
 
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new Timer { WaitTime = 0.1 };
+        _uiUpdateTimer = new Timer { WaitTime = 0.02 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new Timer { WaitTime = PlayerStartDelay, OneShot = true };
-        _playerDelayTimer.Timeout += EnablePlayerMovement;
+        _playerDelayTimer = new Timer { WaitTime = WeaveConstants.CountdownLength, OneShot = true };
+        _playerDelayTimer.Timeout += StartRound;
         AddChild(_playerDelayTimer);
     }
 
     private void UpdateCountdown()
     {
-        var newText = Math.Round(_playerDelayTimer.TimeLeft, 1)
-            .ToString(CultureInfo.InvariantCulture);
-        _countdownLabel.UpdateLabelText(newText);
+        _roundLabel.Text = "ROUND " + _round;
     }
 
     private void DetectPlayerCollision()
@@ -165,9 +187,12 @@ public partial class Main : Node2D
 
     private void GameOver()
     {
-        _gameOverOverlay.Visible = true;
-        _gameOverOverlay.FocusRetryButton();
-        ProcessMode = ProcessModeEnum.Disabled;
+        _gameIsRunning = false;
+        SetPlayerMovement(false);
+        SetPlayerTurning(false);
+        _scoreDisplay.OnGameEnd();
+        _gameOverOverlay.DisplayGameOver();
+        _audioStreamPlayer.PitchScale = 0.5f;
 
         // Save score
         var score = new ScoreRecord(
@@ -185,9 +210,9 @@ public partial class Main : Node2D
     private void SpawnPlayers()
     {
         var colorGenerator = new UniqueColorGenerator();
-
         var playerPositions = GetRandomPositionsInView(_lobby.InputSources.Count);
 
+        var playerNumber = 1;
         _lobby.InputSources.ForEach(input =>
         {
             var player = Instanter.Instantiate<Player>();
@@ -197,9 +222,18 @@ public partial class Main : Node2D
             AddChild(player);
             player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
             player.GlobalPosition = playerPositions[0];
+            player.SetPlayerName(playerNumber++.ToString());
             playerPositions.RemoveAt(0);
             _players.Add(player);
         });
+
+        // Config speed
+        var speed = GameConfig.GetInitialPlayerMovement(_lobby.Count);
+        _players.ForEach(p => p.MovementSpeed = speed);
+
+        // Config acceleration
+        _acceleration = GameConfig.GetInitialAcceleration(_lobby.Count);
+        _turnAcceleration = GameConfig.GetInitialTurnAcceleration(_lobby.Count);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -216,7 +250,7 @@ public partial class Main : Node2D
 
     private void HandleCreateCollisionLine(Line2D line, SegmentShape2D segment)
     {
-        line.AddToGroup(GodotConfig.LineGroup);
+        line.AddToGroup(WeaveConstants.LineGroup);
         _grid.AddSegment(segment);
         AddChild(line);
     }
@@ -226,23 +260,31 @@ public partial class Main : Node2D
         if (++_roundCompletions != _lobby.Count)
             return;
 
-        HandleRoundComplete();
+        _roundCompletions = 0;
+        _clearedLevelPlayer.Play();
+        _scoreDisplay.OnRoundComplete();
+        StartPreparationPhase();
     }
 
-    private void HandleRoundComplete()
+    private void StartPreparationPhase()
     {
-        _roundCompletions = 0;
-
-        _scoreDisplay.OnRoundComplete();
-
-        DisablePlayerMovement();
         ClearLinesAndSegments();
         ClearAndSpawnGoals();
+        SetPlayerMovement(false);
+        _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.Start();
+        _scoreDisplay.Enabled = false;
+
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0, () => _round++)
+        );
+
+        _animationPlayer.Play(name: "Preparation", customSpeed: 2.0f / WeaveConstants.CountdownLength);
     }
 
     private void ClearLinesAndSegments()
     {
-        GetTree().GetNodesInGroup(GodotConfig.LineGroup).ForEach(line => line.QueueFree());
+        GetTree().GetNodesInGroup(WeaveConstants.LineGroup).ForEach(line => line.QueueFree());
 
         CreateMapGrid();
     }
@@ -251,12 +293,12 @@ public partial class Main : Node2D
     {
         // Remove existing goals
         GetTree()
-            .GetNodesInGroup(GodotConfig.GoalGroup)
+            .GetNodesInGroup(WeaveConstants.GoalGroup)
             .ToList()
             .ForEach(goal => goal.QueueFree());
 
         // Generate goal positions
-        IList<Vector2> playerPositions = new List<Vector2>();
+        var playerPositions = new List<Vector2>();
         _players.ForEach(player => playerPositions.Add(player.Position));
         var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
 
@@ -269,6 +311,7 @@ public partial class Main : Node2D
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
+            goal.HasLock = WeaveConstants.LockedGoals;
         });
     }
 
@@ -280,7 +323,7 @@ public partial class Main : Node2D
     )
     {
         var positions = new List<Vector2>();
-        const int MaxAttempts = 1000;
+        const int maxAttempts = 1000;
 
         // Generate positions
         for (var i = 0; i < n; i++)
@@ -313,7 +356,7 @@ public partial class Main : Node2D
                     if (distance < minDistance)
                         valid = false;
                 });
-            } while (!valid && attempt < MaxAttempts);
+            } while (!valid && attempt < maxAttempts);
 
             positions.Add(newPosition);
         }

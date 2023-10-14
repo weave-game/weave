@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cydglrjfdxyu2"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_j6e2d"]
-[ext_resource type="Texture2D" uid="uid://rnb2i6nax7a2" path="res://Assets/Sprites/player.png" id="2_am1c8"]
+[ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_21yul"]
 [ext_resource type="Script" path="res://Scripts/CurveSpawner.cs" id="3_1y1di"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nrd2o"]
@@ -11,13 +11,25 @@ radius = 3.0
 script = ExtResource("1_j6e2d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-1.19209e-07, -8)
-scale = Vector2(0.0112741, 0.0112741)
-texture = ExtResource("2_am1c8")
+position = Vector2(0, -2.84217e-14)
+scale = Vector2(0.00295557, 0.00304648)
+texture = ExtResource("2_21yul")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -11)
+position = Vector2(0, -9)
 shape = SubResource("CircleShape2D_nrd2o")
 
 [node name="CurveSpawner" type="Marker2D" parent="."]
 script = ExtResource("3_1y1di")
+
+[node name="PlayerName" type="Label" parent="."]
+offset_left = -23.0
+offset_top = -22.0
+offset_right = 23.0
+offset_bottom = 4.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 16
+text = "X"
+horizontal_alignment = 1

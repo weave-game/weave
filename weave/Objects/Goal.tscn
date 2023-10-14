@@ -1,15 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwkcn26tiyvom"]
+[gd_scene load_steps=10 format=3 uid="uid://cwkcn26tiyvom"]
 
 [ext_resource type="Script" path="res://Scripts/Goal.cs" id="1_6mak8"]
 [ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_i56br"]
+[ext_resource type="Texture2D" uid="uid://bvfltom6qhsi0" path="res://Assets/Sprites/lock.svg" id="3_5ksq6"]
+[ext_resource type="Texture2D" uid="uid://cxq7dg4fje2dj" path="res://Assets/Sprites/hollow_circle.svg" id="4_1ov3k"]
+[ext_resource type="AudioStream" uid="uid://rxfcnweykhh5" path="res://Assets/SFX/ding.mp3" id="5_dflux"]
+[ext_resource type="AudioStream" uid="uid://bhtd4oj4j5dy8" path="res://Assets/SFX/ding2.mp3" id="5_spqf3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4mcuf"]
 radius = 12.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_eviga"]
+radius = 44.0
+
+[sub_resource type="Gradient" id="Gradient_pw2nx"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
 [node name="Goal" type="Node2D" groups=["goal"]]
 script = ExtResource("1_6mak8")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="GoalSprite" type="Sprite2D" parent="."]
 position = Vector2(-9.53674e-07, -9.53674e-07)
 scale = Vector2(0.0110156, 0.0110156)
 texture = ExtResource("2_i56br")
@@ -18,3 +28,39 @@ texture = ExtResource("2_i56br")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_4mcuf")
+
+[node name="LockArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LockArea"]
+shape = SubResource("CircleShape2D_eviga")
+
+[node name="UnlockParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 77
+one_shot = true
+explosiveness = 0.79
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 335.23
+initial_velocity_max = 335.23
+orbit_velocity_min = 2.0
+orbit_velocity_max = 2.0
+scale_amount_min = 1.1
+scale_amount_max = 1.5
+color_ramp = SubResource("Gradient_pw2nx")
+
+[node name="LockSprite" type="Sprite2D" parent="."]
+scale = Vector2(1.11667, 1.11667)
+texture = ExtResource("3_5ksq6")
+
+[node name="LockAreaSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.232209, 0.232209)
+texture = ExtResource("4_1ov3k")
+
+[node name="UnlockPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_spqf3")
+volume_db = -4.0
+
+[node name="CollectPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_dflux")
+volume_db = -4.571

@@ -1,6 +1,8 @@
 using System;
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
+using Weave.Utils;
 
 namespace Weave;
 
@@ -23,10 +25,13 @@ public partial class ScoreDisplay : CanvasLayer
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
 
+    [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
     /// <summary>
     /// Change to switch between different scoring rules
     /// </summary>
-    private ScoringRule _scoringRule = ScoringRule.TimeOnlyBasedOnRound;
+    private ScoringRule _scoringRule = ScoringRule.TimeAndRound;
 
     private double _timeSinceRoundStart;
     private double _points;
@@ -97,15 +102,26 @@ public partial class ScoreDisplay : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
-
         _finishedRounds++;
         _timeSinceRoundStart = 0;
+
+        _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2.0f / WeaveConstants.CountdownLength);
+
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0,
+                () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1))
+        );
     }
 
     public void OnGameStart(int playerCount)
     {
         _playerCount = playerCount;
+    }
+
+    public void OnGameEnd()
+    {
+        Enabled = false;
+        _animationPlayer.Play("ScoreDisplayEnd");
     }
 
     private enum ScoringRule

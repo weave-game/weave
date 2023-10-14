@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -14,10 +15,11 @@ public sealed class UniqueColorGenerator
     /// </summary>
     private readonly IReadOnlyList<Color> _defaultColors = new List<Color>
     {
-        Colors.Red,
-        Colors.Seashell,
-        Colors.Green,
-        Colors.Blue
+        new("ff2a6d"), // Red
+        new("8cff98"), // Green
+        new("05b9e9"), // Blue
+        new("ffb237"), // Yellow
+        new("5b507a") // Dark green
     };
 
     private readonly ISet<Color> _usedColors = new HashSet<Color>();
@@ -29,11 +31,16 @@ public sealed class UniqueColorGenerator
     public Color NewColor()
     {
         var unusedColor = _defaultColors.Except(_usedColors).FirstOrDefault();
+        var random = new Random(1337);
 
         if (unusedColor == default)
         {
             do
-                unusedColor = new Color(GD.Randf(), GD.Randf(), GD.Randf()); while (_usedColors.Contains(unusedColor));
+            {
+                unusedColor = new Color((float)random.NextDouble(), (float)random.NextDouble(),
+                    (float)random.NextDouble());
+            }
+            while (_usedColors.Contains(unusedColor));
         }
 
         _usedColors.Add(unusedColor);

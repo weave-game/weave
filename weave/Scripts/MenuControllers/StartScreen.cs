@@ -52,7 +52,7 @@ public partial class StartScreen : Control
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
-            .GetNodesInGroup(GodotConfig.FireflyGroup)
+            .GetNodesInGroup(WeaveConstants.FireflyGroup)
             .Cast<Firefly>()
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
@@ -183,10 +183,10 @@ public partial class StartScreen : Control
         if (deviceId < 0)
             return;
 
-        if (@event.IsActionPressed(GodotConfig.GamepadJoinAction))
+        if (@event.IsActionPressed(WeaveConstants.GamepadJoinAction))
             _lobby.Join(new GamepadInputSource(deviceId));
 
-        if (@event.IsActionPressed(GodotConfig.GamepadLeaveAction))
+        if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
     }
 
