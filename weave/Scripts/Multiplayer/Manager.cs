@@ -33,7 +33,7 @@ public partial class Manager : Node
     {
         await ConnectWebSocketAsync();
 
-        GD.Print($"Lobby code: {_lobbyCode}");
+        GD.Print(_lobbyCode);
 
         var joinMessage = new { type = "register-host", lobby_code = _lobbyCode };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(joinMessage));
@@ -87,13 +87,13 @@ public partial class Manager : Node
         _clientConnections.Add(clientId, peerConnection);
 
         var dataChannel = await peerConnection.createDataChannel($"chat-{clientId}");
-        dataChannel.onopen += () => GD.Print("data channel open");
-        dataChannel.onclose += () => GD.Print("data channel closed");
-        dataChannel.onmessage += (_, __, data) => GD.Print(data.GetStringFromUtf8());
+        dataChannel.onopen += () => HandlePlayerJoin(clientId);
+        dataChannel.onclose += () => HandlePlayerLeave(clientId);
+        dataChannel.onmessage += (_, __, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
 
         peerConnection.onconnectionstatechange += (state) =>
         {
-            GD.Print($"Peer connection state change to {state}.");
+            GD.Print($"{clientId} connection state change to {state}.");
 
             switch (state)
             {
@@ -104,6 +104,7 @@ public partial class Manager : Node
                     break;
                 case RTCPeerConnectionState.closed:
                 case RTCPeerConnectionState.disconnected:
+                    HandlePlayerLeave(clientId);
                     break;
             }
         };
@@ -146,18 +147,18 @@ public partial class Manager : Node
         return Encoding.UTF8.GetString(buffer, 0, result.Count);
     }
 
-    private void HandlePlayerJoin(string playerId)
+    private void HandlePlayerJoin(string clientId)
     {
-        var sourceToAdd = new WebInputSource(playerId);
+        var sourceToAdd = new WebInputSource(clientId);
         EmitSignal(SignalName.PlayerJoined, sourceToAdd);
-        _clientSources.Add(playerId, sourceToAdd);
+        _clientSources.Add(clientId, sourceToAdd);
     }
 
-    private void HandlePlayerLeave(string playerId)
+    private void HandlePlayerLeave(string clientId)
     {
-        var sourceToRemove = _clientSources.GetValueOrDefault(playerId);
-        EmitSignal(SignalName.PlayerLeft, sourceToRemove);
-        _clientSources.Remove(playerId);
+        EmitSignal(SignalName.PlayerLeft, _clientSources.GetValueOrDefault(clientId));
+        _clientConnections.Remove(clientId);
+        _clientSources.Remove(clientId);
     }
 
     private void HandlePlayerInput(string playerId, string input)
@@ -166,16 +167,21 @@ public partial class Manager : Node
         source.DirectionState = input;
     }
 
-    private static void HandlePlayerError(string playerId, string error)
+    public async void NotifyStartGameAsync()
     {
-        GD.Print($"Error: {playerId} got error {error}");
+        foreach (var clientId in _clientConnections.Keys)
+        {
+            var startMessage = new { type = "message", message = "start", clientId };
+            await SendWebSocketMessageAsync(JsonConvert.SerializeObject(startMessage));
+        }
     }
 
-    public void NotifyStartGame()
+    public async void NotifyEndGameAsync()
     {
-    }
-
-    public void NotifyEndGame()
-    {
+        foreach (var clientId in _clientConnections.Keys)
+        {
+            var endMessage = new { type = "message", message = "end", clientId };
+            await SendWebSocketMessageAsync(JsonConvert.SerializeObject(endMessage));
+        }
     }
 }

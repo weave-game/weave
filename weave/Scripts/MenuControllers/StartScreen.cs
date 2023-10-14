@@ -47,6 +47,8 @@ public partial class StartScreen : Control
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
+        _multiplayerManager.PlayerJoined += _lobby.Join;
+        _multiplayerManager.PlayerLeft += _lobby.Leave;
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
@@ -89,6 +91,8 @@ public partial class StartScreen : Control
     private void OnStartButtonPressed()
     {
         GameConfig.Lobby = _lobby;
+        GameConfig.MultiplayerManager = _multiplayerManager;
+        _multiplayerManager.NotifyStartGameAsync();
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
     }
 
