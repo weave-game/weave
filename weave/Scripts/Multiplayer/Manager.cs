@@ -21,7 +21,8 @@ public partial class Manager : Node
     private string _lobbyCode;
     private const string SERVER_URL = "ws://localhost:8080";
     private static readonly ClientWebSocket _webSocket = new();
-    private readonly Dictionary<string, WebInputSource> _playerSources = new();
+    private readonly Dictionary<string, WebInputSource> _clientSources = new();
+    private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
 
     public Manager(string lobbyCode)
     {
@@ -30,13 +31,62 @@ public partial class Manager : Node
 
     public async Task StartClientAsync()
     {
-        await ConnectWebSocket();
+        await ConnectWebSocketAsync();
 
-        await SendWebSocketMessage("{\"type\": \"register-host\"}");
+        GD.Print($"Lobby code: {_lobbyCode}");
 
+        var joinMessage = new { type = "register-host", lobby_code = _lobbyCode };
+        await SendWebSocketMessageAsync(JsonConvert.SerializeObject(joinMessage));
+
+        while (_webSocket.State == WebSocketState.Open)
+        {
+            var message = await ReceiveWebSocketMessageAsync();
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                GD.Print("Message is null");
+                continue;
+            }
+
+            dynamic msg = JsonConvert.DeserializeObject(message);
+            if (msg.type == "answer")
+            {
+                var idString = (string)msg.clientId;
+                var answerString = JsonConvert.SerializeObject(msg.answer);
+                var peerConnection = _clientConnections[idString];
+
+                var answer = new RTCSessionDescriptionInit();
+                if (RTCSessionDescriptionInit.TryParse(answerString, out answer))
+                    peerConnection.setRemoteDescription(answer);
+                else GD.Print("Unable to parse answer");
+            }
+            else if (msg.type == "ice-candidate")
+            {
+                var idString = (string)msg.clientId;
+                var candidateString = JsonConvert.SerializeObject(msg.candidate);
+                var peerConnection = _clientConnections[idString];
+
+                var iceCandidate = new RTCIceCandidateInit();
+                if (RTCIceCandidateInit.TryParse(candidateString, out iceCandidate))
+                    peerConnection.addIceCandidate(iceCandidate);
+                else GD.Print("Unable to parse ice candidate");
+            }
+            else if (msg.type == "client-connected")
+            {
+                var idString = (string)msg.clientId;
+                var peerConnection = await CreatePeerConnectionAsync(idString);
+                SendOfferAsync(peerConnection, idString);
+            }
+        }
+    }
+
+    private async Task<RTCPeerConnection> CreatePeerConnectionAsync(string clientId)
+    {
         var peerConnection = new RTCPeerConnection(null);
 
-        var dataChannel = await peerConnection.createDataChannel("chat");
+        _clientConnections.Add(clientId, peerConnection);
+
+        var dataChannel = await peerConnection.createDataChannel($"chat-{clientId}");
         dataChannel.onopen += () => GD.Print("data channel open");
         dataChannel.onclose += () => GD.Print("data channel closed");
         dataChannel.onmessage += (_, __, data) => GD.Print(data.GetStringFromUtf8());
@@ -58,64 +108,37 @@ public partial class Manager : Node
             }
         };
 
-        peerConnection.onicecandidate += (candidate) =>
+        peerConnection.onicecandidate += async (candidate) =>
         {
-            var iceMessage = new { type = "ice-candidate", candidate = candidate };
-            SendWebSocketMessage(JsonConvert.SerializeObject(iceMessage)).Wait();
+            var iceMessage = new { type = "ice-candidate-host", candidate, clientId };
+            await SendWebSocketMessageAsync(JsonConvert.SerializeObject(iceMessage));
         };
 
-        while (_webSocket.State == WebSocketState.Open)
-        {
-            var message = await ReceiveWebSocketMessage();
-            if (!string.IsNullOrWhiteSpace(message))
-            {
-                dynamic msg = JsonConvert.DeserializeObject(message);
-                if (msg.type == "offer")
-                {
-                    GD.Print("received offer");
-                    var offer = new RTCSessionDescriptionInit();
-                    if (RTCSessionDescriptionInit.TryParse(msg.offer, out offer))
-                    {
-                        peerConnection.setRemoteDescription(offer);
-                        var answer = peerConnection.createAnswer(null);
-                        await peerConnection.setLocalDescription(answer);
-
-                        var answerMessage = new { type = "answer", answer = new { type = answer.type.ToString().ToLower(), sdp = answer.sdp } };
-                        await SendWebSocketMessage(JsonConvert.SerializeObject(answerMessage));
-                    }
-                    else
-                    {
-                        GD.Print("Unable to parse offer");
-                    }
-                }
-                else if (msg.type == "ice-candidate")
-                {
-                    if (msg.candidate != null)
-                    {
-                        GD.Print("Received ice candidate");
-                        var iceCandidate = new RTCIceCandidateInit();
-                        if (RTCIceCandidateInit.TryParse(msg.candidate, out iceCandidate))
-                            peerConnection.addIceCandidate(iceCandidate);
-                        else GD.Print("Unable to parse ice candidate");
-                    }
-                }
-            }
-        }
+        return peerConnection;
     }
 
-    private static async Task ConnectWebSocket()
+    private static async void SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
+    {
+        var offer = peerConnection.createOffer(null);
+        await peerConnection.setLocalDescription(offer);
+
+        var offerMessage = new { type = "offer", offer, clientId };
+        await SendWebSocketMessageAsync(JsonConvert.SerializeObject(offerMessage));
+    }
+
+    private static async Task ConnectWebSocketAsync()
     {
         await _webSocket.ConnectAsync(new Uri(SERVER_URL), CancellationToken.None);
         GD.Print($"WebSocket connection established to {SERVER_URL}");
     }
 
-    private static async Task SendWebSocketMessage(string message)
+    private static async Task SendWebSocketMessageAsync(string message)
     {
         var msgBuffer = Encoding.UTF8.GetBytes(message);
         await _webSocket.SendAsync(new ArraySegment<byte>(msgBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    private static async Task<string> ReceiveWebSocketMessage()
+    private static async Task<string> ReceiveWebSocketMessageAsync()
     {
         var buffer = new byte[4096];
         var segment = new ArraySegment<byte>(buffer);
@@ -127,19 +150,19 @@ public partial class Manager : Node
     {
         var sourceToAdd = new WebInputSource(playerId);
         EmitSignal(SignalName.PlayerJoined, sourceToAdd);
-        _playerSources.Add(playerId, sourceToAdd);
+        _clientSources.Add(playerId, sourceToAdd);
     }
 
     private void HandlePlayerLeave(string playerId)
     {
-        var sourceToRemove = _playerSources.GetValueOrDefault(playerId);
+        var sourceToRemove = _clientSources.GetValueOrDefault(playerId);
         EmitSignal(SignalName.PlayerLeft, sourceToRemove);
-        _playerSources.Remove(playerId);
+        _clientSources.Remove(playerId);
     }
 
     private void HandlePlayerInput(string playerId, string input)
     {
-        var source = _playerSources.GetValueOrDefault(playerId);
+        var source = _clientSources.GetValueOrDefault(playerId);
         source.DirectionState = input;
     }
 
