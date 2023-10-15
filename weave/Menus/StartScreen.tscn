@@ -9,8 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
-[ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
-[ext_resource type="PackedScene" uid="uid://dkboes8t2n1vr" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
+[ext_resource type="AudioStream" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
+[ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_y8k07"]
 color = Color(1, 0.164706, 0.427451, 0.392157)

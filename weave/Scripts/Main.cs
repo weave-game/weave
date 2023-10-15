@@ -305,7 +305,6 @@ public partial class Main : Node2D
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
-            goal.CallDeferred("set", nameof(Goal.Color), player.Color);
             goal.HasLock = WeaveConstants.LockedGoals;
         });
     }
