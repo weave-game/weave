@@ -77,7 +77,7 @@ public partial class Main : Node2D
         SpawnPlayers();
         SetPlayerTurning(true);
         SetupLogger();
-        StartPreparationPhase();
+        StartInitialPhase();
 
         _scoreDisplay.OnGameStart(_players.Count);
         _gameIsRunning = true;
@@ -268,18 +268,37 @@ public partial class Main : Node2D
 
     private void StartPreparationPhase()
     {
-        ClearLinesAndSegments();
         ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.WaitTime = WeaveConstants.CountdownLength;
+        _playerDelayTimer.Start();
+        _scoreDisplay.Enabled = false;
+
+        IncreaseRound();
+    }
+
+    private void StartInitialPhase()
+    {
+        ResetMap();
+        SetPlayerMovement(false);
+        _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.WaitTime = WeaveConstants.InitialCountdownLength;
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0, () => _round++)
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
+        );
+    }
+
+    private void IncreaseRound()
+    {
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2, () => _round++)
         );
 
-        _animationPlayer.Play(name: "Preparation", customSpeed: 2.0f / WeaveConstants.CountdownLength);
+        _animationPlayer.Play(name: "Preparation", customSpeed: 2 / WeaveConstants.CountdownLength);
     }
 
     private void ClearLinesAndSegments()
@@ -295,6 +314,7 @@ public partial class Main : Node2D
     private void ResetMap()
     {
         // --- CLEAR ---
+        ClearLinesAndSegments();
         var goals = GetTree().GetNodesInGroup(WeaveConstants.GoalGroup);
         var obstacles = GetTree().GetNodesInGroup(WeaveConstants.ObstacleGroup);
         goals.Union(obstacles).ForEach(node => node.QueueFree());

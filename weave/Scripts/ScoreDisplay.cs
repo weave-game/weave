@@ -105,10 +105,10 @@ public partial class ScoreDisplay : CanvasLayer
         _finishedRounds++;
         _timeSinceRoundStart = 0;
 
-        _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2.0f / WeaveConstants.CountdownLength);
+        _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2f / WeaveConstants.CountdownLength);
 
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0,
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2f,
                 () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1))
         );
     }
