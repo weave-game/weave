@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Godot;
+using Godot.Collections;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
@@ -314,6 +315,11 @@ public partial class Main : Node2D
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
             goal.HasLock = WeaveConstants.LockedGoals;
+
+            // Other colors to symbolise which can unlock
+            goal.OtherColors = _players
+                .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
+                .Select(p => p.PlayerInfo.Color).ToList();
         });
 
         // --- SPAWN OBSTACLES ---
