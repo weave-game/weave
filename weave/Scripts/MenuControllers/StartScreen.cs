@@ -46,6 +46,7 @@ public partial class StartScreen : Control
 
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
+
     public override void _Ready()
     {
         this.GetNodes();

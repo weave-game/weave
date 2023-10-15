@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=19 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
@@ -9,8 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
-[ext_resource type="AudioStream" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
+[ext_resource type="FontFile" uid="uid://dau4vbgu1330x" path="res://Assets/Fonts/Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf" id="9_0xyd3"]
+[ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
 [ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="10_syes3"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_y8k07"]
 color = Color(1, 0.164706, 0.427451, 0.392157)
@@ -175,22 +177,22 @@ theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
 [node name="LobbyCodeLabel" type="RichTextLabel" parent="UI"]
-offset_left = 529.0
-offset_top = 42.0
-offset_right = 796.0
-offset_bottom = 215.0
-theme_override_fonts/normal_font = ExtResource("9_cnj5v")
-theme_override_font_sizes/normal_font_size = 40
+offset_left = 478.0
+offset_top = 86.0
+offset_right = 754.0
+offset_bottom = 158.0
+theme_override_fonts/normal_font = ExtResource("9_0xyd3")
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center]Lobby code: abc123 [/center]"
+text = "[center]Lobby code: abc123[/center]"
 
 [node name="QRCodeTexture" type="TextureRect" parent="UI"]
 texture_filter = 1
-offset_left = 823.0
-offset_top = 31.0
-offset_right = 1008.0
+offset_left = 852.0
+offset_top = 32.0
+offset_right = 1036.0
 offset_bottom = 216.0
-texture = ExtResource("9_gvtat")
+texture = ExtResource("10_syes3")
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2

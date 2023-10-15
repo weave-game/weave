@@ -31,4 +31,14 @@ public sealed partial class WebInputSource : Node, IInputSource
 
         return false;
     }
+
+    public string LeftInputString()
+    {
+        return "";
+    }
+
+    public string RightInputString()
+    {
+        return "";
+    }
 }
