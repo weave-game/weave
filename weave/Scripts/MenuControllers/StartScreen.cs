@@ -101,7 +101,6 @@ public partial class StartScreen : Control
     {
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
-        _multiplayerManager.NotifyStartGameAsync();
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
     }
 

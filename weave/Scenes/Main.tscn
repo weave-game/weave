@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dfn3svkimd3s4" path="res://UI/GameOverOverlay.tscn" id="4_lq1d2"]
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="5_1pvgl"]
 [ext_resource type="PackedScene" uid="uid://d1s5px2gej6oj" path="res://UI/ScoreDisplay.tscn" id="6_6l1qm"]
-[ext_resource type="PackedScene" uid="uid://dg5bmrcaihsvl" path="res://Objects/Glowifier.tscn" id="7_trvja"]
+[ext_resource type="PackedScene" uid="uid://dkboes8t2n1vr" path="res://Objects/Glowifier.tscn" id="7_trvja"]
 [ext_resource type="AudioStream" uid="uid://c4yf6ykqyp4rd" path="res://Assets/SFX/complete.mp3" id="7_wjcpy"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wip0u"]

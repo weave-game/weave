@@ -67,6 +67,7 @@ public partial class Main : Node2D
         _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
         _multiplayerManager = GameConfig.MultiplayerManager;
+        _multiplayerManager.NotifyStartGameAsync();
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.InputSources.Count == 0)
@@ -193,6 +194,7 @@ public partial class Main : Node2D
         _scoreDisplay.OnGameEnd();
         _gameOverOverlay.DisplayGameOver();
         _audioStreamPlayer.PitchScale = 0.5f;
+        GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Save score
         var score = new ScoreRecord(

@@ -20,7 +20,7 @@ public partial class Manager : Node
 
     private string _lobbyCode;
     private const string SERVER_URL = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
-    private static readonly ClientWebSocket _webSocket = new();
+    private readonly ClientWebSocket _webSocket = new();
     private readonly Dictionary<string, WebInputSource> _clientSources = new();
     private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
 
@@ -32,8 +32,6 @@ public partial class Manager : Node
     public async Task StartClientAsync()
     {
         await ConnectWebSocketAsync();
-
-        GD.Print(_lobbyCode);
 
         var joinMessage = new { type = "register-host", lobby_code = _lobbyCode };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(joinMessage));
@@ -80,6 +78,16 @@ public partial class Manager : Node
         }
     }
 
+    public async Task StopClientAsync()
+    {
+        if (_webSocket == null || _webSocket.State != WebSocketState.Open)
+            return;
+
+        await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal closure", CancellationToken.None);
+        foreach (var connection in _clientConnections.Values)
+            connection.Close("");
+    }
+
     private async Task<RTCPeerConnection> CreatePeerConnectionAsync(string clientId)
     {
         var peerConnection = new RTCPeerConnection(null);
@@ -118,7 +126,7 @@ public partial class Manager : Node
         return peerConnection;
     }
 
-    private static async void SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
+    private async void SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
     {
         var offer = peerConnection.createOffer(null);
         await peerConnection.setLocalDescription(offer);
@@ -127,19 +135,19 @@ public partial class Manager : Node
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(offerMessage));
     }
 
-    private static async Task ConnectWebSocketAsync()
+    private async Task ConnectWebSocketAsync()
     {
         await _webSocket.ConnectAsync(new Uri(SERVER_URL), CancellationToken.None);
         GD.Print($"WebSocket connection established to {SERVER_URL}");
     }
 
-    private static async Task SendWebSocketMessageAsync(string message)
+    private async Task SendWebSocketMessageAsync(string message)
     {
         var msgBuffer = Encoding.UTF8.GetBytes(message);
         await _webSocket.SendAsync(new ArraySegment<byte>(msgBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    private static async Task<string> ReceiveWebSocketMessageAsync()
+    private async Task<string> ReceiveWebSocketMessageAsync()
     {
         var buffer = new byte[4096];
         var segment = new ArraySegment<byte>(buffer);
