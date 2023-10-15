@@ -23,6 +23,15 @@ public partial class Manager : Node
     private readonly ClientWebSocket _webSocket = new();
     private readonly Dictionary<string, WebInputSource> _clientSources = new();
     private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
+    private readonly RTCConfiguration _connectionConfig = new()
+    {
+        iceServers = new List<RTCIceServer>
+    {
+        new() {
+            urls = "stun:stun.l.google.com:19302"
+        }
+    }
+    };
 
     public Manager(string lobbyCode)
     {
@@ -90,7 +99,7 @@ public partial class Manager : Node
 
     private async Task<RTCPeerConnection> CreatePeerConnectionAsync(string clientId)
     {
-        var peerConnection = new RTCPeerConnection(null);
+        var peerConnection = new RTCPeerConnection(_connectionConfig);
 
         _clientConnections.Add(clientId, peerConnection);
 
