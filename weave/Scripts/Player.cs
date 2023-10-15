@@ -15,8 +15,14 @@ public partial class Player : CharacterBody2D
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    [GetNode("PlayerName")]
+    [GetNode("PlayerNamePivot")]
+    private Node2D _playerNamePivot;
+
+    [GetNode("PlayerNamePivot/PlayerName")]
     private Label _playerName;
+
+    [GetNode("Arrow")]
+    private Sprite2D _arrow;
 
     public float MovementSpeed { get; set; }
     public float TurnRadius { get; set; } = 80;
@@ -35,6 +41,7 @@ public partial class Player : CharacterBody2D
         set
         {
             _isMoving = value;
+            _arrow.Visible = !value;
             CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
         }
     }
@@ -48,12 +55,14 @@ public partial class Player : CharacterBody2D
         CurveSpawner.Color = PlayerInfo.Color;
         _sprite2D.Modulate = PlayerInfo.Color;
         _playerName.Text = PlayerInfo.Name;
+        _arrow.Modulate = PlayerInfo.Color;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Rotate(delta);
         Move(delta);
+        _playerNamePivot.RotationDegrees = -RotationDegrees;
     }
 
     private void Move(double delta)
