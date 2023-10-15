@@ -21,6 +21,16 @@ public static class GameConfig
         };
     }
 
+    public static int GetNObstacles(int nPlayers)
+    {
+        return nPlayers switch
+        {
+            <= 2 => 4,
+            3 => 2,
+            _ => 0
+        };
+    }
+
     public static float GetInitialAcceleration(int nPlayers)
     {
         if (nPlayers <= 2)

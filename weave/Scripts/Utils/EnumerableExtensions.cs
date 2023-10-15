@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,5 +19,20 @@ public static class EnumerableExtensions
         var a = enumerable as T[] ?? enumerable.ToArray();
         var index = rnd.Next(0, a.Length);
         return a[index];
+    }
+
+    /// <summary>
+    /// Removes the first element from the given List that matches the given condition.
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="condition"></param>
+    /// <typeparam name="T">The type of the elements in the list</typeparam>
+    /// <returns>The element that was removed</returns>
+    public static T RemoveWhere<T>(this IList<T> list, Func<T, bool> condition) where T : class
+   {
+        var item = list.FirstOrDefault(condition);
+        if (item != null)
+            list.Remove(item);
+        return item;
     }
 }

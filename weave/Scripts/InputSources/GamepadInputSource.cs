@@ -25,6 +25,16 @@ public sealed class GamepadInputSource : IInputSource
         return Input.GetJoyAxis(_deviceId, JoyAxis.TriggerRight) > DeadZone;
     }
 
+    string IInputSource.LeftInputString()
+    {
+        return "L2/LT";
+    }
+
+    string IInputSource.RightInputString()
+    {
+        return "R2/RT";
+    }
+
     public bool Equals(IInputSource other)
     {
         if (other is GamepadInputSource gamepad)

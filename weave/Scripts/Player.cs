@@ -1,7 +1,7 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Weave.InputSources;
+using Weave.Utils;
 
 namespace Weave;
 
@@ -10,11 +10,19 @@ public partial class Player : CharacterBody2D
 {
     private bool _isMoving;
 
+    public PlayerInfo PlayerInfo { get; set; }
+
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    [GetNode("PlayerName")]
+    [GetNode("PlayerNamePivot")]
+    private Node2D _playerNamePivot;
+
+    [GetNode("PlayerNamePivot/PlayerName")]
     private Label _playerName;
+
+    [GetNode("Arrow")]
+    private Sprite2D _arrow;
 
     public float MovementSpeed { get; set; }
     public float TurnRadius { get; set; } = 80;
@@ -27,23 +35,15 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
-    public IInputSource InputSource { get; set; }
-
-    public Color Color { get; set; }
-
     public bool IsMoving
     {
         get => _isMoving;
         set
         {
             _isMoving = value;
+            _arrow.Visible = !value;
             CurveSpawner.ProcessMode = value ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
         }
-    }
-
-    public void SetPlayerName(string name)
-    {
-        _playerName.Text = name;
     }
 
     public bool IsTurning { get; set; }
@@ -52,14 +52,17 @@ public partial class Player : CharacterBody2D
     {
         this.GetNodes();
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
-        CurveSpawner.Color = Color;
-        _sprite2D.Modulate = Color;
+        CurveSpawner.Color = PlayerInfo.Color;
+        _sprite2D.Modulate = PlayerInfo.Color;
+        _playerName.Text = PlayerInfo.Name;
+        _arrow.Modulate = PlayerInfo.Color;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Rotate(delta);
         Move(delta);
+        _playerNamePivot.RotationDegrees = -RotationDegrees;
     }
 
     private void Move(double delta)
@@ -72,10 +75,10 @@ public partial class Player : CharacterBody2D
     {
         if (!IsTurning) return;
 
-        if (InputSource.IsTurningRight())
+        if (PlayerInfo.InputSource.IsTurningRight())
             RotationDegrees += TurnRadius * (float)delta;
 
-        if (InputSource.IsTurningLeft())
+        if (PlayerInfo.InputSource.IsTurningLeft())
             RotationDegrees -= TurnRadius * (float)delta;
     }
 

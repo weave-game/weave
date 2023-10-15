@@ -2,14 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using GodotSharper;
+using Weave.Utils;
 
 namespace Weave.InputSources;
 
 public sealed class Lobby
 {
-    private readonly IList<IInputSource> _inputSources = new List<IInputSource>();
-    public IReadOnlyList<IInputSource> InputSources => _inputSources.AsReadOnly();
-    public int Count => _inputSources.Count;
+    private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
+    public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();
+
+    public int Count => PlayerInfos.Count;
+
+    public bool Open { get; set; }
 
     public string LobbyCode { get; set; }
     private const int _lobbyCodeLength = 5;
@@ -26,16 +31,23 @@ public sealed class Lobby
 
     public void Join(IInputSource inputSource)
     {
-        var alreadyExists = _inputSources.FirstOrDefault(input => input.Equals(inputSource));
-        if (alreadyExists != null)
+        var alreadyExists = _playerInfos.Any(input => input.InputSource.Equals(inputSource));
+        if (alreadyExists)
             return;
 
-        _inputSources.Add(inputSource);
+        var playerInfo = new PlayerInfo
+        {
+            InputSource = inputSource
+        };
+
+        _playerInfos.Add(playerInfo);
+        UpdatePlayerInfos();
     }
 
     public void Leave(IInputSource inputSource)
     {
-        _inputSources.Remove(inputSource);
+        _playerInfos.RemoveWhere(info => info.InputSource.Equals(inputSource));
+        UpdatePlayerInfos();
     }
 
     private static string GenerateLobbyCode(string allowedCharacters, int length)
@@ -50,5 +62,14 @@ public sealed class Lobby
     private static ImageTexture GenerateLobbyQRCode(string str)
     {
         return GDScriptHelper.GenerateQRCodeFromString(str);
+    }
+    private void UpdatePlayerInfos()
+    {
+        var colorGenerator = new UniqueColorGenerator();
+        PlayerInfos.ForEach(playerInfo =>
+        {
+            playerInfo.Color =  colorGenerator.NewColor();
+            playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
+        });
     }
 }
