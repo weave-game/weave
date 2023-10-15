@@ -74,14 +74,12 @@ public partial class Main : Node2D
         _height = (int)GetViewportRect().Size.Y;
 
         InitializeTimers();
-        StartPreparationPhase();
         SpawnPlayers();
         SetPlayerTurning(true);
-        ClearAndSpawnGoals();
         SetupLogger();
+        StartPreparationPhase();
 
         _scoreDisplay.OnGameStart(_players.Count);
-
         _gameIsRunning = true;
     }
 
@@ -97,6 +95,14 @@ public partial class Main : Node2D
             p.MovementSpeed += _acceleration * (float)delta;
             p.TurnRadius += _turnAcceleration * (float)delta;
         });
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (!WeaveConstants.DevButtonsEnabled) return;
+
+        if (@event is InputEventKey { Keycode: Key.Space, Pressed: true })
+            OnPlayerReachedGoal();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -267,7 +273,7 @@ public partial class Main : Node2D
     private void StartPreparationPhase()
     {
         ClearLinesAndSegments();
-        ClearAndSpawnGoals();
+        ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
         _playerDelayTimer.Start();
@@ -287,18 +293,20 @@ public partial class Main : Node2D
         CreateMapGrid();
     }
 
-    private void ClearAndSpawnGoals()
+    /// <summary>
+    ///     Removes all existing goals and obstacles and spawns new ones.
+    /// </summary>
+    private void ResetMap()
     {
-        // Remove existing goals
-        GetTree()
-            .GetNodesInGroup(WeaveConstants.GoalGroup)
-            .ToList()
-            .ForEach(goal => goal.QueueFree());
+        // --- CLEAR ---
+        var goals = GetTree().GetNodesInGroup(WeaveConstants.GoalGroup);
+        var obstacles = GetTree().GetNodesInGroup(WeaveConstants.ObstacleGroup);
+        goals.Union(obstacles).ForEach(node => node.QueueFree());
+
+        // --- SPAWN GOALS ---
 
         // Generate goal positions
-        var playerPositions = new List<Vector2>();
-        _players.ForEach(player => playerPositions.Add(player.Position));
-        var goalPositions = GetRandomPositionsInView(_players.Count, playerPositions);
+        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position));
 
         // Spawn new goals
         _players.ForEach(player =>
@@ -311,17 +319,48 @@ public partial class Main : Node2D
             goal.CallDeferred("set", nameof(Goal.Color), player.Color);
             goal.HasLock = WeaveConstants.LockedGoals;
         });
+
+        // --- SPAWN OBSTACLES ---
+
+        // Add all player positions to goal positions:
+        var goalsAndPlayers = goalPositions.ToList();
+        _players.ForEach(p => goalsAndPlayers.Add(p.Position));
+        var obstaclePositions = GetRandomPositionsInView(GameConfig.GetNObstacles(_lobby.Count), goalsAndPlayers);
+
+        obstaclePositions.ForEach(position =>
+        {
+            var obstacle = Instanter.Instantiate<Obstacle>();
+            obstacle.AddToGroup(WeaveConstants.ObstacleGroup);
+
+            obstacle.BodyEntered += node =>
+            {
+                if (node is not Player) return;
+                GameOver();
+            };
+
+            CallDeferred("add_child", obstacle);
+            obstacle.GlobalPosition = position;
+
+            // Random rotation
+            obstacle.RotationDegrees = GD.RandRange(0, 360);
+
+            // Random scale
+            obstacle.SetObstacleSize(
+                GD.RandRange(3, 5),
+                GD.RandRange(3, 5)
+            );
+        });
     }
 
     private IList<Vector2> GetRandomPositionsInView(
         int n,
-        IList<Vector2> occupiedPositions = null,
-        float minDistance = 250,
-        float margin = 100
+        IEnumerable<Vector2> occupiedPositions = null
     )
     {
-        var positions = new List<Vector2>();
         const int maxAttempts = 1000;
+        const float minDistance = 250;
+        const float margin = 100;
+        var positions = new List<Vector2>();
 
         // Generate positions
         for (var i = 0; i < n; i++)
