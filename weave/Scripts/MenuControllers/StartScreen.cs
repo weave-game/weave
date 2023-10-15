@@ -38,12 +38,21 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/Start")]
     private Button _startButton;
 
+    [GetNode("UI/LobbyCodeLabel")]
+    private RichTextLabel _lobbyCodeLabel;
+
+    [GetNode("UI/QRCodeTexture")]
+    private TextureRect _qrCodeTexture;
+
     public override void _Ready()
     {
         this.GetNodes();
         _playButton.Pressed += OnPlayButtonPressed;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
+
+        SetLobbyCodeLabelText(_lobby.LobbyCode);
+        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
@@ -191,4 +200,14 @@ public partial class StartScreen : Control
     }
 
     #endregion Gamepad
+
+    private void SetLobbyCodeLabelText(string newCode)
+    {
+        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+    }
+
+    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    {
+        _qrCodeTexture.Texture = newTexture;
+    }
 }

@@ -19,7 +19,7 @@ public partial class Manager : Node
     public delegate void PlayerLeftEventHandler(WebInputSource source);
 
     private string _lobbyCode;
-    private const string SERVER_URL = "ws://localhost:8080";
+    private const string SERVER_URL = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
     private static readonly ClientWebSocket _webSocket = new();
     private readonly Dictionary<string, WebInputSource> _clientSources = new();
     private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
