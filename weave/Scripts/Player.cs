@@ -1,7 +1,7 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Weave.InputSources;
+using Weave.Utils;
 
 namespace Weave;
 
@@ -9,6 +9,8 @@ namespace Weave;
 public partial class Player : CharacterBody2D
 {
     private bool _isMoving;
+
+    public PlayerInfo PlayerInfo { get; set; }
 
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
@@ -33,10 +35,6 @@ public partial class Player : CharacterBody2D
     [GetNode("CollisionShape2D")]
     public CollisionShape2D CollisionShape2D { get; private set; }
 
-    public IInputSource InputSource { get; set; }
-
-    public Color Color { get; set; }
-
     public bool IsMoving
     {
         get => _isMoving;
@@ -48,20 +46,16 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public void SetPlayerName(string name)
-    {
-        _playerName.Text = name;
-    }
-
     public bool IsTurning { get; set; }
 
     public override void _Ready()
     {
         this.GetNodes();
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
-        CurveSpawner.Color = Color;
-        _sprite2D.Modulate = Color;
-        _arrow.Modulate = Color;
+        CurveSpawner.Color = PlayerInfo.Color;
+        _sprite2D.Modulate = PlayerInfo.Color;
+        _playerName.Text = PlayerInfo.Name;
+        _arrow.Modulate = PlayerInfo.Color;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -81,10 +75,10 @@ public partial class Player : CharacterBody2D
     {
         if (!IsTurning) return;
 
-        if (InputSource.IsTurningRight())
+        if (PlayerInfo.InputSource.IsTurningRight())
             RotationDegrees += TurnRadius * (float)delta;
 
-        if (InputSource.IsTurningLeft())
+        if (PlayerInfo.InputSource.IsTurningLeft())
             RotationDegrees -= TurnRadius * (float)delta;
     }
 

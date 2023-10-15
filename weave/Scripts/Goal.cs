@@ -73,7 +73,7 @@ public partial class Goal : Node2D
     {
         if (!_locked) return;
         if (body is not Player player) return;
-        if (player.Color == Color) return;
+        if (player.PlayerInfo.Color == Color) return;
 
         _unlockParticles.Emitting = true;
         _locked = false;
@@ -88,7 +88,7 @@ public partial class Goal : Node2D
     {
         if (_reached || _locked) return;
         if (body is not Player player) return;
-        if (player.Color != Color) return;
+        if (player.PlayerInfo.Color != Color) return;
 
         _reached = true;
         _goalSprite.Modulate = Colors.Black;

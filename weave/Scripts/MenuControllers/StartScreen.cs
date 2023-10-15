@@ -1,6 +1,4 @@
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -15,6 +13,8 @@ public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
 
+    private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
+
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
     private Button _playButton;
 
@@ -27,19 +27,21 @@ public partial class StartScreen : Control
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
 
+    [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
+    private VSeparator _vSeparator;
+
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/MarginContainer/HBoxContainer/PlayerList/TextEdit")]
-    private TextEdit _textEdit;
-
-    [GetNode("UI/MarginContainer/HBoxContainer/Start")]
+    [GetNode("UI/StartButton")]
     private Button _startButton;
 
+    [GetNode("UI/MemoriesLabel")]
+    private RichTextLabel _memoriesLabel;
     public override void _Ready()
     {
         this.GetNodes();
-        _playButton.Pressed += OnPlayButtonPressed;
+        _playButton.Pressed += OpenLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
@@ -50,13 +52,10 @@ public partial class StartScreen : Control
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
-    public override void _Process(double delta)
+    public override void _Input(InputEvent @event)
     {
-        PrintInputSources();
-    }
-
-    public override void _UnhandledInput(InputEvent @event)
-    {
+        if (!_lobby.Open)
+            return;
         switch (@event)
         {
             case InputEventJoypadButton button:
@@ -68,12 +67,26 @@ public partial class StartScreen : Control
         }
     }
 
-    private void OnPlayButtonPressed()
+    private void OpenLobby()
     {
+        _lobby.Open = true;
         _blurLayer.Visible = true;
         _playerList.Visible = true;
         _startButton.Visible = true;
+        _vSeparator.Visible = true;
+        _memoriesLabel.Visible = true;
         CollapseButtons();
+    }
+
+    private void CloseLobby()
+    {
+        _lobby.Open = false;
+        _blurLayer.Visible = false;
+        _playerList.Visible = false;
+        _startButton.Visible = false;
+        _vSeparator.Visible = false;
+        _memoriesLabel.Visible = false;
+        ExpandButtons();
     }
 
     private void OnQuitButtonPressed()
@@ -89,7 +102,7 @@ public partial class StartScreen : Control
 
     private void ExpandButtons()
     {
-        _playButton.Text = "START";
+        _playButton.Text = "PLAY";
         _optionsButton.Text = "OPTIONS";
         _quitButton.Text = "QUIT";
         _playButton.CustomMinimumSize = new Vector2(200, 0);
@@ -107,38 +120,22 @@ public partial class StartScreen : Control
         _quitButton.CustomMinimumSize = new Vector2(0, 0);
     }
 
-    /// <summary>
-    ///     IMPORTANT: This is a hack, only used for debugging purposes
-    /// </summary>
     private void PrintInputSources()
     {
-        // NO NEED TO REVIEW THIS; WILL BE REMOVED
-        var sb = new StringBuilder();
-
-        var i = 1;
-        foreach (var inputSource in _lobby.InputSources)
+        foreach (var child in _playerList.GetChildren())
         {
-            sb.Append("Player ").Append(i++).AppendLine(": ");
-
-            if (inputSource is KeyboardInputSource k)
-            {
-                // ReSharper disable once PossibleNullReferenceException
-                var left = typeof(KeyboardInputSource)
-                    .GetField("_left", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(k);
-
-                // ReSharper disable once PossibleNullReferenceException
-                var right = typeof(KeyboardInputSource)
-                    .GetField("_right", BindingFlags.NonPublic | BindingFlags.Instance)
-                    .GetValue(k);
-
-                sb.Append("L: ").Append(left).Append(" R: ").Append(right).AppendLine("");
-            }
-
-            sb.AppendLine("");
+            _playerList.RemoveChild(child);
+            child.QueueFree();
         }
 
-        _textEdit.Text = sb.ToString();
+        foreach (var playerInfo in _lobby.PlayerInfos)
+        {
+            var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
+            lobbyPlayer.Modulate = playerInfo.Color;
+            lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
+            lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
+            _playerList.AddChild(lobbyPlayer);
+        }
     }
 
     #region Keyboard
@@ -155,12 +152,14 @@ public partial class StartScreen : Control
                 continue;
 
             var kb = new KeyboardInputSource(keybindingTuple);
-            var alreadyExisting = _lobby.InputSources.FirstOrDefault(c => c.Equals(kb));
+            var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
 
             if (alreadyExisting != null)
                 _lobby.Leave(alreadyExisting);
             else
                 _lobby.Join(kb);
+
+            PrintInputSources();
         }
     }
 
@@ -179,6 +178,8 @@ public partial class StartScreen : Control
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
+
+        PrintInputSources();
     }
 
     #endregion Gamepad

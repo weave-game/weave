@@ -25,6 +25,16 @@ public sealed class KeyboardInputSource : IInputSource
 
     public InputType Type => InputType.Keyboard;
 
+    public string LeftInputString()
+    {
+        return _left.ToString();
+    }
+
+    public string RightInputString()
+    {
+        return _right.ToString();
+    }
+
     public bool Equals(IInputSource other)
     {
         if (other is KeyboardInputSource keyboard)
