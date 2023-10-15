@@ -41,7 +41,8 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public void SetPlayerName(string name) {
+    public void SetPlayerName(string name)
+    {
         _playerName.Text = name;
     }
 
