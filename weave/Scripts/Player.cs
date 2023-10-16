@@ -1,4 +1,5 @@
 using Godot;
+using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Utils;
@@ -9,6 +10,8 @@ namespace Weave;
 public partial class Player : CharacterBody2D
 {
     private bool _isMoving;
+    private bool _hasReachedSize;
+    private Vector2 _desiredScale = new(1, 1);
 
     public PlayerInfo PlayerInfo { get; set; }
 
@@ -25,7 +28,11 @@ public partial class Player : CharacterBody2D
     private Sprite2D _arrow;
 
     public float MovementSpeed { get; set; }
-    public float TurnRadius { get; set; } = 80;
+
+    /// <summary>
+    ///     Turn speed in degrees.
+    /// </summary>
+    public float TurnSpeed { get; set; } = 120;
 
     private CircleShape2D CircleShape { get; set; }
 
@@ -56,6 +63,26 @@ public partial class Player : CharacterBody2D
         _sprite2D.Modulate = PlayerInfo.Color;
         _playerName.Text = PlayerInfo.Name;
         _arrow.Modulate = PlayerInfo.Color;
+
+        Scale = new Vector2(0, 0);
+        SetSize(2, 2);
+        AddChild(
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, () => SetSize(1, 1))
+        );
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_hasReachedSize)
+            return;
+
+        Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
+
+        // Have not reached size yet
+        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f) return;
+
+        Scale = _desiredScale;
+        _hasReachedSize = true;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -76,10 +103,16 @@ public partial class Player : CharacterBody2D
         if (!IsTurning) return;
 
         if (PlayerInfo.InputSource.IsTurningRight())
-            RotationDegrees += TurnRadius * (float)delta;
+            RotationDegrees += TurnSpeed * (float)delta;
 
         if (PlayerInfo.InputSource.IsTurningLeft())
-            RotationDegrees -= TurnRadius * (float)delta;
+            RotationDegrees -= TurnSpeed * (float)delta;
+    }
+
+    public void SetSize(int x, int y)
+    {
+        _desiredScale = new(x, y);
+        _hasReachedSize = false;
     }
 
     public float GetRadius()

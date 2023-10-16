@@ -6,8 +6,7 @@ namespace Weave;
 [Scene("res://Objects/Obstacles/Obstacle.tscn")]
 public partial class Obstacle : Area2D
 {
-    private float _desiredXScale = 1;
-    private float _desiredYScale = 1;
+    private Vector2 _desiredScale = new(1, 1);
     private bool _hasReachedSize;
     private bool _isSelfDestructing;
 
@@ -30,8 +29,7 @@ public partial class Obstacle : Area2D
 
     public void SetObstacleSize(int x, int y)
     {
-        _desiredXScale = x;
-        _desiredYScale = y;
+        _desiredScale = new(x, y);
         _hasReachedSize = false;
     }
 
@@ -40,17 +38,12 @@ public partial class Obstacle : Area2D
         if (_hasReachedSize)
             return;
 
-        // Frame independent Lerp according to ChatGPT
-        const float baseLerpFactor = 0.1f;
-        var t = (float)(1.0f - Mathf.Pow(1.0f - baseLerpFactor, delta * 60.0f));
-        var newXScale = Mathf.Lerp(Scale.X, _desiredXScale, t);
-        var newYScale = Mathf.Lerp(Scale.Y, _desiredYScale, t);
-        Scale = new Vector2(newXScale, newYScale);
+        Scale = Scale.Lerp(_desiredScale, (float)delta * 6f);
 
         // Have not reached size yet
-        if (!(Mathf.Abs(Scale.X - _desiredXScale) < 0.05f) || !(Mathf.Abs(Scale.Y - _desiredYScale) < 0.05f)) return;
+        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f) return;
 
-        Scale = new Vector2(_desiredXScale, _desiredYScale);
+        Scale = _desiredScale;
         _hasReachedSize = true;
 
         if (_isSelfDestructing) QueueFree();

@@ -1,12 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://cydglrjfdxyu2"]
+[gd_scene load_steps=8 format=3 uid="uid://cydglrjfdxyu2"]
 
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_j6e2d"]
 [ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="2_21yul"]
 [ext_resource type="Script" path="res://Scripts/CurveSpawner.cs" id="3_1y1di"]
+[ext_resource type="FontFile" uid="uid://cubowpt0beb6k" path="res://Assets/Fonts/Open_Sans/static/OpenSans-Bold.ttf" id="4_eo33j"]
 [ext_resource type="Texture2D" uid="uid://cpg6v7n41shh3" path="res://Assets/Sprites/arrow.svg" id="4_lw8o6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nrd2o"]
 radius = 3.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_70qwy"]
+font = ExtResource("4_eo33j")
+font_size = 32
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_j6e2d")
@@ -33,16 +40,18 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 5.0
-offset_top = -29.0
-offset_right = 38.0
-offset_bottom = -3.0
+offset_top = -40.0
+offset_right = 53.0
+offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(0.5, 0.5)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 16
 text = "X"
+label_settings = SubResource("LabelSettings_70qwy")
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
