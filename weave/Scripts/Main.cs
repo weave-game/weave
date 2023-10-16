@@ -77,7 +77,7 @@ public partial class Main : Node2D
         SpawnPlayers();
         SetPlayerTurning(true);
         SetupLogger();
-        StartInitialPhase();
+        StartPreparationPhase();
 
         _scoreDisplay.OnGameStart(_players.Count);
         _gameIsRunning = true;
@@ -271,25 +271,16 @@ public partial class Main : Node2D
         ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
-        _playerDelayTimer.WaitTime = WeaveConstants.CountdownLength;
+        _playerDelayTimer.WaitTime = _round == 0 ? WeaveConstants.InitialCountdownLength : WeaveConstants.CountdownLength;
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
-        IncreaseRound();
-    }
-
-    private void StartInitialPhase()
-    {
-        ResetMap();
-        SetPlayerMovement(false);
-        _uiUpdateTimer.Timeout += UpdateCountdown;
-        _playerDelayTimer.WaitTime = WeaveConstants.InitialCountdownLength;
-        _playerDelayTimer.Start();
-        _scoreDisplay.Enabled = false;
-
-        AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
-        );
+        if (_round == 0)
+            AddChild(
+                TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
+            );
+        else
+            IncreaseRound();
     }
 
     private void IncreaseRound()
