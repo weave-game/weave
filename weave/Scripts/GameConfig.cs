@@ -18,7 +18,7 @@ public static class GameConfig
     /// </summary>
     /// <param name="nPlayers">The number of players.</param>
     /// <returns>True if the game should have locks, false otherwise.</returns>
-    public static bool ShouldHaveLocks(int nPlayers) => nPlayers <= 2;
+    public static bool ShouldHaveLocks(int nPlayers) => nPlayers == 2;
 
     /// <summary>
     /// Gets the initial movement speed based on the number of players.
