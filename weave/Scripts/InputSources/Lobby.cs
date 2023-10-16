@@ -9,6 +9,11 @@ namespace Weave.InputSources;
 
 public sealed class Lobby
 {
+    public delegate void PlayerJoinedEventHandler(IInputSource source);
+    public PlayerJoinedEventHandler PlayerJoinedListeners;
+    public delegate void PlayerLeftEventHandler(IInputSource source);
+    public PlayerLeftEventHandler PlayerLeftListeners;
+
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
     public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();
 
@@ -42,12 +47,14 @@ public sealed class Lobby
 
         _playerInfos.Add(playerInfo);
         UpdatePlayerInfos();
+        PlayerJoinedListeners?.Invoke(inputSource);
     }
 
     public void Leave(IInputSource inputSource)
     {
         _playerInfos.RemoveWhere(info => info.InputSource.Equals(inputSource));
         UpdatePlayerInfos();
+        PlayerLeftListeners?.Invoke(inputSource);
     }
 
     private static string GenerateLobbyCode(string allowedCharacters, int length)
@@ -68,7 +75,7 @@ public sealed class Lobby
         var colorGenerator = new UniqueColorGenerator();
         PlayerInfos.ForEach(playerInfo =>
         {
-            playerInfo.Color =  colorGenerator.NewColor();
+            playerInfo.Color = colorGenerator.NewColor();
             playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
         });
     }

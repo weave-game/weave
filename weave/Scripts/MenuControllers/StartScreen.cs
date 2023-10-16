@@ -54,13 +54,16 @@ public partial class StartScreen : Control
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
+        _lobby.PlayerJoinedListeners += (_) => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerLeftListeners += (_) => CallDeferred(nameof(PrintInputSources));
+
         SetLobbyCodeLabelText(_lobby.LobbyCode);
         SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
-        _multiplayerManager.PlayerJoined += _lobby.Join;
-        _multiplayerManager.PlayerLeft += _lobby.Leave;
+        _multiplayerManager.ClientJoinedListeners += _lobby.Join;
+        _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
@@ -176,8 +179,6 @@ public partial class StartScreen : Control
                 _lobby.Leave(alreadyExisting);
             else
                 _lobby.Join(kb);
-
-            PrintInputSources();
         }
     }
 
@@ -196,8 +197,6 @@ public partial class StartScreen : Control
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
-
-        PrintInputSources();
     }
 
     #endregion Gamepad

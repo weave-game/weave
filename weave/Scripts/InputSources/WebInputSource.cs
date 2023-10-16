@@ -2,7 +2,7 @@ using Godot;
 
 namespace Weave.InputSources;
 
-public sealed partial class WebInputSource : Node, IInputSource
+public sealed class WebInputSource : IInputSource
 {
     public string Id;
     public string DirectionState;
@@ -34,11 +34,11 @@ public sealed partial class WebInputSource : Node, IInputSource
 
     public string LeftInputString()
     {
-        return "";
+        return "mobile-left";
     }
 
     public string RightInputString()
     {
-        return "";
+        return "mobile-right";
     }
 }

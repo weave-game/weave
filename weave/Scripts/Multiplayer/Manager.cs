@@ -13,10 +13,10 @@ namespace Weave.Multiplayer;
 
 public partial class Manager : Node
 {
-    [Signal]
-    public delegate void PlayerJoinedEventHandler(WebInputSource source);
-    [Signal]
-    public delegate void PlayerLeftEventHandler(WebInputSource source);
+    public delegate void ClientJoinedEventHandler(WebInputSource source);
+    public ClientJoinedEventHandler ClientJoinedListeners;
+    public delegate void ClientLeftEventHandler(WebInputSource source);
+    public ClientLeftEventHandler ClientLeftListeners;
 
     private string _lobbyCode;
     private const string SERVER_URL = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
@@ -167,13 +167,13 @@ public partial class Manager : Node
     private void HandlePlayerJoin(string clientId)
     {
         var sourceToAdd = new WebInputSource(clientId);
-        EmitSignal(SignalName.PlayerJoined, sourceToAdd);
+        ClientJoinedListeners?.Invoke(sourceToAdd);
         _clientSources.Add(clientId, sourceToAdd);
     }
 
     private void HandlePlayerLeave(string clientId)
     {
-        EmitSignal(SignalName.PlayerLeft, _clientSources.GetValueOrDefault(clientId));
+        ClientLeftListeners?.Invoke(_clientSources.GetValueOrDefault(clientId));
         _clientConnections.Remove(clientId);
         _clientSources.Remove(clientId);
     }
