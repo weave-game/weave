@@ -27,7 +27,7 @@ public partial class Player : CharacterBody2D
     public float MovementSpeed { get; set; }
 
     /// <summary>
-    ///     Turn speed in degrees per second.
+    ///     Turn speed in degrees.
     /// </summary>
     public float TurnSpeed { get; set; } = 120;
 
