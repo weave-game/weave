@@ -41,7 +41,11 @@ public partial class Goal : Node2D
     [GetNode("UnlockAreaSprite")]
     private Sprite2D _unlockAreaSprite;
 
-    public IList<Color> OtherColors;
+    /// <summary>
+    ///     The colors that the unlock area circle should display.
+    /// </summary>
+    public IList<Color> UnlockAreaColors { get; set; }
+
     private float _unlockDrawingRotation;
     private float _unlockAreaRadius;
 
@@ -52,8 +56,8 @@ public partial class Goal : Node2D
         {
             _color = value;
 
-            _lockSprite.Modulate = value;
             _goalSprite.Modulate = value;
+            _lockSprite.Modulate = value;
             _unlockAreaSprite.Modulate = value;
         }
     }
@@ -64,7 +68,6 @@ public partial class Goal : Node2D
         var area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
 
-        HasLock = true;
         if (HasLock)
         {
             _locked = true;
@@ -86,7 +89,7 @@ public partial class Goal : Node2D
     {
         if (!HasLock) return;
 
-        _unlockDrawingRotation += 0.1f * (float)delta;
+        _unlockDrawingRotation += 0.5f * (float)delta;
         QueueRedraw();
     }
 
@@ -133,18 +136,18 @@ public partial class Goal : Node2D
     {
         if (!_locked) return;
 
-        if (OtherColors == null || OtherColors.Count == 0)
+        if (UnlockAreaColors == null || UnlockAreaColors.Count == 0)
             return;
 
         var center = new Vector2(0, 0);
-        var totalColors = OtherColors.Count;
+        var totalColors = UnlockAreaColors.Count;
         var arcAngle = 2 * (float)Math.PI / totalColors;
 
         for (var i = 0; i < totalColors; i++)
         {
             var startAngle = (i * arcAngle) + _unlockDrawingRotation;
             var endAngle = ((i + 1) * arcAngle) + _unlockDrawingRotation;
-            DrawArc(center, _unlockAreaRadius, startAngle, endAngle, 32, OtherColors[i], 8);
+            DrawArc(center, _unlockAreaRadius, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
         }
     }
 }

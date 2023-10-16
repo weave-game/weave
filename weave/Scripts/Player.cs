@@ -25,7 +25,11 @@ public partial class Player : CharacterBody2D
     private Sprite2D _arrow;
 
     public float MovementSpeed { get; set; }
-    public float TurnRadius { get; set; } = 80;
+
+    /// <summary>
+    ///     Turn speed in degrees per second.
+    /// </summary>
+    public float TurnSpeed { get; set; } = 120;
 
     private CircleShape2D CircleShape { get; set; }
 
@@ -76,10 +80,10 @@ public partial class Player : CharacterBody2D
         if (!IsTurning) return;
 
         if (PlayerInfo.InputSource.IsTurningRight())
-            RotationDegrees += TurnRadius * (float)delta;
+            RotationDegrees += TurnSpeed * (float)delta;
 
         if (PlayerInfo.InputSource.IsTurningLeft())
-            RotationDegrees -= TurnRadius * (float)delta;
+            RotationDegrees -= TurnSpeed * (float)delta;
     }
 
     public float GetRadius()

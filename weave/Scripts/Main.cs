@@ -94,7 +94,7 @@ public partial class Main : Node2D
             _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
 
             p.MovementSpeed += _acceleration * (float)delta;
-            p.TurnRadius += _turnAcceleration * (float)delta;
+            p.TurnSpeed += _turnAcceleration * (float)delta;
         });
     }
 
@@ -229,12 +229,12 @@ public partial class Main : Node2D
         });
 
         // Config speed
-        var speed = GameConfig.GetInitialPlayerMovement(_lobby.Count);
+        var speed = GameConfig.GetInitialMovementSpeed(_lobby.Count);
         _players.ForEach(p => p.MovementSpeed = speed);
 
         // Config acceleration
-        _acceleration = GameConfig.GetInitialAcceleration(_lobby.Count);
-        _turnAcceleration = GameConfig.GetInitialTurnAcceleration(_lobby.Count);
+        _acceleration = GameConfig.GetAcceleration(_lobby.Count);
+        _turnAcceleration = GameConfig.GetTurnSpeedAcceleration(_lobby.Count);
     }
 
     private static bool IsPlayerIntersecting(Player player, IEnumerable<SegmentShape2D> segments)
@@ -314,12 +314,20 @@ public partial class Main : Node2D
             goalPositions.RemoveAt(0);
             goal.PlayerReachedGoal += OnPlayerReachedGoal;
             goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
-            goal.HasLock = WeaveConstants.LockedGoals;
+            goal.HasLock = GameConfig.ShouldHaveLocks(_lobby.Count);
 
-            // Other colors to symbolise which can unlock
-            goal.OtherColors = _players
-                .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
-                .Select(p => p.PlayerInfo.Color).ToList();
+            if (_lobby.Count <= 2)
+            {
+                // Color the goal with the other players' colors
+                goal.UnlockAreaColors = _players
+                    .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
+                    .Select(p => p.PlayerInfo.Color).ToList();
+            }
+            else
+            {
+                // Color the goal with the player's color
+                goal.UnlockAreaColors = new List<Color>() { player.PlayerInfo.Color };
+            }
         });
 
         // --- SPAWN OBSTACLES ---
@@ -455,7 +463,7 @@ public partial class Main : Node2D
     {
         return new Log(
             "turn_radius",
-            _players.First().TurnRadius.ToString(CultureInfo.InvariantCulture)
+            _players.First().TurnSpeed.ToString(CultureInfo.InvariantCulture)
         );
     }
 
