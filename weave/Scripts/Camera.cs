@@ -1,11 +1,13 @@
 using Godot;
 using GodotSharper;
 
+namespace Weave;
+
 public partial class Camera : Camera2D
 {
-    private Vector2 _desiredPosition = new(800, 450);
-    private Vector2 _desiredZoom = new(1, 1);
-    private float _desiredRotation = 0;
+    private Vector2 _desiredPosition;
+    private Vector2 _desiredZoom;
+    private float _desiredRotation;
     private float _desiredLerpStrength = 3f;
     private float _lerpStrength = 3f;
 
