@@ -8,9 +8,24 @@ namespace Weave;
 /// </summary>
 public static class GameConfig
 {
+    /// <summary>
+    /// The lobby.
+    /// </summary>
     public static Lobby Lobby { get; set; }
 
-    public static float GetInitialPlayerMovement(int nPlayers)
+    /// <summary>
+    /// Determines whether the game should have locks based on the number of players.
+    /// </summary>
+    /// <param name="nPlayers">The number of players.</param>
+    /// <returns>True if the game should have locks, false otherwise.</returns>
+    public static bool ShouldHaveLocks(int nPlayers) => nPlayers == 2;
+
+    /// <summary>
+    /// Gets the initial movement speed based on the number of players.
+    /// </summary>
+    /// <param name="nPlayers">The number of players.</param>
+    /// <returns>The initial movement speed.</returns>
+    public static float GetInitialMovementSpeed(int nPlayers)
     {
         return nPlayers switch
         {
@@ -20,17 +35,27 @@ public static class GameConfig
         };
     }
 
+    /// <summary>
+    /// Gets the number of obstacles based on the number of players.
+    /// </summary>
+    /// <param name="nPlayers">The number of players.</param>
+    /// <returns>The number of obstacles.</returns>
     public static int GetNObstacles(int nPlayers)
     {
         return nPlayers switch
         {
             <= 2 => 4,
-            3 => 2,
+            3 => 0,
             _ => 0
         };
     }
 
-    public static float GetInitialAcceleration(int nPlayers)
+    /// <summary>
+    /// Gets the acceleration based on the number of players.
+    /// </summary>
+    /// <param name="nPlayers">The number of players.</param>
+    /// <returns>The acceleration.</returns>
+    public static float GetAcceleration(int nPlayers)
     {
         if (nPlayers <= 2)
             return 1.4f;
@@ -38,7 +63,12 @@ public static class GameConfig
         return 1.1f;
     }
 
-    public static float GetInitialTurnAcceleration(int nPlayers)
+    /// <summary>
+    /// Gets the turn speed acceleration based on the number of players.
+    /// </summary>
+    /// <param name="nPlayers">The number of players.</param>
+    /// <returns>The turn speed acceleration.</returns>
+    public static float GetTurnSpeedAcceleration(int nPlayers)
     {
         if (nPlayers <= 2)
             return 1.5f;

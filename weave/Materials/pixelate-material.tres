@@ -1,8 +1,0 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cmejuqrink631"]
-
-[ext_resource type="Shader" path="res://Assets/Shaders/pixelate.gdshader" id="1_csykc"]
-
-[resource]
-shader = ExtResource("1_csykc")
-shader_parameter/size_x = 0.002
-shader_parameter/size_y = 0.002

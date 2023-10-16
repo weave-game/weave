@@ -29,10 +29,15 @@ texture = ExtResource("2_i56br")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_4mcuf")
 
-[node name="LockArea" type="Area2D" parent="."]
+[node name="UnlockArea" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LockArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UnlockArea"]
 shape = SubResource("CircleShape2D_eviga")
+
+[node name="UnlockAreaSprite" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(0.232209, 0.232209)
+texture = ExtResource("4_1ov3k")
 
 [node name="UnlockParticles" type="CPUParticles2D" parent="."]
 emitting = false
@@ -52,10 +57,6 @@ color_ramp = SubResource("Gradient_pw2nx")
 [node name="LockSprite" type="Sprite2D" parent="."]
 scale = Vector2(1.11667, 1.11667)
 texture = ExtResource("3_5ksq6")
-
-[node name="LockAreaSprite" type="Sprite2D" parent="."]
-scale = Vector2(0.232209, 0.232209)
-texture = ExtResource("4_1ov3k")
 
 [node name="UnlockPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_spqf3")

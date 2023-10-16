@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Godot;
 using GodotSharper.AutoGetNode;
+using GodotSharper.Exceptions;
 using GodotSharper.Instancing;
 
 namespace Weave;
@@ -35,8 +38,16 @@ public partial class Goal : Node2D
     [GetNode("UnlockPlayer")]
     private AudioStreamPlayer2D _unlockSoundPlayer;
 
-    [GetNode("LockAreaSprite")]
-    private Sprite2D _lockAreaSprite;
+    [GetNode("UnlockAreaSprite")]
+    private Sprite2D _unlockAreaSprite;
+
+    /// <summary>
+    ///     The colors that the unlock area circle should display.
+    /// </summary>
+    public IList<Color> UnlockAreaColors { get; set; }
+
+    private float _unlockDrawingRotation;
+    private float _unlockAreaRadius;
 
     public Color Color
     {
@@ -44,7 +55,10 @@ public partial class Goal : Node2D
         set
         {
             _color = value;
-            Modulate = value;
+
+            _goalSprite.Modulate = value;
+            _lockSprite.Modulate = value;
+            _unlockAreaSprite.Modulate = value;
         }
     }
 
@@ -57,16 +71,26 @@ public partial class Goal : Node2D
         if (HasLock)
         {
             _locked = true;
-            var lockArea = GetNode<Area2D>("LockArea");
-            lockArea.BodyEntered += OnLockAreaBodyEntered;
+            _unlockAreaRadius = GetUnlockAreaRadius();
+
+            var unlockArea = GetNode<Area2D>("UnlockArea");
+            unlockArea.BodyEntered += OnLockAreaBodyEntered;
             _goalSprite.Hide();
         }
         else
         {
             _locked = false;
             _lockSprite.Hide();
-            _lockAreaSprite.Hide();
+            _unlockAreaSprite.Hide();
         }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (!HasLock) return;
+
+        _unlockDrawingRotation += 0.5f * (float)delta;
+        QueueRedraw();
     }
 
     private void OnLockAreaBodyEntered(Node2D body)
@@ -78,7 +102,7 @@ public partial class Goal : Node2D
         _unlockParticles.Emitting = true;
         _locked = false;
         _lockSprite.Visible = false;
-        _lockAreaSprite.Visible = false;
+        _unlockAreaSprite.Visible = false;
         _goalSprite.Show();
         _lockSprite.Hide();
         _unlockSoundPlayer.Play();
@@ -96,5 +120,34 @@ public partial class Goal : Node2D
 
         _collectSoundPlayer.Finished += QueueFree;
         _collectSoundPlayer.Play();
+    }
+
+    private float GetUnlockAreaRadius()
+    {
+        var unlockAreaCollisionShape = GetNode<CollisionShape2D>("UnlockArea/CollisionShape2D");
+
+        if (unlockAreaCollisionShape.Shape is not CircleShape2D circleShape)
+            throw new NodeNotFoundException("Unlock area collision shape is not a circle shape.");
+
+        return circleShape.Radius;
+    }
+
+    public override void _Draw()
+    {
+        if (!_locked) return;
+
+        if (UnlockAreaColors == null || UnlockAreaColors.Count == 0)
+            return;
+
+        var center = new Vector2(0, 0);
+        var totalColors = UnlockAreaColors.Count;
+        var arcAngle = 2 * (float)Math.PI / totalColors;
+
+        for (var i = 0; i < totalColors; i++)
+        {
+            var startAngle = (i * arcAngle) + _unlockDrawingRotation;
+            var endAngle = ((i + 1) * arcAngle) + _unlockDrawingRotation;
+            DrawArc(center, _unlockAreaRadius, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
+        }
     }
 }
