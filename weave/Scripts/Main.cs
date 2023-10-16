@@ -268,18 +268,28 @@ public partial class Main : Node2D
 
     private void StartPreparationPhase()
     {
-        ClearLinesAndSegments();
         ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
+        _playerDelayTimer.WaitTime = _round == 0 ? WeaveConstants.InitialCountdownLength : WeaveConstants.CountdownLength;
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
+        if (_round == 0)
+            AddChild(
+                TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
+            );
+        else
+            IncreaseRound();
+    }
+
+    private void IncreaseRound()
+    {
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2.0, () => _round++)
+            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2, () => _round++)
         );
 
-        _animationPlayer.Play(name: "Preparation", customSpeed: 2.0f / WeaveConstants.CountdownLength);
+        _animationPlayer.Play(name: "Preparation", customSpeed: 2 / WeaveConstants.CountdownLength);
     }
 
     private void ClearLinesAndSegments()
@@ -295,6 +305,7 @@ public partial class Main : Node2D
     private void ResetMap()
     {
         // --- CLEAR ---
+        ClearLinesAndSegments();
         var goals = GetTree().GetNodesInGroup(WeaveConstants.GoalGroup);
         var obstacles = GetTree().GetNodesInGroup(WeaveConstants.ObstacleGroup);
         goals.Union(obstacles).ForEach(node => node.QueueFree());

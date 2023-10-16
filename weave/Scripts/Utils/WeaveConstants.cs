@@ -11,7 +11,8 @@ public static class WeaveConstants
 
     #region Countdown
 
-    public const int CountdownLength = 2;
+    public const float CountdownLength = 2;
+    public const float InitialCountdownLength = 4;
 
     #endregion Countdown
 
