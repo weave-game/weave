@@ -35,6 +35,9 @@ public partial class Main : Node2D
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
+    [GetNode("Camera")]
+    private Camera _camera;
+
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
@@ -156,8 +159,6 @@ public partial class Main : Node2D
 
     private void DetectPlayerCollision()
     {
-        var hasCollided = false;
-
         // Perform collision detection for players that are drawing
         foreach (var player in _players.Where(player => player.CurveSpawner.IsDrawing))
         {
@@ -166,11 +167,11 @@ public partial class Main : Node2D
                 player.GetRadius()
             );
             if (IsPlayerIntersecting(player, segments))
-                hasCollided = true;
+            {
+                GameOver(player.Position);
+                break;
+            }
         }
-
-        if (hasCollided)
-            GameOver();
     }
 
     private void DetectPlayerOutOfBounds()
@@ -189,12 +190,13 @@ public partial class Main : Node2D
         }
     }
 
-    private void GameOver()
+    private void GameOver(Vector2 collisionPosition)
     {
         _gameIsRunning = false;
         SetPlayerMovement(false);
         SetPlayerTurning(false);
-        _scoreDisplay.OnGameEnd();
+        _scoreDisplay.OnGameOver();
+        _camera.OnGameOver(collisionPosition);
         _gameOverOverlay.DisplayGameOver();
         _audioStreamPlayer.PitchScale = 0.5f;
 
@@ -355,7 +357,7 @@ public partial class Main : Node2D
             obstacle.BodyEntered += node =>
             {
                 if (node is not Player) return;
-                GameOver();
+                GameOver(node.Position);
             };
 
             CallDeferred("add_child", obstacle);
