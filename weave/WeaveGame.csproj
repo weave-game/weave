@@ -28,6 +28,7 @@
         <EmbeddedResource Remove="WeaveTests\**"/>
     </ItemGroup>
 
+
     <PropertyGroup>
         <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
         <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>

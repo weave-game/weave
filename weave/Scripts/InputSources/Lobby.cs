@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using GodotSharper;
+using Weave.QR;
 using Weave.Utils;
 
 namespace Weave.InputSources;
@@ -16,9 +17,11 @@ public sealed class Lobby
     private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
 
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
+    private readonly IQrCodeGenerator _qrCodeGenerator;
 
     public Lobby()
     {
+        _qrCodeGenerator = new GdQrCodeGenerator();
         LobbyCode = GenerateLobbyCode(LobbyCodeCharacters, LobbyCodeLength);
         LobbyQrCode = GenerateLobbyQrCode($"{LobbyQrCodePath}/{LobbyCode}");
     }
@@ -69,9 +72,9 @@ public sealed class Lobby
         return new(result);
     }
 
-    private static ImageTexture GenerateLobbyQrCode(string str)
+    private ImageTexture GenerateLobbyQrCode(string str)
     {
-        return GdScriptHelper.GenerateQrCodeFromString(str);
+        return _qrCodeGenerator.GenerateQrCodeFromString(str);
     }
 
     private void UpdatePlayerInfos()
