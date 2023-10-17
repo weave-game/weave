@@ -118,7 +118,7 @@ public partial class ScoreDisplay : CanvasLayer
         _playerCount = playerCount;
     }
 
-    public void OnGameEnd()
+    public void OnGameOver()
     {
         Enabled = false;
         _animationPlayer.Play("ScoreDisplayEnd");
