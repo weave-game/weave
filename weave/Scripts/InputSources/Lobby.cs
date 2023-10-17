@@ -26,7 +26,7 @@ public sealed class Lobby
     private const string _lobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     public ImageTexture LobbyQRCode { get; set; }
-    private const string _lobbyQRCodePath = "https://weave-front-3ca0f45187f2.herokuapp.com";
+    private const string _lobbyQRCodePath = WeaveConstants.WeaveFrontendURL;
 
     public Lobby()
     {
