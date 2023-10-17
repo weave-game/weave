@@ -38,7 +38,9 @@ public sealed class GamepadInputSource : IInputSource
     public bool Equals(IInputSource other)
     {
         if (other is GamepadInputSource gamepad)
+        {
             return _deviceId == gamepad._deviceId;
+        }
 
         return false;
     }

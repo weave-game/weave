@@ -15,13 +15,19 @@ public partial class Obstacle : Area2D
         AreaEntered += area =>
         {
             if (area.GetParent() is Goal)
+            {
                 SelfDestruct();
+            }
         };
     }
 
     private void SelfDestruct()
     {
-        if (_isSelfDestructing) return;
+        if (_isSelfDestructing)
+        {
+            return;
+        }
+
         _isSelfDestructing = true;
 
         SetObstacleSize(0, 0);
@@ -36,16 +42,24 @@ public partial class Obstacle : Area2D
     public override void _Process(double delta)
     {
         if (_hasReachedSize)
+        {
             return;
+        }
 
         Scale = Scale.Lerp(_desiredScale, (float)delta * 6f);
 
         // Have not reached size yet
-        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f) return;
+        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f)
+        {
+            return;
+        }
 
         Scale = _desiredScale;
         _hasReachedSize = true;
 
-        if (_isSelfDestructing) QueueFree();
+        if (_isSelfDestructing)
+        {
+            QueueFree();
+        }
     }
 }
