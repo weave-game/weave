@@ -159,7 +159,6 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_y8k07")
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -220,4 +219,3 @@ curve = SubResource("Curve2D_bm1nx")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_4fvpc")
 volume_db = -5.943
-autoplay = true
