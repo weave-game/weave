@@ -12,7 +12,7 @@ public static class GameConfig
     /// The lobby.
     /// </summary>
     public static Lobby Lobby { get; set; }
-    public static Multiplayer.Manager MultiplayerManager { get; set; }
+    public static Networking.RTCClientManager MultiplayerManager { get; set; }
 
     /// <summary>
     /// Determines whether the game should have locks based on the number of players.

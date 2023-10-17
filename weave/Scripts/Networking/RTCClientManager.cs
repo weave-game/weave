@@ -10,9 +10,9 @@ using System.Net.WebSockets;
 using System.Text;
 using Weave.Utils;
 
-namespace Weave.Multiplayer;
+namespace Weave.Networking;
 
-public class Manager
+public class RTCClientManager
 {
     public delegate void ClientJoinedEventHandler(WebInputSource source);
     public ClientJoinedEventHandler ClientJoinedListeners { get; set; }
@@ -34,7 +34,7 @@ public class Manager
     }
     };
 
-    public Manager(string lobbyCode)
+    public RTCClientManager(string lobbyCode)
     {
         _lobbyCode = lobbyCode;
     }
@@ -83,7 +83,7 @@ public class Manager
             {
                 var idString = (string)msg.clientId;
                 var peerConnection = await CreatePeerConnectionAsync(idString);
-                SendOfferAsync(peerConnection, idString);
+                await SendOfferAsync(peerConnection, idString);
             }
         }
     }

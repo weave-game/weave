@@ -49,7 +49,7 @@ public partial class Main : Node2D
     private int _height;
     private bool _gameIsRunning;
     private Lobby _lobby = new();
-    private Multiplayer.Manager _multiplayerManager;
+    private Networking.RTCClientManager _multiplayerManager;
     private Timer _playerDelayTimer;
 
     /// <summary>

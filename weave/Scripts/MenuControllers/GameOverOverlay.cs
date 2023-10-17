@@ -1,7 +1,7 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Weave.Multiplayer;
+using Weave.Networking;
 
 namespace Weave.MenuControllers;
 

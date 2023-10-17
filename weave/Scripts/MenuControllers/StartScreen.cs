@@ -5,7 +5,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Utils;
 using Weave.InputSources;
-using Weave.Multiplayer;
+using Weave.Networking;
 
 namespace Weave.MenuControllers;
 
@@ -13,7 +13,7 @@ namespace Weave.MenuControllers;
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
-    private Manager _multiplayerManager;
+    private RTCClientManager _multiplayerManager;
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
