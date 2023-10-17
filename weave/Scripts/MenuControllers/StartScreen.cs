@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Org.BouncyCastle.Utilities.Collections;
 using Weave.Utils;
 using Weave.InputSources;
 using Weave.Networking;
@@ -17,10 +14,6 @@ public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
     private RTCClientManager _multiplayerManager;
-
-    private float _turnSpeed = 200;
-
-    private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
@@ -77,19 +70,6 @@ public partial class StartScreen : Control
             .GetNodesInGroup(WeaveConstants.FireflyGroup)
             .Cast<Firefly>()
             .ForEach(f => f.SetColor(colorGen.NewColor()));
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        _lobbyPlayerDict.ForEach(player =>
-        {
-            var character = player.Value.GetNode<TextureRect>("PlayerCharacter");
-            if (player.Key.InputSource.IsTurningRight())
-                character.RotationDegrees += _turnSpeed * (float)delta;
-
-            if (player.Key.InputSource.IsTurningLeft())
-                character.RotationDegrees -= _turnSpeed * (float)delta;
-        });
     }
 
     public override void _Input(InputEvent @event)
@@ -173,16 +153,13 @@ public partial class StartScreen : Control
             child.QueueFree();
         }
 
-        _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
-
         foreach (var playerInfo in _lobby.PlayerInfos)
         {
-            var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
+            var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
             lobbyPlayer.Modulate = playerInfo.Color;
             lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
             lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
-            _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
         }
     }
 

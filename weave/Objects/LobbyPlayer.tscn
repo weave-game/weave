@@ -1,31 +1,22 @@
 [gd_scene load_steps=2 format=3 uid="uid://cnuu3qkxpn7wo"]
 
-[ext_resource type="Texture2D" uid="uid://cpg6v7n41shh3" path="res://Assets/Sprites/arrow.svg" id="1_1nksc"]
+[ext_resource type="Texture2D" uid="uid://2fprskg4mk8r" path="res://Assets/Sprites/white_circle.svg.png" id="1_c6l0d"]
 
-[node name="LobbyPlayer" type="Control"]
-custom_minimum_size = Vector2(300, 40)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 291.0
-offset_bottom = 37.0
+[node name="LobbyPlayer" type="MarginContainer"]
+offset_right = 135.0
+offset_bottom = 32.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="PlayerCharacter" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(38, 38)
-layout_mode = 0
-offset_right = 38.0
-offset_bottom = 38.0
-pivot_offset = Vector2(19, 19)
-texture = ExtResource("1_1nksc")
-expand_mode = 1
-
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-offset_left = 59.0
-offset_right = 291.0
-offset_bottom = 38.0
 theme_override_constants/separation = 32
+
+[node name="PlayerCharacter" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("1_c6l0d")
+expand_mode = 2
 
 [node name="LeftBinding" type="Label" parent="HBoxContainer"]
 custom_minimum_size = Vector2(100, 2.08165e-12)
