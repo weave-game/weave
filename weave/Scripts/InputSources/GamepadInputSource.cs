@@ -12,7 +12,6 @@ public sealed class GamepadInputSource : IInputSource
         _deviceId = deviceId;
     }
 
-    int IInputSource.DeviceId => _deviceId;
     public InputType Type => InputType.Gamepad;
 
     bool IInputSource.IsTurningLeft()

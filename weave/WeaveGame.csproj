@@ -1,35 +1,35 @@
 <Project Sdk="Godot.NET.Sdk/4.1.1">
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
-    <RootNamespace>Weave</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <RootNamespace>Weave</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="GodotSharper">
-      <HintPath>Libraries/GodotSharper.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="GodotSharper">
+            <HintPath>Libraries/GodotSharper.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="SIPSorcery" Version="6.0.12"/>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="SIPSorcery" Version="6.0.12"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="WeaveTests\**"/>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="WeaveTests\**"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Remove="WeaveTests\**"/>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="WeaveTests\**"/>
+    </ItemGroup>
 
-  <PropertyGroup>
-    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-    <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-  </PropertyGroup>
+    <PropertyGroup>
+        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+        <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    </PropertyGroup>
 </Project>

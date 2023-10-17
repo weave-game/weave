@@ -9,7 +9,8 @@ public sealed class WebInputSource : IInputSource
         Id = id;
     }
 
-    public string Id { get; set; }
+    private string Id { get; }
+
     public string DirectionState { get; set; }
 
     public bool IsTurningLeft()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -16,11 +17,11 @@ public class RTCClientManager
 {
     public delegate void ClientJoinedEventHandler(WebInputSource source);
     public delegate void ClientLeftEventHandler(WebInputSource source);
-    private const string SERVER_URL = WeaveConstants.SignallingServerURL;
-    private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
-    private readonly Dictionary<string, WebInputSource> _clientSources = new();
+    private const string ServerUrl = WeaveConstants.SignallingServerUrl;
+    private readonly IDictionary<string, RTCPeerConnection> _clientConnections = new Dictionary<string, RTCPeerConnection>();
+    private readonly IDictionary<string, WebInputSource> _clientSources = new Dictionary<string, WebInputSource>();
 
-    private readonly RTCConfiguration _connectionConfig = new() { iceServers = new() { new() { urls = WeaveConstants.STUNServerURL } } };
+    private readonly RTCConfiguration _connectionConfig = new() { iceServers = new() { new() { urls = WeaveConstants.StunServerUrl } } };
 
     private readonly string _lobbyCode;
     private readonly ClientWebSocket _webSocket = new();
@@ -33,7 +34,7 @@ public class RTCClientManager
     public ClientJoinedEventHandler ClientJoinedListeners { get; set; }
     public ClientLeftEventHandler ClientLeftListeners { get; set; }
 
-    public async Task StartClientAsync()
+    public async void StartClientAsync()
     {
         await ConnectWebSocketAsync();
 
@@ -51,14 +52,13 @@ public class RTCClientManager
             }
 
             dynamic msg = JsonConvert.DeserializeObject(message);
-            if (msg.type == "answer")
+            if (msg?.type == "answer")
             {
                 var idString = (string)msg.clientId;
                 var answerString = JsonConvert.SerializeObject(msg.answer);
                 var peerConnection = _clientConnections[idString];
 
-                var answer = new RTCSessionDescriptionInit();
-                if (RTCSessionDescriptionInit.TryParse(answerString, out answer))
+                if (RTCSessionDescriptionInit.TryParse(answerString, out RTCSessionDescriptionInit answer))
                 {
                     peerConnection.setRemoteDescription(answer);
                 }
@@ -67,14 +67,13 @@ public class RTCClientManager
                     GD.Print("Unable to parse answer");
                 }
             }
-            else if (msg.type == "ice-candidate")
+            else if (msg?.type == "ice-candidate")
             {
                 var idString = (string)msg.clientId;
                 var candidateString = JsonConvert.SerializeObject(msg.candidate);
                 var peerConnection = _clientConnections[idString];
 
-                var iceCandidate = new RTCIceCandidateInit();
-                if (RTCIceCandidateInit.TryParse(candidateString, out iceCandidate))
+                if (RTCIceCandidateInit.TryParse(candidateString, out RTCIceCandidateInit iceCandidate))
                 {
                     peerConnection.addIceCandidate(iceCandidate);
                 }
@@ -83,7 +82,7 @@ public class RTCClientManager
                     GD.Print("Unable to parse ice candidate");
                 }
             }
-            else if (msg.type == "client-connected")
+            else if (msg?.type == "client-connected")
             {
                 var idString = (string)msg.clientId;
                 var peerConnection = await CreatePeerConnectionAsync(idString);
@@ -92,9 +91,9 @@ public class RTCClientManager
         }
     }
 
-    public async Task StopClientAsync()
+    public async void StopClientAsync()
     {
-        if (_webSocket == null || _webSocket.State != WebSocketState.Open)
+        if (_webSocket is not { State: WebSocketState.Open })
         {
             return;
         }
@@ -115,7 +114,7 @@ public class RTCClientManager
         var dataChannel = await peerConnection.createDataChannel($"chat-{clientId}");
         dataChannel.onopen += () => HandlePlayerJoin(clientId);
         dataChannel.onclose += () => HandlePlayerLeave(clientId);
-        dataChannel.onmessage += (_, __, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
+        dataChannel.onmessage += (_, _, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
 
         peerConnection.onconnectionstatechange += state =>
         {
@@ -132,6 +131,12 @@ public class RTCClientManager
                 case RTCPeerConnectionState.disconnected:
                     HandlePlayerLeave(clientId);
                     break;
+                case RTCPeerConnectionState.@new:
+                    break;
+                case RTCPeerConnectionState.connecting:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         };
 
@@ -144,7 +149,7 @@ public class RTCClientManager
         return peerConnection;
     }
 
-    private async Task SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
+    private async Task SendOfferAsync(IRTCPeerConnection peerConnection, string clientId)
     {
         var offer = peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
@@ -155,8 +160,8 @@ public class RTCClientManager
 
     private async Task ConnectWebSocketAsync()
     {
-        await _webSocket.ConnectAsync(new(SERVER_URL), CancellationToken.None);
-        GD.Print($"WebSocket connection established to {SERVER_URL}");
+        await _webSocket.ConnectAsync(new(ServerUrl), CancellationToken.None);
+        GD.Print($"WebSocket connection established to {ServerUrl}");
     }
 
     private async Task SendWebSocketMessageAsync(string message)
@@ -182,31 +187,35 @@ public class RTCClientManager
 
     private void HandlePlayerLeave(string clientId)
     {
-        ClientLeftListeners?.Invoke(_clientSources.GetValueOrDefault(clientId));
+        _clientSources.TryGetValue(clientId, out var source);
+        ClientLeftListeners?.Invoke(source);
         _clientConnections.Remove(clientId);
         _clientSources.Remove(clientId);
     }
 
     private void HandlePlayerInput(string playerId, string input)
     {
-        var source = _clientSources.GetValueOrDefault(playerId);
+        _clientSources.TryGetValue(playerId, out var source);
+        if (source == null)
+        {
+            return;
+        }
+
         source.DirectionState = input;
     }
 
-    public async Task NotifyStartGameAsync()
+    public async void NotifyStartGameAsync()
     {
-        foreach (var clientId in _clientConnections.Keys)
+        foreach (var startMessage in _clientConnections.Keys.Select(clientId => new { type = "message", message = "start", clientId }))
         {
-            var startMessage = new { type = "message", message = "start", clientId };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(startMessage));
         }
     }
 
-    public async Task NotifyEndGameAsync()
+    public async void NotifyEndGameAsync()
     {
-        foreach (var clientId in _clientConnections.Keys)
+        foreach (var endMessage in _clientConnections.Keys.Select(clientId => new { type = "message", message = "end", clientId }))
         {
-            var endMessage = new { type = "message", message = "end", clientId };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(endMessage));
         }
     }

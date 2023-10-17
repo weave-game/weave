@@ -59,10 +59,11 @@ public partial class StartScreen : Control
         _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintInputSources));
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
-        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
+        SetLobbyQrCodeTexture(_lobby.LobbyQrCode);
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
+
         _multiplayerManager.ClientJoinedListeners += _lobby.Join;
         _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
@@ -226,7 +227,7 @@ public partial class StartScreen : Control
         _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
     }
 
-    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    private void SetLobbyQrCodeTexture(Texture2D newTexture)
     {
         _qrCodeTexture.Texture = newTexture;
     }

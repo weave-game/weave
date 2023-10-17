@@ -12,6 +12,9 @@ public class ScoreRecord
     }
 
     public string Id { get; }
+
+    //ReSharper disable once UnusedAutoPropertyAccessor.Global
     public int Value { get; }
+
     public string Name { get; set; }
 }

@@ -123,7 +123,7 @@ public partial class Player : CharacterBody2D
         }
     }
 
-    public void SetSize(int x, int y)
+    private void SetSize(int x, int y)
     {
         _desiredScale = new(x, y);
         _hasReachedSize = false;
