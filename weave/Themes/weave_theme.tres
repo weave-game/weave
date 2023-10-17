@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://dd7rckhjid75d"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://by2pot0p04k5c"]
 
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="1_wxucp"]
 [ext_resource type="StyleBox" uid="uid://m7ol4vvsflr4" path="res://Themes/base_button.tres" id="1_xvkqr"]
