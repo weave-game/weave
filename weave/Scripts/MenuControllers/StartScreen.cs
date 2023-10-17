@@ -5,6 +5,7 @@ using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Utils;
 using Weave.InputSources;
+using Weave.Networking;
 
 namespace Weave.MenuControllers;
 
@@ -12,6 +13,7 @@ namespace Weave.MenuControllers;
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
+    private RTCClientManager _multiplayerManager;
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
@@ -36,14 +38,32 @@ public partial class StartScreen : Control
     [GetNode("UI/StartButton")]
     private Button _startButton;
 
+    [GetNode("UI/LobbyCodeLabel")]
+    private RichTextLabel _lobbyCodeLabel;
+
+    [GetNode("UI/QRCodeTexture")]
+    private TextureRect _qrCodeTexture;
+
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
+
     public override void _Ready()
     {
         this.GetNodes();
         _playButton.Pressed += OpenLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
+
+        _lobby.PlayerJoinedListeners += (_) => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerLeftListeners += (_) => CallDeferred(nameof(PrintInputSources));
+
+        SetLobbyCodeLabelText(_lobby.LobbyCode);
+        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
+
+        _multiplayerManager = new(_lobby.LobbyCode);
+        _multiplayerManager.StartClientAsync();
+        _multiplayerManager.ClientJoinedListeners += _lobby.Join;
+        _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
         var colorGen = new UniqueColorGenerator();
         GetTree()
@@ -75,6 +95,8 @@ public partial class StartScreen : Control
         _startButton.Visible = true;
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
+        _lobbyCodeLabel.Visible = true;
+        _qrCodeTexture.Visible = true;
         CollapseButtons();
     }
 
@@ -86,6 +108,8 @@ public partial class StartScreen : Control
         _startButton.Visible = false;
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
+        _lobbyCodeLabel.Visible = false;
+        _qrCodeTexture.Visible = false;
         ExpandButtons();
     }
 
@@ -97,6 +121,7 @@ public partial class StartScreen : Control
     private void OnStartButtonPressed()
     {
         GameConfig.Lobby = _lobby;
+        GameConfig.MultiplayerManager = _multiplayerManager;
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
     }
 
@@ -158,8 +183,6 @@ public partial class StartScreen : Control
                 _lobby.Leave(alreadyExisting);
             else
                 _lobby.Join(kb);
-
-            PrintInputSources();
         }
     }
 
@@ -178,9 +201,17 @@ public partial class StartScreen : Control
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
             _lobby.Leave(new GamepadInputSource(deviceId));
-
-        PrintInputSources();
     }
 
     #endregion Gamepad
+
+    private void SetLobbyCodeLabelText(string newCode)
+    {
+        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+    }
+
+    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    {
+        _qrCodeTexture.Texture = newTexture;
+    }
 }

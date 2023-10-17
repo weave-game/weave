@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=19 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
@@ -9,8 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
+[ext_resource type="FontFile" uid="uid://dau4vbgu1330x" path="res://Assets/Fonts/Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf" id="9_joc22"]
 [ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
 [ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
+[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="10_u77xs"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_y8k07"]
 color = Color(1, 0.164706, 0.427451, 0.392157)
@@ -173,6 +175,26 @@ size_flags_vertical = 4
 theme = ExtResource("4_8y3os")
 theme_override_font_sizes/font_size = 38
 text = "START GAME"
+
+[node name="QRCodeTexture" type="TextureRect" parent="UI"]
+visible = false
+texture_filter = 1
+offset_left = 851.0
+offset_top = 101.0
+offset_right = 1051.0
+offset_bottom = 301.0
+texture = ExtResource("10_u77xs")
+
+[node name="LobbyCodeLabel" type="RichTextLabel" parent="UI"]
+visible = false
+offset_left = 520.0
+offset_top = 150.0
+offset_right = 737.0
+offset_bottom = 261.0
+theme_override_fonts/normal_font = ExtResource("9_joc22")
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Lobby code: abc123[/center]"
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2
