@@ -30,9 +30,9 @@ public static class GameConfig
     {
         return nPlayers switch
         {
-            <= 2 => 130,
-            3 => 100,
-            _ => 70
+            <= 2 => 100,
+            3 => 75,
+            _ => 50
         };
     }
 

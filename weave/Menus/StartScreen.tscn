@@ -176,7 +176,17 @@ theme = ExtResource("4_8y3os")
 theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
+[node name="QRCodeTexture" type="TextureRect" parent="UI"]
+visible = false
+texture_filter = 1
+offset_left = 885.0
+offset_top = 79.0
+offset_right = 1081.0
+offset_bottom = 275.0
+texture = ExtResource("10_u77xs")
+
 [node name="LobbyCodeLabel" type="RichTextLabel" parent="UI"]
+visible = false
 offset_left = 577.0
 offset_top = 134.0
 offset_right = 828.0
@@ -185,14 +195,6 @@ theme_override_fonts/normal_font = ExtResource("9_joc22")
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]Lobby code: abc123[/center]"
-
-[node name="QRCodeTexture" type="TextureRect" parent="UI"]
-texture_filter = 1
-offset_left = 885.0
-offset_top = 79.0
-offset_right = 1081.0
-offset_bottom = 275.0
-texture = ExtResource("10_u77xs")
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2

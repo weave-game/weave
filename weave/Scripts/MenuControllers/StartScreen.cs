@@ -95,6 +95,8 @@ public partial class StartScreen : Control
         _startButton.Visible = true;
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
+        _lobbyCodeLabel.Visible = true;
+        _qrCodeTexture.Visible = true;
         CollapseButtons();
     }
 
@@ -106,6 +108,8 @@ public partial class StartScreen : Control
         _startButton.Visible = false;
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
+        _lobbyCodeLabel.Visible = false;
+        _qrCodeTexture.Visible = false;
         ExpandButtons();
     }
 
