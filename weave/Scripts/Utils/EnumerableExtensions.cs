@@ -7,7 +7,7 @@ namespace Weave.Utils;
 public static class EnumerableExtensions
 {
     /// <summary>
-    /// Returns a random element from the given enumerable.
+    ///     Returns a random element from the given enumerable.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the enumerable.</typeparam>
     /// <param name="enumerable">The enumerable to select a random element from.</param>
@@ -21,7 +21,7 @@ public static class EnumerableExtensions
     }
 
     /// <summary>
-    /// Removes the first element from the given List that matches the given condition.
+    ///     Removes the first element from the given List that matches the given condition.
     /// </summary>
     /// <param name="list"></param>
     /// <param name="condition"></param>
@@ -31,7 +31,10 @@ public static class EnumerableExtensions
     {
         var item = list.FirstOrDefault(condition);
         if (item != null)
+        {
             list.Remove(item);
+        }
+
         return item;
     }
 }

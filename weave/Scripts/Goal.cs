@@ -17,37 +17,39 @@ public partial class Goal : Node2D
     [Signal]
     public delegate void PlayerReachedGoalEventHandler();
 
-    public bool HasLock { get; set; }
-
-    private Color _color;
-    private bool _locked;
-    private bool _reached;
-
-    [GetNode("UnlockParticles")]
-    private CpuParticles2D _unlockParticles;
-
     [GetNode("CollectPlayer")]
     private AudioStreamPlayer2D _collectSoundPlayer;
+
+    private Color _color;
 
     [GetNode("GoalSprite")]
     private Sprite2D _goalSprite;
 
+    private bool _locked;
+
     [GetNode("LockSprite")]
     private Sprite2D _lockSprite;
+
+    private bool _reached;
+    private float _unlockAreaRadius;
+
+    [GetNode("UnlockAreaSprite")]
+    private Sprite2D _unlockAreaSprite;
+
+    private float _unlockDrawingRotation;
+
+    [GetNode("UnlockParticles")]
+    private CpuParticles2D _unlockParticles;
 
     [GetNode("UnlockPlayer")]
     private AudioStreamPlayer2D _unlockSoundPlayer;
 
-    [GetNode("UnlockAreaSprite")]
-    private Sprite2D _unlockAreaSprite;
+    public bool HasLock { get; set; }
 
     /// <summary>
     ///     The colors that the unlock area circle should display.
     /// </summary>
     public IList<Color> UnlockAreaColors { get; set; }
-
-    private float _unlockDrawingRotation;
-    private float _unlockAreaRadius;
 
     public Color Color
     {
@@ -87,7 +89,10 @@ public partial class Goal : Node2D
 
     public override void _Process(double delta)
     {
-        if (!HasLock) return;
+        if (!HasLock)
+        {
+            return;
+        }
 
         _unlockDrawingRotation += 0.5f * (float)delta;
         QueueRedraw();
@@ -95,9 +100,20 @@ public partial class Goal : Node2D
 
     private void OnLockAreaBodyEntered(Node2D body)
     {
-        if (!_locked) return;
-        if (body is not Player player) return;
-        if (player.PlayerInfo.Color == Color) return;
+        if (!_locked)
+        {
+            return;
+        }
+
+        if (body is not Player player)
+        {
+            return;
+        }
+
+        if (player.PlayerInfo.Color == Color)
+        {
+            return;
+        }
 
         _unlockParticles.Emitting = true;
         _locked = false;
@@ -110,9 +126,20 @@ public partial class Goal : Node2D
 
     private void OnBodyEntered(Node2D body)
     {
-        if (_reached || _locked) return;
-        if (body is not Player player) return;
-        if (player.PlayerInfo.Color != Color) return;
+        if (_reached || _locked)
+        {
+            return;
+        }
+
+        if (body is not Player player)
+        {
+            return;
+        }
+
+        if (player.PlayerInfo.Color != Color)
+        {
+            return;
+        }
 
         _reached = true;
         _goalSprite.Modulate = Colors.Black;
@@ -127,17 +154,24 @@ public partial class Goal : Node2D
         var unlockAreaCollisionShape = GetNode<CollisionShape2D>("UnlockArea/CollisionShape2D");
 
         if (unlockAreaCollisionShape.Shape is not CircleShape2D circleShape)
+        {
             throw new NodeNotFoundException("Unlock area collision shape is not a circle shape.");
+        }
 
         return circleShape.Radius;
     }
 
     public override void _Draw()
     {
-        if (!_locked) return;
+        if (!_locked)
+        {
+            return;
+        }
 
         if (UnlockAreaColors == null || UnlockAreaColors.Count == 0)
+        {
             return;
+        }
 
         var center = new Vector2(0, 0);
         var totalColors = UnlockAreaColors.Count;

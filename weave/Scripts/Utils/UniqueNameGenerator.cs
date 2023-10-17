@@ -4,12 +4,12 @@ namespace Weave.Utils;
 
 public sealed class UniqueNameGenerator
 {
-    private ISet<string> UsedNames { get; } = new HashSet<string>();
-    private int _backupIndex = 1;
     private const int MaxAttempts = 100;
+    private int _backupIndex = 1;
+    private ISet<string> UsedNames { get; } = new HashSet<string>();
 
     /// <summary>
-    ///    A shared instance of the <see cref="UniqueNameGenerator" />.
+    ///     A shared instance of the <see cref="UniqueNameGenerator" />.
     /// </summary>
     public static UniqueNameGenerator Instance { get; } = new();
 
@@ -74,11 +74,15 @@ public sealed class UniqueNameGenerator
         var attemps = 0;
         string name;
 
-        do name = Generate();
-        while (UsedNames.Contains(name) && ++attemps < MaxAttempts);
+        do
+        {
+            name = Generate();
+        } while (UsedNames.Contains(name) && ++attemps < MaxAttempts);
 
         if (UsedNames.Contains(name))
+        {
             name += $" {_backupIndex++}";
+        }
 
         UsedNames.Add(name);
         return name;
