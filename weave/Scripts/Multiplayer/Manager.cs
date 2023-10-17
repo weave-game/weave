@@ -8,18 +8,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
 using System.Text;
+using Weave.Utils;
 
 namespace Weave.Multiplayer;
 
-public partial class Manager : Node
+public class Manager
 {
     public delegate void ClientJoinedEventHandler(WebInputSource source);
-    public ClientJoinedEventHandler ClientJoinedListeners;
+    public ClientJoinedEventHandler ClientJoinedListeners { get; set; }
     public delegate void ClientLeftEventHandler(WebInputSource source);
-    public ClientLeftEventHandler ClientLeftListeners;
+    public ClientLeftEventHandler ClientLeftListeners { get; set; }
 
-    private string _lobbyCode;
-    private const string SERVER_URL = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
+    private readonly string _lobbyCode;
+    private const string SERVER_URL = WeaveConstants.SignallingServerURL;
     private readonly ClientWebSocket _webSocket = new();
     private readonly Dictionary<string, WebInputSource> _clientSources = new();
     private readonly Dictionary<string, RTCPeerConnection> _clientConnections = new();
@@ -28,7 +29,7 @@ public partial class Manager : Node
         iceServers = new List<RTCIceServer>
     {
         new() {
-            urls = "stun:stun.l.google.com:19302"
+            urls = WeaveConstants.STUNServerURL
         }
     }
     };
@@ -135,7 +136,7 @@ public partial class Manager : Node
         return peerConnection;
     }
 
-    private async void SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
+    private async Task SendOfferAsync(RTCPeerConnection peerConnection, string clientId)
     {
         var offer = peerConnection.createOffer(null);
         await peerConnection.setLocalDescription(offer);
@@ -184,7 +185,7 @@ public partial class Manager : Node
         source.DirectionState = input;
     }
 
-    public async void NotifyStartGameAsync()
+    public async Task NotifyStartGameAsync()
     {
         foreach (var clientId in _clientConnections.Keys)
         {
@@ -193,7 +194,7 @@ public partial class Manager : Node
         }
     }
 
-    public async void NotifyEndGameAsync()
+    public async Task NotifyEndGameAsync()
     {
         foreach (var clientId in _clientConnections.Keys)
         {

@@ -10,9 +10,9 @@ namespace Weave.InputSources;
 public sealed class Lobby
 {
     public delegate void PlayerJoinedEventHandler(IInputSource source);
-    public PlayerJoinedEventHandler PlayerJoinedListeners;
+    public PlayerJoinedEventHandler PlayerJoinedListeners { get; set; }
     public delegate void PlayerLeftEventHandler(IInputSource source);
-    public PlayerLeftEventHandler PlayerLeftListeners;
+    public PlayerLeftEventHandler PlayerLeftListeners { get; set; }
 
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
     public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();

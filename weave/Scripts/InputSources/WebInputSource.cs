@@ -4,8 +4,8 @@ namespace Weave.InputSources;
 
 public sealed class WebInputSource : IInputSource
 {
-    public string Id;
-    public string DirectionState;
+    public string Id { get; set; }
+    public string DirectionState { get; set; }
 
     public WebInputSource(string id)
     {

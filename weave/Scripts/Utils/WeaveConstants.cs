@@ -41,4 +41,11 @@ public static class WeaveConstants
     #endregion Groups
 
     public static bool DevButtonsEnabled => true;
+
+    #region URLs
+
+    public const string SignallingServerURL = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
+    public const string STUNServerURL = "stun:stun.l.google.com:19302";
+
+    #endregion URLs
 }
