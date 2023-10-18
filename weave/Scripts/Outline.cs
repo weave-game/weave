@@ -17,10 +17,6 @@ public partial class Outline : Line2D
         AddPoint(new(width + (WeaveConstants.LineWidth / 2), -WeaveConstants.LineWidth / 2));
         AddPoint(new(width + (WeaveConstants.LineWidth / 2), height + (WeaveConstants.LineWidth / 2)));
         AddPoint(new(-WeaveConstants.LineWidth / 2, height + (WeaveConstants.LineWidth / 2)));
-        AddPoint(Points[0] + new Vector2(0, -WeaveConstants.LineWidth / 2));
-    }
-
-    public override void _Process(double delta)
-    {
+        AddPoint(GetPointPosition(0) + new Vector2(0, -WeaveConstants.LineWidth / 2));
     }
 }
