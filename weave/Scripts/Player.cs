@@ -9,23 +9,23 @@ namespace Weave;
 [Scene("res://Objects/Player.tscn")]
 public partial class Player : CharacterBody2D
 {
-    [GetNode("Arrow")]
-    private Sprite2D _arrow;
-
-    private Vector2 _desiredScale = new(1, 1);
-    private bool _hasReachedSize;
     private bool _isMoving;
+    private bool _hasReachedSize;
+    private Vector2 _desiredScale = new(1, 1);
 
-    [GetNode("PlayerNamePivot/PlayerName")]
-    private Label _playerName;
-
-    [GetNode("PlayerNamePivot")]
-    private Node2D _playerNamePivot;
+    public PlayerInfo PlayerInfo { get; set; }
 
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
-    public PlayerInfo PlayerInfo { get; set; }
+    [GetNode("PlayerNamePivot")]
+    private Node2D _playerNamePivot;
+
+    [GetNode("PlayerNamePivot/PlayerName")]
+    private Label _playerName;
+
+    [GetNode("Arrow")]
+    private Sprite2D _arrow;
 
     public float MovementSpeed { get; set; }
 
@@ -64,7 +64,7 @@ public partial class Player : CharacterBody2D
         _playerName.Text = PlayerInfo.Name;
         _arrow.Modulate = PlayerInfo.Color;
 
-        Scale = new(0, 0);
+        Scale = new Vector2(0, 0);
         SetSize(2, 2);
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, () => SetSize(1, 1))
@@ -74,17 +74,12 @@ public partial class Player : CharacterBody2D
     public override void _Process(double delta)
     {
         if (_hasReachedSize)
-        {
             return;
-        }
 
         Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
 
         // Have not reached size yet
-        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f)
-        {
-            return;
-        }
+        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f) return;
 
         Scale = _desiredScale;
         _hasReachedSize = true;
@@ -100,30 +95,21 @@ public partial class Player : CharacterBody2D
     private void Move(double delta)
     {
         if (_isMoving)
-        {
             Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
-        }
     }
 
     private void Rotate(double delta)
     {
-        if (!IsTurning)
-        {
-            return;
-        }
+        if (!IsTurning) return;
 
         if (PlayerInfo.InputSource.IsTurningRight())
-        {
             RotationDegrees += TurnSpeed * (float)delta;
-        }
 
         if (PlayerInfo.InputSource.IsTurningLeft())
-        {
             RotationDegrees -= TurnSpeed * (float)delta;
-        }
     }
 
-    private void SetSize(int x, int y)
+    public void SetSize(int x, int y)
     {
         _desiredScale = new(x, y);
         _hasReachedSize = false;

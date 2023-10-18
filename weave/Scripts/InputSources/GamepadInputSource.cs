@@ -12,6 +12,7 @@ public sealed class GamepadInputSource : IInputSource
         _deviceId = deviceId;
     }
 
+    int IInputSource.DeviceId => _deviceId;
     public InputType Type => InputType.Gamepad;
 
     bool IInputSource.IsTurningLeft()
@@ -37,9 +38,7 @@ public sealed class GamepadInputSource : IInputSource
     public bool Equals(IInputSource other)
     {
         if (other is GamepadInputSource gamepad)
-        {
             return _deviceId == gamepad._deviceId;
-        }
 
         return false;
     }

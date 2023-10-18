@@ -38,9 +38,7 @@ public sealed class KeyboardInputSource : IInputSource
     public bool Equals(IInputSource other)
     {
         if (other is KeyboardInputSource keyboard)
-        {
             return keyboard._left == _left && keyboard._right == _right;
-        }
 
         return false;
     }

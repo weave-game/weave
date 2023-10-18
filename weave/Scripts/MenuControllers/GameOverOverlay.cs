@@ -1,19 +1,20 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
+using Weave.Networking;
 
 namespace Weave.MenuControllers;
 
 public partial class GameOverOverlay : CanvasLayer
 {
-    [GetNode("ExplosionPlayer")]
-    private AudioStreamPlayer _explosionPlayer;
-
     [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/MenuButton")]
     private Button _menuButton;
 
     [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
     private Button _retryButton;
+
+    [GetNode("ExplosionPlayer")]
+    private AudioStreamPlayer _explosionPlayer;
 
     public override void _Ready()
     {

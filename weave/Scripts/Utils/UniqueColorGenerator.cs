@@ -37,11 +37,10 @@ public sealed class UniqueColorGenerator
         {
             do
             {
-                unusedColor = new(
-                    (float)random.NextDouble(), (float)random.NextDouble(),
-                    (float)random.NextDouble()
-                );
-            } while (_usedColors.Contains(unusedColor));
+                unusedColor = new Color((float)random.NextDouble(), (float)random.NextDouble(),
+                    (float)random.NextDouble());
+            }
+            while (_usedColors.Contains(unusedColor));
         }
 
         _usedColors.Add(unusedColor);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,7 +9,6 @@ using Weave.InputSources;
 using Weave.Logging;
 using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
-using Weave.Networking;
 using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
@@ -20,53 +18,51 @@ namespace Weave;
 [Scene("res://Scenes/Main.tscn")]
 public partial class Main : Node2D
 {
-    private readonly ISet<Player> _players = new HashSet<Player>();
     private float _acceleration;
+    private float _turnAcceleration;
+    private readonly ISet<Player> _players = new HashSet<Player>();
+    private IScoreManager _scoreManager;
 
     [GetNode("CountdownLayer/CenterContainer/RoundLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
 
+    [GetNode("CountdownLayer/CenterContainer/RoundLabel")]
+    private Label _roundLabel;
+
     [GetNode("AudioStreamPlayer")]
     private AudioStreamPlayer _audioStreamPlayer;
-
-    [GetNode("Camera")]
-    private Camera _camera;
-
-    [GetNode("ClearedLevelPlayer")]
-    private AudioStreamPlayer _clearedLevelPlayer;
-
-    private bool _gameIsRunning;
 
     [GetNode("GameOverOverlay")]
     private GameOverOverlay _gameOverOverlay;
 
-    private Grid _grid;
-    private int _height;
-    private Lobby _lobby = new();
-    private RTCClientManager _multiplayerManager;
-    private Timer _playerDelayTimer;
+    [GetNode("Camera")]
+    private Camera _camera;
 
-    /// <summary>
-    ///     The current round, starts from 1.
-    /// </summary>
-    private int _round;
+    [GetNode("ScoreDisplay")]
+    private ScoreDisplay _scoreDisplay;
+
+    [GetNode("ClearedLevelPlayer")]
+    private AudioStreamPlayer _clearedLevelPlayer;
+
+    private Grid _grid;
+    private int _width;
+    private int _height;
+    private bool _gameIsRunning;
+    private Lobby _lobby = new();
+    private Networking.RTCClientManager _multiplayerManager;
+    private Timer _playerDelayTimer;
 
     /// <summary>
     ///     How many players have reached the goal during the current round.
     /// </summary>
     private int _roundCompletions;
 
-    [GetNode("CountdownLayer/CenterContainer/RoundLabel")]
-    private Label _roundLabel;
-
-    [GetNode("ScoreDisplay")]
-    private ScoreDisplay _scoreDisplay;
-
-    private IScoreManager _scoreManager;
-    private float _turnAcceleration;
+    /// <summary>
+    ///     The current round, starts from 1.
+    /// </summary>
+    private int _round;
 
     private Timer _uiUpdateTimer;
-    private int _width;
 
     public override void _Ready()
     {
@@ -78,9 +74,7 @@ public partial class Main : Node2D
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.PlayerInfos.Count == 0)
-        {
             _lobby.Join(new KeyboardInputSource(Keybindings[0]));
-        }
 
         _width = (int)GetViewportRect().Size.X;
         _height = (int)GetViewportRect().Size.Y;
@@ -97,42 +91,29 @@ public partial class Main : Node2D
 
     public override void _Process(double delta)
     {
-        if (!_gameIsRunning)
+        if (!_gameIsRunning) return;
+
+        _players.ForEach(p =>
         {
-            return;
-        }
+            _acceleration -= 0.01f * _acceleration * (float)delta;
+            _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
 
-        _players.ForEach(
-            p =>
-            {
-                _acceleration -= 0.01f * _acceleration * (float)delta;
-                _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
-
-                p.MovementSpeed += _acceleration * (float)delta;
-                p.TurnSpeed += _turnAcceleration * (float)delta;
-            }
-        );
+            p.MovementSpeed += _acceleration * (float)delta;
+            p.TurnSpeed += _turnAcceleration * (float)delta;
+        });
     }
 
     public override void _Input(InputEvent @event)
     {
-        if (!WeaveConstants.DevButtonsEnabled)
-        {
-            return;
-        }
+        if (!WeaveConstants.DevButtonsEnabled) return;
 
         if (@event is InputEventKey { Keycode: Key.Space, Pressed: true })
-        {
             OnPlayerReachedGoal();
-        }
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!_gameIsRunning)
-        {
-            return;
-        }
+        if (!_gameIsRunning) return;
 
         DetectPlayerCollision();
         DetectPlayerOutOfBounds();
@@ -140,7 +121,7 @@ public partial class Main : Node2D
 
     private void CreateMapGrid()
     {
-        _grid = new(10, 10, _width, _height);
+        _grid = new Grid(10, 10, _width, _height);
     }
 
     private void SetPlayerMovement(bool enabled)
@@ -164,12 +145,12 @@ public partial class Main : Node2D
     private void InitializeTimers()
     {
         // Updating UI components
-        _uiUpdateTimer = new() { WaitTime = 0.02 };
+        _uiUpdateTimer = new Timer { WaitTime = 0.02 };
         AddChild(_uiUpdateTimer);
         _uiUpdateTimer.Start();
 
         // Countdown timer
-        _playerDelayTimer = new() { WaitTime = WeaveConstants.CountdownLength, OneShot = true };
+        _playerDelayTimer = new Timer { WaitTime = WeaveConstants.CountdownLength, OneShot = true };
         _playerDelayTimer.Timeout += StartRound;
         AddChild(_playerDelayTimer);
     }
@@ -188,14 +169,11 @@ public partial class Main : Node2D
                 player.GlobalPosition,
                 player.GetRadius()
             );
-
-            if (!IsPlayerIntersecting(player, segments))
+            if (IsPlayerIntersecting(player, segments))
             {
-                continue;
+                GameOver(player.Position);
+                break;
             }
-
-            GameOver(player.Position);
-            break;
         }
     }
 
@@ -205,21 +183,13 @@ public partial class Main : Node2D
         {
             var pos = player.Position;
             if (pos.X < 0)
-            {
-                player.Position = new(_width, pos.Y);
-            }
+                player.Position = new Vector2(_width, pos.Y);
             else if (pos.X > _width)
-            {
-                player.Position = new(0, pos.Y);
-            }
+                player.Position = new Vector2(0, pos.Y);
             else if (pos.Y < 0)
-            {
-                player.Position = new(pos.X, _height);
-            }
+                player.Position = new Vector2(pos.X, _height);
             else if (pos.Y > _height)
-            {
-                player.Position = new(pos.X, 0);
-            }
+                player.Position = new Vector2(pos.X, 0);
         }
     }
 
@@ -251,19 +221,17 @@ public partial class Main : Node2D
     {
         var playerPositions = GetRandomPositionsInView(_lobby.PlayerInfos.Count);
 
-        _lobby.PlayerInfos.ForEach(
-            info =>
-            {
-                var player = Instanter.Instantiate<Player>();
-                player.PlayerInfo = info;
+        _lobby.PlayerInfos.ForEach(info =>
+        {
+            var player = Instanter.Instantiate<Player>();
+            player.PlayerInfo = info;
 
-                AddChild(player);
-                player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
-                player.GlobalPosition = playerPositions[0];
-                playerPositions.RemoveAt(0);
-                _players.Add(player);
-            }
-        );
+            AddChild(player);
+            player.CurveSpawner.CreatedLine += HandleCreateCollisionLine;
+            player.GlobalPosition = playerPositions[0];
+            playerPositions.RemoveAt(0);
+            _players.Add(player);
+        });
 
         // Config speed
         var speed = GameConfig.GetInitialMovementSpeed(_lobby.Count);
@@ -296,9 +264,7 @@ public partial class Main : Node2D
     private void OnPlayerReachedGoal()
     {
         if (++_roundCompletions != _lobby.Count)
-        {
             return;
-        }
 
         _roundCompletions = 0;
         _clearedLevelPlayer.Play();
@@ -316,15 +282,11 @@ public partial class Main : Node2D
         _scoreDisplay.Enabled = false;
 
         if (_round == 0)
-        {
             AddChild(
                 TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
             );
-        }
         else
-        {
             IncreaseRound();
-        }
     }
 
     private void IncreaseRound()
@@ -333,7 +295,7 @@ public partial class Main : Node2D
             TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2, () => _round++)
         );
 
-        _animationPlayer.Play("Preparation", customSpeed: 2 / WeaveConstants.CountdownLength);
+        _animationPlayer.Play(name: "Preparation", customSpeed: 2 / WeaveConstants.CountdownLength);
     }
 
     private void ClearLinesAndSegments()
@@ -357,34 +319,32 @@ public partial class Main : Node2D
         // --- SPAWN GOALS ---
 
         // Generate goal positions
-        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position).ToList());
+        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position));
 
         // Spawn new goals
-        _players.ForEach(
-            player =>
-            {
-                var goal = Instanter.Instantiate<Goal>();
-                CallDeferred("add_child", goal);
-                goal.GlobalPosition = goalPositions[0];
-                goalPositions.RemoveAt(0);
-                goal.PlayerReachedGoal += OnPlayerReachedGoal;
-                goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
-                goal.HasLock = GameConfig.ShouldHaveLocks(_lobby.Count);
+        _players.ForEach(player =>
+        {
+            var goal = Instanter.Instantiate<Goal>();
+            CallDeferred("add_child", goal);
+            goal.GlobalPosition = goalPositions[0];
+            goalPositions.RemoveAt(0);
+            goal.PlayerReachedGoal += OnPlayerReachedGoal;
+            goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
+            goal.HasLock = GameConfig.ShouldHaveLocks(_lobby.Count);
 
-                if (_lobby.Count <= 2)
-                {
-                    // Color the goal with the other players' colors
-                    goal.UnlockAreaColors = _players
-                        .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
-                        .Select(p => p.PlayerInfo.Color).ToList();
-                }
-                else
-                {
-                    // Color the goal with the player's color
-                    goal.UnlockAreaColors = new List<Color> { player.PlayerInfo.Color };
-                }
+            if (_lobby.Count <= 2)
+            {
+                // Color the goal with the other players' colors
+                goal.UnlockAreaColors = _players
+                    .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
+                    .Select(p => p.PlayerInfo.Color).ToList();
             }
-        );
+            else
+            {
+                // Color the goal with the player's color
+                goal.UnlockAreaColors = new List<Color>() { player.PlayerInfo.Color };
+            }
+        });
 
         // --- SPAWN OBSTACLES ---
 
@@ -393,51 +353,45 @@ public partial class Main : Node2D
         _players.ForEach(p => goalsAndPlayers.Add(p.Position));
         var obstaclePositions = GetRandomPositionsInView(GameConfig.GetNObstacles(_lobby.Count), goalsAndPlayers);
 
-        obstaclePositions.ForEach(
-            position =>
+        obstaclePositions.ForEach(position =>
+        {
+            var obstacle = Instanter.Instantiate<Obstacle>();
+            obstacle.AddToGroup(WeaveConstants.ObstacleGroup);
+
+            obstacle.BodyEntered += node =>
             {
-                var obstacle = Instanter.Instantiate<Obstacle>();
-                obstacle.AddToGroup(WeaveConstants.ObstacleGroup);
+                if (node is not Player) return;
+                GameOver(node.Position);
+            };
 
-                obstacle.BodyEntered += node =>
-                {
-                    if (node is not Player)
-                    {
-                        return;
-                    }
+            CallDeferred("add_child", obstacle);
+            obstacle.GlobalPosition = position;
 
-                    GameOver(node.Position);
-                };
+            // Random rotation
+            obstacle.RotationDegrees = GD.RandRange(0, 360);
 
-                CallDeferred("add_child", obstacle);
-                obstacle.GlobalPosition = position;
-
-                // Random rotation
-                obstacle.RotationDegrees = GD.RandRange(0, 360);
-
-                // Random scale
-                obstacle.SetObstacleSize(
-                    GD.RandRange(3, 5),
-                    GD.RandRange(3, 5)
-                );
-            }
-        );
+            // Random scale
+            obstacle.SetObstacleSize(
+                GD.RandRange(3, 5),
+                GD.RandRange(3, 5)
+            );
+        });
     }
 
     private IList<Vector2> GetRandomPositionsInView(
         int n,
-        IReadOnlyList<Vector2> occupiedPositions = null
+        IEnumerable<Vector2> occupiedPositions = null
     )
     {
-        const int MaxAttempts = 1000;
-        const float MinDistance = 250;
-        const float Margin = 100;
+        const int maxAttempts = 1000;
+        const float minDistance = 250;
+        const float margin = 100;
         var positions = new List<Vector2>();
 
         // Generate positions
         for (var i = 0; i < n; i++)
         {
-            bool valid;
+            var valid = false;
             var attempt = 0;
             Vector2 newPosition;
 
@@ -445,33 +399,27 @@ public partial class Main : Node2D
             {
                 attempt++;
 
-                newPosition = new(
-                    (float)GD.RandRange(Margin, _width - Margin),
-                    (float)GD.RandRange(Margin, _height - Margin)
+                newPosition = new Vector2(
+                    (float)GD.RandRange(margin, _width - margin),
+                    (float)GD.RandRange(margin, _height - margin)
                 );
 
                 valid = true;
 
-                foreach (var position in occupiedPositions ?? Array.Empty<Vector2>())
+                occupiedPositions?.ForEach(position =>
                 {
                     var distance = position.DistanceTo(newPosition);
-                    if (distance < MinDistance)
-                    {
+                    if (distance < minDistance)
                         valid = false;
-                    }
-                }
+                });
 
-                positions.ForEach(
-                    position =>
-                    {
-                        var distance = position.DistanceTo(newPosition);
-                        if (distance < MinDistance)
-                        {
-                            valid = false;
-                        }
-                    }
-                );
-            } while (!valid && attempt < MaxAttempts);
+                positions.ForEach(position =>
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < minDistance)
+                        valid = false;
+                });
+            } while (!valid && attempt < maxAttempts);
 
             positions.Add(newPosition);
         }
@@ -511,17 +459,17 @@ public partial class Main : Node2D
 
     private static Log FpsLogger()
     {
-        return new("fps", Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture));
+        return new Log("fps", Engine.GetFramesPerSecond().ToString(CultureInfo.InvariantCulture));
     }
 
     private Log LineCountLogger()
     {
-        return new("lines", GetAllSegments().Count.ToString());
+        return new Log("lines", GetAllSegments().Count.ToString());
     }
 
     private Log SpeedLogger()
     {
-        return new(
+        return new Log(
             "speed",
             _players.First().MovementSpeed.ToString(CultureInfo.InvariantCulture)
         );
@@ -529,12 +477,11 @@ public partial class Main : Node2D
 
     private Log TurnRadiusLogger()
     {
-        return new(
+        return new Log(
             "turn_radius",
             _players.First().TurnSpeed.ToString(CultureInfo.InvariantCulture)
         );
     }
 
     #endregion Loggers
-
 }
