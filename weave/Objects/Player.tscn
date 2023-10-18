@@ -59,13 +59,3 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(0, -13)
 scale = Vector2(0.0186449, 0.0186449)
 texture = ExtResource("4_lw8o6")
-
-[node name="HorizontalIndicator" type="Sprite2D" parent="."]
-position = Vector2(10, 0)
-scale = Vector2(0.003, 0.003)
-texture = ExtResource("2_21yul")
-
-[node name="VerticalIndicator" type="Sprite2D" parent="."]
-position = Vector2(-10, 0)
-scale = Vector2(0.003, 0.003)
-texture = ExtResource("2_21yul")
