@@ -12,8 +12,10 @@ public sealed class DeltaLogger
         var ms = Time.GetTicksMsec();
 
         if (_firstLog < 0f)
+        {
             _firstLog = ms;
+        }
 
-        return new Log("delta_ms", (ms - _firstLog).ToString(CultureInfo.InvariantCulture));
+        return new("delta_ms", (ms - _firstLog).ToString(CultureInfo.InvariantCulture));
     }
 }

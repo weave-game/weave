@@ -49,7 +49,9 @@ public sealed class CsvLogger : ICsvLogger
     private void HandleFirstPersist()
     {
         if (_loggerMode == LoggerMode.Append && HasFileHeaders())
+        {
             return;
+        }
 
         ClearFile();
         WriteHeaders();
@@ -59,7 +61,7 @@ public sealed class CsvLogger : ICsvLogger
     {
         // Simplified check, but should be enough for our purposes
         return File.Exists(_filePath)
-            && !string.IsNullOrWhiteSpace(File.ReadAllLines(_filePath)[0]);
+               && !string.IsNullOrWhiteSpace(File.ReadAllLines(_filePath)[0]);
     }
 
     private void ClearFile()

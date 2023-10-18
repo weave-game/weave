@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://13krjegt6uqn" path="res://Objects/Firefly.tscn" id="3_r76ru"]
 [ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="4_8y3os"]
 [ext_resource type="Texture2D" uid="uid://8rd510i1ect" path="res://Assets/bg_pattern.png" id="4_cecwe"]
-[ext_resource type="PackedScene" uid="uid://cgb58y31ghkln" path="res://UI/Blur.tscn" id="4_v148g"]
+[ext_resource type="PackedScene" path="res://UI/Blur.tscn" id="4_v148g"]
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
@@ -159,6 +159,7 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_y8k07")
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

@@ -13,28 +13,29 @@ public partial class ScoreDisplay : CanvasLayer
     private const float MinPointsForRound = 150;
     private const float RoundMultiplier = 1.1f;
     private const float PlayerMultiplier = 1.5f;
+
+    [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
     private int _finishedRounds;
     private int _playerCount;
+    private double _points;
     private float _score;
+
+    [GetNode("CenterContainer/ScoreLabel")]
+    private Label _scoreLabel;
+
+    /// <summary>
+    ///     Change to switch between different scoring rules
+    /// </summary>
+    private ScoringRule _scoringRule = ScoringRule.TimeAndRound;
+
+    private double _timeSinceRoundStart;
 
     /// <summary>
     ///     The score. Internally stored as a float to allow for more precise calculations but when used externally its an int.
     /// </summary>
     public int Score => (int)_score;
-
-    [GetNode("CenterContainer/ScoreLabel")]
-    private Label _scoreLabel;
-
-    [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
-    private AnimationPlayer _animationPlayer;
-
-    /// <summary>
-    /// Change to switch between different scoring rules
-    /// </summary>
-    private ScoringRule _scoringRule = ScoringRule.TimeAndRound;
-
-    private double _timeSinceRoundStart;
-    private double _points;
 
     public bool Enabled { set; get; }
 
@@ -48,7 +49,9 @@ public partial class ScoreDisplay : CanvasLayer
         _scoreLabel.Text = ((int)_score).ToString();
 
         if (!Enabled)
+        {
             return;
+        }
 
         float scoreIncrease = 0;
 
@@ -79,7 +82,9 @@ public partial class ScoreDisplay : CanvasLayer
     public void OnRoundComplete()
     {
         if (!Enabled)
+        {
             return;
+        }
 
         float scoreIncrease = 0;
 
@@ -105,11 +110,13 @@ public partial class ScoreDisplay : CanvasLayer
         _finishedRounds++;
         _timeSinceRoundStart = 0;
 
-        _animationPlayer.Play(name: "ScoreDisplayShine", customSpeed: 2f / WeaveConstants.CountdownLength);
+        _animationPlayer.Play("ScoreDisplayShine", customSpeed: 2f / WeaveConstants.CountdownLength);
 
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.CountdownLength / 2f,
-                () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1))
+            TimerFactory.StartedSelfDestructingOneShot(
+                WeaveConstants.CountdownLength / 2f,
+                () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1)
+            )
         );
     }
 

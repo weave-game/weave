@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Org.BouncyCastle.Utilities.Collections;
-using Weave.Utils;
 using Weave.InputSources;
 using Weave.Networking;
+using Weave.Utils;
 
 namespace Weave.MenuControllers;
 
@@ -16,11 +13,12 @@ namespace Weave.MenuControllers;
 public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
-    private RTCClientManager _multiplayerManager;
 
-    private float _turnSpeed = 200;
+    [GetNode("BlurLayer")]
+    private CanvasLayer _blurLayer;
 
-    private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
+    [GetNode("UI/LobbyCodeLabel")]
+    private RichTextLabel _lobbyCodeLabel;
 
     /// <summary>
     /// Dictionary mapping a keybinding to a tuple with the time keybinding was pressed
@@ -30,35 +28,31 @@ public partial class StartScreen : Control
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
-    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
-    private Button _playButton;
+    [GetNode("UI/MemoriesLabel")]
+    private RichTextLabel _memoriesLabel;
+
+    private RTCClientManager _multiplayerManager;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Options")]
     private Button _optionsButton;
 
-    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
-    private Button _quitButton;
-
-    [GetNode("BlurLayer")]
-    private CanvasLayer _blurLayer;
-
-    [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
-    private VSeparator _vSeparator;
+    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
+    private Button _playButton;
 
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/StartButton")]
-    private Button _startButton;
-
-    [GetNode("UI/LobbyCodeLabel")]
-    private RichTextLabel _lobbyCodeLabel;
-
     [GetNode("UI/QRCodeTexture")]
     private TextureRect _qrCodeTexture;
 
-    [GetNode("UI/MemoriesLabel")]
-    private RichTextLabel _memoriesLabel;
+    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
+    private Button _quitButton;
+
+    [GetNode("UI/StartButton")]
+    private Button _startButton;
+
+    [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
+    private VSeparator _vSeparator;
 
     public override void _Ready()
     {
@@ -67,14 +61,15 @@ public partial class StartScreen : Control
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
-        _lobby.PlayerJoinedListeners += (_) => CallDeferred(nameof(PrintInputSources));
-        _lobby.PlayerLeftListeners += (_) => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintInputSources));
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
-        SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
+        SetLobbyQrCodeTexture(_lobby.LobbyQrCode);
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
+
         _multiplayerManager.ClientJoinedListeners += _lobby.Join;
         _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
@@ -85,23 +80,13 @@ public partial class StartScreen : Control
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
-    public override void _PhysicsProcess(double delta)
-    {
-        _lobbyPlayerDict.ForEach(player =>
-        {
-            var character = player.Value.GetNode<TextureRect>("PlayerCharacter");
-            if (player.Key.InputSource.IsTurningRight())
-                character.RotationDegrees += _turnSpeed * (float)delta;
-
-            if (player.Key.InputSource.IsTurningLeft())
-                character.RotationDegrees -= _turnSpeed * (float)delta;
-        });
-    }
-
     public override void _Input(InputEvent @event)
     {
         if (!_lobby.Open)
+        {
             return;
+        }
+
         switch (@event)
         {
             case InputEventJoypadButton button:
@@ -156,9 +141,9 @@ public partial class StartScreen : Control
         _playButton.Text = "PLAY";
         _optionsButton.Text = "OPTIONS";
         _quitButton.Text = "QUIT";
-        _playButton.CustomMinimumSize = new Vector2(200, 0);
-        _optionsButton.CustomMinimumSize = new Vector2(200, 0);
-        _quitButton.CustomMinimumSize = new Vector2(200, 0);
+        _playButton.CustomMinimumSize = new(200, 0);
+        _optionsButton.CustomMinimumSize = new(200, 0);
+        _quitButton.CustomMinimumSize = new(200, 0);
     }
 
     private void CollapseButtons()
@@ -166,9 +151,9 @@ public partial class StartScreen : Control
         _playButton.Text = "";
         _optionsButton.Text = "";
         _quitButton.Text = "";
-        _playButton.CustomMinimumSize = new Vector2(0, 0);
-        _optionsButton.CustomMinimumSize = new Vector2(0, 0);
-        _quitButton.CustomMinimumSize = new Vector2(0, 0);
+        _playButton.CustomMinimumSize = new(0, 0);
+        _optionsButton.CustomMinimumSize = new(0, 0);
+        _quitButton.CustomMinimumSize = new(0, 0);
     }
 
     private void PrintInputSources()
@@ -179,16 +164,13 @@ public partial class StartScreen : Control
             child.QueueFree();
         }
 
-        _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
-
         foreach (var playerInfo in _lobby.PlayerInfos)
         {
-            var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
+            var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
             lobbyPlayer.Modulate = playerInfo.Color;
             lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
             lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
-            _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
         }
     }
 
@@ -244,13 +226,19 @@ public partial class StartScreen : Control
     {
         var deviceId = @event.Device;
         if (deviceId < 0)
+        {
             return;
+        }
 
         if (@event.IsActionPressed(WeaveConstants.GamepadJoinAction))
+        {
             _lobby.Join(new GamepadInputSource(deviceId));
+        }
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
+        {
             _lobby.Leave(new GamepadInputSource(deviceId));
+        }
     }
 
     #endregion Gamepad
@@ -260,7 +248,7 @@ public partial class StartScreen : Control
         _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
     }
 
-    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    private void SetLobbyQrCodeTexture(Texture2D newTexture)
     {
         _qrCodeTexture.Texture = newTexture;
     }
