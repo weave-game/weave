@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using GodotSharper;
+using Weave.QR;
 using Weave.Utils;
 
 namespace Weave.InputSources;
@@ -11,16 +12,18 @@ public sealed class Lobby
 {
     public delegate void PlayerJoinedEventHandler(IInputSource source);
     public delegate void PlayerLeftEventHandler(IInputSource source);
-    private const int _lobbyCodeLength = 5;
-    private const string _lobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
-    private const string _lobbyQRCodePath = WeaveConstants.WeaveFrontendURL;
+    private const int LobbyCodeLength = 5;
+    private const string LobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
+    private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
 
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
+    private readonly IQrCodeGenerator _qrCodeGenerator;
 
     public Lobby()
     {
-        LobbyCode = GenerateLobbyCode(_lobbyCodeCharacters, _lobbyCodeLength);
-        LobbyQRCode = GenerateLobbyQRCode($"{_lobbyQRCodePath}/{LobbyCode}");
+        _qrCodeGenerator = new GdQrCodeGenerator();
+        LobbyCode = GenerateLobbyCode(LobbyCodeCharacters, LobbyCodeLength);
+        LobbyQrCode = GenerateLobbyQrCode($"{LobbyQrCodePath}/{LobbyCode}");
     }
 
     public PlayerJoinedEventHandler PlayerJoinedListeners { get; set; }
@@ -31,9 +34,9 @@ public sealed class Lobby
 
     public bool Open { get; set; }
 
-    public string LobbyCode { get; set; }
+    public string LobbyCode { get; }
 
-    public ImageTexture LobbyQRCode { get; set; }
+    public ImageTexture LobbyQrCode { get; }
 
     public void Join(IInputSource inputSource)
     {
@@ -69,9 +72,9 @@ public sealed class Lobby
         return new(result);
     }
 
-    private static ImageTexture GenerateLobbyQRCode(string str)
+    private ImageTexture GenerateLobbyQrCode(string str)
     {
-        return GDScriptHelper.GenerateQRCodeFromString(str);
+        return _qrCodeGenerator.GenerateQrCodeFromString(str);
     }
 
     private void UpdatePlayerInfos()

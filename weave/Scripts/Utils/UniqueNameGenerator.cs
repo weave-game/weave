@@ -71,13 +71,13 @@ public sealed class UniqueNameGenerator
 
     public string New()
     {
-        var attemps = 0;
+        var attempts = 0;
         string name;
 
         do
         {
             name = Generate();
-        } while (UsedNames.Contains(name) && ++attemps < MaxAttempts);
+        } while (UsedNames.Contains(name) && ++attempts < MaxAttempts);
 
         if (UsedNames.Contains(name))
         {

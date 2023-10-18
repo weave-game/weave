@@ -63,12 +63,11 @@ public static class GameConfig
     /// <returns>The acceleration.</returns>
     public static float GetAcceleration(int nPlayers)
     {
-        if (nPlayers <= 2)
+        return nPlayers switch
         {
-            return 1.4f;
-        }
-
-        return 1.1f;
+            <= 2 => 1.4f,
+            _ => 1.1f
+        };
     }
 
     /// <summary>
@@ -78,11 +77,10 @@ public static class GameConfig
     /// <returns>The turn speed acceleration.</returns>
     public static float GetTurnSpeedAcceleration(int nPlayers)
     {
-        if (nPlayers <= 2)
+        return nPlayers switch
         {
-            return 1.5f;
-        }
-
-        return 1.25f;
+            <= 2 => 1.5f,
+            _ => 1.25f
+        };
     }
 }

@@ -175,7 +175,7 @@ public partial class Goal : Node2D
 
         var center = new Vector2(0, 0);
         var totalColors = UnlockAreaColors.Count;
-        var arcAngle = 2 * (float)Math.PI / totalColors;
+        var arcAngle = (2 * (float)Math.PI) / totalColors;
 
         for (var i = 0; i < totalColors; i++)
         {

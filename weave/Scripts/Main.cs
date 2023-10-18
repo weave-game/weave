@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -187,11 +188,14 @@ public partial class Main : Node2D
                 player.GlobalPosition,
                 player.GetRadius()
             );
-            if (IsPlayerIntersecting(player, segments))
+
+            if (!IsPlayerIntersecting(player, segments))
             {
-                GameOver(player.Position);
-                break;
+                continue;
             }
+
+            GameOver(player.Position);
+            break;
         }
     }
 
@@ -353,7 +357,7 @@ public partial class Main : Node2D
         // --- SPAWN GOALS ---
 
         // Generate goal positions
-        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position));
+        var goalPositions = GetRandomPositionsInView(_players.Count, _players.Select(p => p.Position).ToList());
 
         // Spawn new goals
         _players.ForEach(
@@ -422,18 +426,18 @@ public partial class Main : Node2D
 
     private IList<Vector2> GetRandomPositionsInView(
         int n,
-        IEnumerable<Vector2> occupiedPositions = null
+        IReadOnlyList<Vector2> occupiedPositions = null
     )
     {
-        const int maxAttempts = 1000;
-        const float minDistance = 250;
-        const float margin = 100;
+        const int MaxAttempts = 1000;
+        const float MinDistance = 250;
+        const float Margin = 100;
         var positions = new List<Vector2>();
 
         // Generate positions
         for (var i = 0; i < n; i++)
         {
-            var valid = false;
+            bool valid;
             var attempt = 0;
             Vector2 newPosition;
 
@@ -442,34 +446,32 @@ public partial class Main : Node2D
                 attempt++;
 
                 newPosition = new(
-                    (float)GD.RandRange(margin, _width - margin),
-                    (float)GD.RandRange(margin, _height - margin)
+                    (float)GD.RandRange(Margin, _width - Margin),
+                    (float)GD.RandRange(Margin, _height - Margin)
                 );
 
                 valid = true;
 
-                occupiedPositions?.ForEach(
-                    position =>
+                foreach (var position in occupiedPositions ?? Array.Empty<Vector2>())
+                {
+                    var distance = position.DistanceTo(newPosition);
+                    if (distance < MinDistance)
                     {
-                        var distance = position.DistanceTo(newPosition);
-                        if (distance < minDistance)
-                        {
-                            valid = false;
-                        }
+                        valid = false;
                     }
-                );
+                }
 
                 positions.ForEach(
                     position =>
                     {
                         var distance = position.DistanceTo(newPosition);
-                        if (distance < minDistance)
+                        if (distance < MinDistance)
                         {
                             valid = false;
                         }
                     }
                 );
-            } while (!valid && attempt < maxAttempts);
+            } while (!valid && attempt < MaxAttempts);
 
             positions.Add(newPosition);
         }

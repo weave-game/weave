@@ -26,15 +26,12 @@ public static class EnumerableExtensions
     /// <param name="list"></param>
     /// <param name="condition"></param>
     /// <typeparam name="T">The type of the elements in the list</typeparam>
-    /// <returns>The element that was removed</returns>
-    public static T RemoveWhere<T>(this IList<T> list, Func<T, bool> condition) where T : class
+    public static void RemoveWhere<T>(this IList<T> list, Func<T, bool> condition) where T : class
     {
         var item = list.FirstOrDefault(condition);
         if (item != null)
         {
             list.Remove(item);
         }
-
-        return item;
     }
 }
