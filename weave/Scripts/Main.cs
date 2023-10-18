@@ -234,12 +234,29 @@ public partial class Main : Node2D
         _audioStreamPlayer.PitchScale = 0.5f;
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
-        // Save score
+        // Log score
         var score = new ScoreRecord(
             _scoreDisplay.Score,
             UniqueNameGenerator.Instance.New()
         );
         _scoreManager.Save(score);
+
+        // Log "difficulty"
+        var diffLogger = new CsvLogger(
+            WeaveConstants.DifficultyLogFileCsvPath,
+            new List<Func<Log>>
+            {
+                () => new("unix_time", Time.GetUnixTimeFromSystem().ToString()),
+                () => new("players", _lobby.Count.ToString()),
+                () => new("rounds", _round.ToString()),
+                () => new("score", _scoreDisplay.Score.ToString()),
+                () => new("time_ms", Time.GetTicksMsec().ToString())
+            },
+            LoggerMode.Append
+        );
+
+        diffLogger.Log();
+        diffLogger.Persist();
     }
 
     private ISet<SegmentShape2D> GetAllSegments()

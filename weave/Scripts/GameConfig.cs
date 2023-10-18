@@ -23,7 +23,7 @@ public static class GameConfig
     /// <returns>True if the game should have locks, false otherwise.</returns>
     public static bool ShouldHaveLocks(int nPlayers)
     {
-        return nPlayers == 2;
+        return nPlayers == 2 || nPlayers == 3;
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public static class GameConfig
         return nPlayers switch
         {
             <= 2 => 4,
-            3 => 0,
+            3 => 6,
             _ => 0
         };
     }
@@ -66,7 +66,7 @@ public static class GameConfig
         return nPlayers switch
         {
             <= 2 => 1.4f,
-            _ => 1.1f
+            _ => 2.2f
         };
     }
 
