@@ -5,7 +5,6 @@ using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
-using Org.BouncyCastle.Utilities.Collections;
 using Weave.Utils;
 using Weave.InputSources;
 using Weave.Networking;
@@ -26,7 +25,7 @@ public partial class StartScreen : Control
     /// Dictionary mapping a keybinding to a tuple with the time keybinding was pressed
     /// and a bool indicating whether the keybinding has left/joined the lobby during this keypress
     /// </summary>
-    private Dictionary<(Key, Key), (DateTime?, bool)> _pressingSince = new();
+    private readonly Dictionary<(Key, Key), (DateTime?, bool)> _pressingSince = new();
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
@@ -71,7 +70,7 @@ public partial class StartScreen : Control
         _lobby.PlayerLeftListeners += (_) => CallDeferred(nameof(PrintInputSources));
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
-        SetLobbyQRCodeTexture(_lobby.LobbyQrCode);
+        SetLobbyQrCodeTexture(_lobby.LobbyQrCode);
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
@@ -260,7 +259,7 @@ public partial class StartScreen : Control
         _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
     }
 
-    private void SetLobbyQRCodeTexture(ImageTexture newTexture)
+    private void SetLobbyQrCodeTexture(Texture2D newTexture)
     {
         _qrCodeTexture.Texture = newTexture;
     }
