@@ -13,10 +13,10 @@ public partial class Outline : Line2D
         var height = GetViewportRect().Size.Y;
 
         ClearPoints();
-        AddPoint(new(-WeaveConstants.LineWidth / 2, -WeaveConstants.LineWidth / 2));
-        AddPoint(new(width + (WeaveConstants.LineWidth / 2), -WeaveConstants.LineWidth / 2));
-        AddPoint(new(width + (WeaveConstants.LineWidth / 2), height + (WeaveConstants.LineWidth / 2)));
-        AddPoint(new(-WeaveConstants.LineWidth / 2, height + (WeaveConstants.LineWidth / 2)));
-        AddPoint(GetPointPosition(0) + new Vector2(0, -WeaveConstants.LineWidth / 2));
+        AddPoint(new(-Width / 2, -Width / 2));
+        AddPoint(new(width + (Width / 2), -Width / 2));
+        AddPoint(new(width + (Width / 2), height + (Width / 2)));
+        AddPoint(new(-Width / 2, height + (Width / 2)));
+        AddPoint(GetPointPosition(0) + new Vector2(0, -Width / 2));
     }
 }
