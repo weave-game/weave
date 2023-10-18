@@ -12,6 +12,8 @@
 [sub_resource type="LabelSettings" id="LabelSettings_wip0u"]
 font = ExtResource("5_1pvgl")
 font_size = 64
+outline_size = 16
+outline_color = Color(0.0666667, 0.0745098, 0.0705882, 1)
 
 [sub_resource type="Animation" id="Animation_drqyu"]
 resource_name = "Preparation"
@@ -50,9 +52,11 @@ _data = {
 script = ExtResource("1_x7cvk")
 
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
+layer = -1
 visible = false
 
 [node name="CountdownLayer" type="CanvasLayer" parent="."]
+layer = -1
 
 [node name="CenterContainer" type="CenterContainer" parent="CountdownLayer"]
 anchors_preset = 8
@@ -84,6 +88,7 @@ libraries = {
 }
 
 [node name="ScoreDisplay" parent="." instance=ExtResource("6_6l1qm")]
+layer = -1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 process_mode = 3

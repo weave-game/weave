@@ -5,10 +5,10 @@ namespace Weave;
 
 public partial class Camera : Camera2D
 {
-    private Vector2 _desiredPosition;
-    private Vector2 _desiredZoom;
-    private float _desiredRotation;
     private float _desiredLerpStrength = 3f;
+    private Vector2 _desiredPosition;
+    private float _desiredRotation;
+    private Vector2 _desiredZoom;
     private float _lerpStrength = 3f;
 
     public override void _Ready()
@@ -38,11 +38,13 @@ public partial class Camera : Camera2D
         _desiredZoom = new(2f, 2f);
 
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(3, () =>
-            {
-                _lerpStrength = 0f;
-                Reset();
-            })
+            TimerFactory.StartedSelfDestructingOneShot(
+                3, () =>
+                {
+                    _lerpStrength = 0f;
+                    Reset();
+                }
+            )
         );
     }
 }

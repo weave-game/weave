@@ -39,7 +39,9 @@ public sealed class UniqueNameGeneratorTests
         if (prefixes is List<string> prefixesList)
         {
             while (prefixesList.Any())
+            {
                 prefixesList.RemoveAt(0);
+            }
 
             prefixesList.Add(prefix);
         }
@@ -51,7 +53,9 @@ public sealed class UniqueNameGeneratorTests
         if (suffixes is List<string> suffixesList)
         {
             while (suffixesList.Any())
+            {
                 suffixesList.RemoveAt(0);
+            }
 
             suffixesList.Add(suffix);
         }

@@ -31,7 +31,7 @@ public class Grid
             for (var colIndex = 0; colIndex < _nrCols; colIndex++)
             {
                 var position = new Vector2(colIndex * _cellWidth, rowIndex * _cellHeight);
-                var rect = new Rect2(position, new Vector2(_cellWidth, _cellHeight));
+                var rect = new Rect2(position, new(_cellWidth, _cellHeight));
                 var cell = new Cell(rect);
                 rowList.Add(cell);
             }
@@ -52,7 +52,9 @@ public class Grid
             for (var j = 0; j < _nrRows; j++)
             {
                 if (IsCircleIntersectingRectangle(playerPosition, playerRadius, _cells[i][j].Rect))
+                {
                     playerSegments.UnionWith(_cells[i][j].Segments);
+                }
             }
         }
 
@@ -62,7 +64,9 @@ public class Grid
     public void AddSegment(SegmentShape2D segment)
     {
         if (IsPointOutsideBounds(segment.A) || IsPointOutsideBounds(segment.B))
+        {
             return;
+        }
 
         var aXIndex = (int)Math.Floor(segment.A.X / _cellWidth);
         var aYIndex = (int)Math.Floor(segment.A.Y / _cellHeight);
@@ -81,7 +85,9 @@ public class Grid
     )
     {
         if (rectangle.HasPoint(circleCenter))
+        {
             return true;
+        }
 
         var closestX = Mathf.Clamp(
             circleCenter.X,

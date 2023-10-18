@@ -12,24 +12,25 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-      <PackageReference Include="SIPSorcery" Version="6.0.12" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="SIPSorcery" Version="6.0.12"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="WeaveTests\**" />
+        <Compile Remove="WeaveTests\**"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="WeaveTests\**" />
+        <EmbeddedResource Remove="WeaveTests\**"/>
     </ItemGroup>
+
 
     <PropertyGroup>
-      <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
-      <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+        <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+        <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
     </PropertyGroup>
 </Project>

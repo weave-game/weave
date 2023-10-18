@@ -2,6 +2,8 @@ namespace Weave.Utils;
 
 public static class WeaveConstants
 {
+    public static bool DevButtonsEnabled => true;
+
     #region Lines
 
     public const int LineWidth = 6;
@@ -40,13 +42,12 @@ public static class WeaveConstants
 
     #endregion Groups
 
-    public static bool DevButtonsEnabled => true;
-
     #region URLs
 
-    public const string SignallingServerURL = "ws://localhost:8080";
-    public const string STUNServerURL = "stun:stun.l.google.com:19302";
-    public const string WeaveFrontendURL = "localhost:3000";
+    public const string SignallingServerUrl = "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
+    public const string StunServerUrl = "stun:stun.l.google.com:19302";
+    public const string WeaveFrontendUrl = "https://weave-front-3ca0f45187f2.herokuapp.com";
 
     #endregion URLs
+
 }
