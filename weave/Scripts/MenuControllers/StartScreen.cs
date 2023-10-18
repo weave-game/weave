@@ -22,6 +22,12 @@ public partial class StartScreen : Control
 
     private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
 
+    /// <summary>
+    /// Dictionary mapping a keybinding to a tuple with the time keybinding was pressed
+    /// and a bool indicating whether the keybinding has left/joined the lobby during this keypress
+    /// </summary>
+    private Dictionary<(Key, Key), (DateTime?, bool)> _pressingSince = new();
+
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
@@ -196,16 +202,37 @@ public partial class StartScreen : Control
                 Input.IsKeyPressed(keybindingTuple.Item1)
                 && Input.IsKeyPressed(keybindingTuple.Item2);
 
-            if (!isPressingBoth)
-                continue;
-
             var kb = new KeyboardInputSource(keybindingTuple);
             var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
 
-            if (alreadyExisting != null)
-                _lobby.Leave(alreadyExisting);
-            else
+            if (!isPressingBoth)
+            {
+                _pressingSince[keybindingTuple] = (null, false);
+                continue;
+            }
+
+            if (_pressingSince.ContainsKey(keybindingTuple) && _pressingSince[keybindingTuple].Item2)
+                continue;
+
+            if (alreadyExisting == null)
+            {
                 _lobby.Join(kb);
+                _pressingSince[keybindingTuple] = (null, true);
+            }
+            else
+            {
+                if (!_pressingSince.ContainsKey(keybindingTuple) || _pressingSince[keybindingTuple].Item1 == null)
+                {
+                    _pressingSince[keybindingTuple] = (DateTime.Now, false);
+                    continue;
+                }
+
+                if (!(DateTime.Now - _pressingSince[keybindingTuple].Item1 >= TimeSpan.FromSeconds(0.5))) continue;
+
+                _lobby.Leave(alreadyExisting);
+
+                _pressingSince[keybindingTuple] = (null, true);
+            }
         }
     }
 

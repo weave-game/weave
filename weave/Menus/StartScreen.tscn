@@ -219,3 +219,4 @@ curve = SubResource("Curve2D_bm1nx")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_4fvpc")
 volume_db = -5.943
+autoplay = true
