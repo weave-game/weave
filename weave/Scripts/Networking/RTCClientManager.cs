@@ -43,7 +43,7 @@ public class RTCClientManager
     {
         await ConnectWebSocketAsync();
 
-        var joinMessage = new { type = "register-host", lobby_code = _lobbyCode };
+        var joinMessage = new { type = "register-host", lobbyCode = _lobbyCode };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(joinMessage));
 
         while (_webSocket.State == WebSocketState.Open)
@@ -84,6 +84,19 @@ public class RTCClientManager
                 var idString = (string)msg.clientId;
                 var peerConnection = await CreatePeerConnectionAsync(idString);
                 await SendOfferAsync(peerConnection, idString);
+            }
+            else if (msg.type == "client-disconnected")
+            {
+                var idString = (string)msg.clientId;
+                HandlePlayerLeave(idString);
+            }
+            else if (msg.type == "error")
+            {
+                GD.Print($"Received error: {msg.message}");
+            }
+            else
+            {
+                GD.Print("Received unknown message type");
             }
         }
     }
@@ -129,7 +142,7 @@ public class RTCClientManager
 
         peerConnection.onicecandidate += async (candidate) =>
         {
-            var iceMessage = new { type = "ice-candidate-host", candidate, clientId };
+            var iceMessage = new { type = "ice-candidate-host", candidate, clientId, lobbyCode = _lobbyCode };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(iceMessage));
         };
 
@@ -141,7 +154,7 @@ public class RTCClientManager
         var offer = peerConnection.createOffer(null);
         await peerConnection.setLocalDescription(offer);
 
-        var offerMessage = new { type = "offer", offer, clientId };
+        var offerMessage = new { type = "offer", offer, clientId, lobbyCode = _lobbyCode };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(offerMessage));
     }
 
@@ -174,6 +187,9 @@ public class RTCClientManager
 
     private void HandlePlayerLeave(string clientId)
     {
+        if (!_clientSources.ContainsKey(clientId))
+            return;
+
         ClientLeftListeners?.Invoke(_clientSources.GetValueOrDefault(clientId));
         _clientConnections.Remove(clientId);
         _clientSources.Remove(clientId);
@@ -189,7 +205,7 @@ public class RTCClientManager
     {
         foreach (var clientId in _clientConnections.Keys)
         {
-            var startMessage = new { type = "message", message = "start", clientId };
+            var startMessage = new { type = "message", message = "start", clientId, lobbyCode = _lobbyCode };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(startMessage));
         }
     }
@@ -198,8 +214,14 @@ public class RTCClientManager
     {
         foreach (var clientId in _clientConnections.Keys)
         {
-            var endMessage = new { type = "message", message = "end", clientId };
+            var endMessage = new { type = "message", message = "end", clientId, lobbyCode = _lobbyCode };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(endMessage));
         }
+    }
+
+    public async Task NotifyChangePlayerColor(string clientId, string newColor)
+    {
+        var colorMessage = new { type = "color-change", color = newColor, clientId, lobbyCode = _lobbyCode };
+        await SendWebSocketMessageAsync(JsonConvert.SerializeObject(colorMessage));
     }
 }

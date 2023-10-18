@@ -13,6 +13,8 @@ public sealed class Lobby
     public PlayerJoinedEventHandler PlayerJoinedListeners { get; set; }
     public delegate void PlayerLeftEventHandler(IInputSource source);
     public PlayerLeftEventHandler PlayerLeftListeners { get; set; }
+    public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
+    public PlayerInfoUpdatedEventHandler PlayerInfoUpdatedListeners { get; set; }
 
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
     public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();
@@ -77,6 +79,7 @@ public sealed class Lobby
         {
             playerInfo.Color = colorGenerator.NewColor();
             playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
+            PlayerInfoUpdatedListeners?.Invoke(playerInfo);
         });
     }
 }

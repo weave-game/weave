@@ -56,6 +56,7 @@ public partial class StartScreen : Control
 
         _lobby.PlayerJoinedListeners += (_) => CallDeferred(nameof(PrintInputSources));
         _lobby.PlayerLeftListeners += (_) => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerInfoUpdatedListeners += HandleUpdateWebPlayerColor;
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
         SetLobbyQRCodeTexture(_lobby.LobbyQRCode);
@@ -213,5 +214,11 @@ public partial class StartScreen : Control
     private void SetLobbyQRCodeTexture(ImageTexture newTexture)
     {
         _qrCodeTexture.Texture = newTexture;
+    }
+
+    private void HandleUpdateWebPlayerColor(PlayerInfo playerInfo)
+    {
+        if (playerInfo.InputSource is WebInputSource source)
+            _multiplayerManager.NotifyChangePlayerColor(source.Id, playerInfo.Color.ToString());
     }
 }
