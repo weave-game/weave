@@ -8,15 +8,16 @@ public partial class Outline : Line2D
     public override void _Ready()
     {
         Width = WeaveConstants.LineWidth;
+        var halfWidth = Width / 2;
 
-        var width = GetViewportRect().Size.X;
-        var height = GetViewportRect().Size.Y;
+        var viewportWidth = GetViewportRect().Size.X;
+        var viewportHeight = GetViewportRect().Size.Y;
 
         ClearPoints();
-        AddPoint(new(-Width / 2, -Width / 2));
-        AddPoint(new(width + (Width / 2), -Width / 2));
-        AddPoint(new(width + (Width / 2), height + (Width / 2)));
-        AddPoint(new(-Width / 2, height + (Width / 2)));
-        AddPoint(GetPointPosition(0) + new Vector2(0, -Width / 2));
+        AddPoint(new(-halfWidth, -halfWidth));
+        AddPoint(new(viewportWidth + halfWidth, -halfWidth));
+        AddPoint(new(viewportWidth + halfWidth, viewportHeight + halfWidth));
+        AddPoint(new(-halfWidth, viewportHeight + halfWidth));
+        AddPoint(GetPointPosition(0) + new Vector2(0, -halfWidth));
     }
 }
