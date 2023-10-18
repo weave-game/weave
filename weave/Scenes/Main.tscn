@@ -52,11 +52,9 @@ _data = {
 script = ExtResource("1_x7cvk")
 
 [node name="GameOverOverlay" parent="." instance=ExtResource("4_lq1d2")]
-layer = -1
 visible = false
 
 [node name="CountdownLayer" type="CanvasLayer" parent="."]
-layer = -1
 
 [node name="CenterContainer" type="CenterContainer" parent="CountdownLayer"]
 anchors_preset = 8
@@ -88,7 +86,6 @@ libraries = {
 }
 
 [node name="ScoreDisplay" parent="." instance=ExtResource("6_6l1qm")]
-layer = -1
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 process_mode = 3
