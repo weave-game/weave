@@ -14,6 +14,13 @@ public partial class Player : CharacterBody2D
 
     private Vector2 _desiredScale = new(1, 1);
     private bool _hasReachedSize;
+
+    [GetNode("HorizontalIndicator")]
+    private Sprite2D _indicatorX;
+
+    [GetNode("VerticalIndicator")]
+    private Sprite2D _indicatorY;
+
     private bool _isMoving;
 
     [GetNode("PlayerNamePivot/PlayerName")]
@@ -24,12 +31,6 @@ public partial class Player : CharacterBody2D
 
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
-
-    [GetNode("HorizontalIndicator")]
-    private Sprite2D _indicatorX;
-
-    [GetNode("VerticalIndicator")]
-    private Sprite2D _indicatorY;
 
     public PlayerInfo PlayerInfo { get; set; }
 
@@ -141,17 +142,17 @@ public partial class Player : CharacterBody2D
         );
 
         _indicatorX.GlobalPosition = new(
-            (Mathf.Round(GlobalPosition.X / width) + 1) % 2 * width,
+            ((Mathf.Round(GlobalPosition.X / width) + 1) % 2) * width,
             GlobalPosition.Y
         );
 
         _indicatorY.GlobalPosition = new(
             GlobalPosition.X,
-            (Mathf.Round(GlobalPosition.Y / height) + 1) % 2 * height
+            ((Mathf.Round(GlobalPosition.Y / height) + 1) % 2) * height
         );
 
-        float scaleX = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.X) / MinDistance), 2) * MaxScale;
-        float scaleY = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.Y) / MinDistance), 2) * MaxScale;
+        var scaleX = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.X) / MinDistance), 2) * MaxScale;
+        var scaleY = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.Y) / MinDistance), 2) * MaxScale;
 
         _indicatorX.GlobalScale = new(scaleX, scaleX);
         _indicatorY.GlobalScale = new(scaleY, scaleY);

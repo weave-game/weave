@@ -20,9 +20,6 @@ public partial class Goal : Node2D
     [GetNode("CollectPlayer")]
     private AudioStreamPlayer2D _collectSoundPlayer;
 
-    [GetNode("PlayerNameLabel")]
-    private Label _playerNameLabel;
-
     private Color _color;
 
     [GetNode("GoalSprite")]
@@ -33,6 +30,11 @@ public partial class Goal : Node2D
     [GetNode("LockSprite")]
     private Sprite2D _lockSprite;
 
+    private string _playerName;
+
+    [GetNode("PlayerNameLabel")]
+    private Label _playerNameLabel;
+
     private bool _reached;
     private float _unlockAreaRadius;
 
@@ -40,7 +42,6 @@ public partial class Goal : Node2D
     private Sprite2D _unlockAreaSprite;
 
     private float _unlockDrawingRotation;
-    private string _playerName;
 
     [GetNode("UnlockParticles")]
     private CpuParticles2D _unlockParticles;
@@ -132,7 +133,9 @@ public partial class Goal : Node2D
     public void SetPlayerName(string playerName)
     {
         if (_playerNameLabel != null)
+        {
             _playerNameLabel.Text = playerName;
+        }
 
         _playerName = playerName;
     }

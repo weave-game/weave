@@ -45,11 +45,6 @@ public partial class ScoreDisplay : CanvasLayer
         }
 
         var scoreIncrease = (float)delta * PointsForSeconds;
-
-        // Original
-        // _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
-
-        // New
         _score += scoreIncrease * _playerCount;
 
         _timeSinceRoundStart += delta;
