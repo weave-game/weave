@@ -1,4 +1,3 @@
-using System;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -10,9 +9,6 @@ public partial class ScoreDisplay : CanvasLayer
 {
     private const float PointsForSeconds = 25;
     private const float PointsForRound = 500;
-    private const float MinPointsForRound = 150;
-    private const float RoundMultiplier = 1.1f;
-    private const float PlayerMultiplier = 1.5f;
 
     [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
@@ -24,11 +20,6 @@ public partial class ScoreDisplay : CanvasLayer
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
-
-    /// <summary>
-    ///     Change to switch between different scoring rules
-    /// </summary>
-    private ScoringRule _scoringRule = ScoringRule.TimeAndRound;
 
     private double _timeSinceRoundStart;
 
@@ -53,29 +44,12 @@ public partial class ScoreDisplay : CanvasLayer
             return;
         }
 
-        float scoreIncrease = 0;
-
-        switch (_scoringRule)
-        {
-            case ScoringRule.TimeOnly:
-            case ScoringRule.TimeAndRound:
-                scoreIncrease += (float)delta * PointsForSeconds;
-                break;
-            case ScoringRule.TimeOnlyBasedOnRound:
-                scoreIncrease +=
-                    (float)delta
-                    * PointsForSeconds
-                    * MathF.Pow(RoundMultiplier, _finishedRounds - 1);
-                break;
-            case ScoringRule.RoundOnly:
-            case ScoringRule.RoundOnlyBasedOnTime:
-                break;
-            default:
-                throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
-        }
+        var scoreIncrease = (float)delta * PointsForSeconds;
 
         // Original
         // _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+
+        // New
         _score += scoreIncrease * _playerCount;
 
         _timeSinceRoundStart += delta;
@@ -88,27 +62,6 @@ public partial class ScoreDisplay : CanvasLayer
             return;
         }
 
-        float scoreIncrease = 0;
-
-        switch (_scoringRule)
-        {
-            case ScoringRule.RoundOnly:
-            case ScoringRule.TimeAndRound:
-                scoreIncrease += PointsForRound;
-                break;
-            case ScoringRule.RoundOnlyBasedOnTime:
-                scoreIncrease += MathF.Max(
-                    MinPointsForRound,
-                    PointsForRound - ((float)_timeSinceRoundStart * PointsForSeconds)
-                );
-                break;
-            case ScoringRule.TimeOnly:
-            case ScoringRule.TimeOnlyBasedOnRound:
-                break;
-            default:
-                throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
-        }
-
         _finishedRounds++;
         _timeSinceRoundStart = 0;
 
@@ -117,7 +70,7 @@ public partial class ScoreDisplay : CanvasLayer
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(
                 WeaveConstants.CountdownLength / 2f,
-                () => _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1)
+                () => _score += PointsForRound * _playerCount
             )
         );
     }
@@ -131,14 +84,5 @@ public partial class ScoreDisplay : CanvasLayer
     {
         Enabled = false;
         _animationPlayer.Play("ScoreDisplayEnd");
-    }
-
-    private enum ScoringRule
-    {
-        TimeOnly,
-        TimeOnlyBasedOnRound,
-        RoundOnly,
-        RoundOnlyBasedOnTime,
-        TimeAndRound
     }
 }
