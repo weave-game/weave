@@ -20,6 +20,9 @@ public partial class Goal : Node2D
     [GetNode("CollectPlayer")]
     private AudioStreamPlayer2D _collectSoundPlayer;
 
+    [GetNode("PlayerNameLabel")]
+    private Label _playerNameLabel;
+
     private Color _color;
 
     [GetNode("GoalSprite")]
@@ -37,6 +40,7 @@ public partial class Goal : Node2D
     private Sprite2D _unlockAreaSprite;
 
     private float _unlockDrawingRotation;
+    private string _playerName;
 
     [GetNode("UnlockParticles")]
     private CpuParticles2D _unlockParticles;
@@ -69,6 +73,7 @@ public partial class Goal : Node2D
         this.GetNodes();
         var area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
+        _playerNameLabel.Text = _playerName;
 
         if (HasLock)
         {
@@ -122,6 +127,14 @@ public partial class Goal : Node2D
         _goalSprite.Show();
         _lockSprite.Hide();
         _unlockSoundPlayer.Play();
+    }
+
+    public void SetPlayerName(string playerName)
+    {
+        if (_playerNameLabel != null)
+            _playerNameLabel.Text = playerName;
+
+        _playerName = playerName;
     }
 
     private void OnBodyEntered(Node2D body)
@@ -181,7 +194,7 @@ public partial class Goal : Node2D
         {
             var startAngle = (i * arcAngle) + _unlockDrawingRotation;
             var endAngle = ((i + 1) * arcAngle) + _unlockDrawingRotation;
-            DrawArc(center, _unlockAreaRadius, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
+            DrawArc(center, _unlockAreaRadius - 8, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
         }
     }
 }

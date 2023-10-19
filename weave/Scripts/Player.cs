@@ -129,8 +129,8 @@ public partial class Player : CharacterBody2D
 
     private void HandleIndicators()
     {
-        const float MinDistance = 200;
-        const float MaxScale = 0.003f;
+        const float MinDistance = 100;
+        const float MaxScale = 0.01f;
 
         var width = GetViewportRect().Size.X;
         var height = GetViewportRect().Size.Y;

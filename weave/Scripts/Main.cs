@@ -105,8 +105,8 @@ public partial class Main : Node2D
         _players.ForEach(
             p =>
             {
-                _acceleration -= 0.01f * _acceleration * (float)delta;
-                _turnAcceleration -= 0.01f * _turnAcceleration * (float)delta;
+                _acceleration -= 0.002f * _acceleration * (float)delta;
+                _turnAcceleration -= 0.002f * _turnAcceleration * (float)delta;
 
                 p.MovementSpeed += _acceleration * (float)delta;
                 p.TurnSpeed += _turnAcceleration * (float)delta;
@@ -387,19 +387,8 @@ public partial class Main : Node2D
                 goal.PlayerReachedGoal += OnPlayerReachedGoal;
                 goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
                 goal.HasLock = GameConfig.ShouldHaveLocks(_lobby.Count);
-
-                if (_lobby.Count <= 2)
-                {
-                    // Color the goal with the other players' colors
-                    goal.UnlockAreaColors = _players
-                        .Where(p => p.PlayerInfo.Color != player.PlayerInfo.Color)
-                        .Select(p => p.PlayerInfo.Color).ToList();
-                }
-                else
-                {
-                    // Color the goal with the player's color
-                    goal.UnlockAreaColors = new List<Color> { player.PlayerInfo.Color };
-                }
+                goal.SetPlayerName(player.PlayerInfo.Name);
+                goal.UnlockAreaColors = new List<Color> { player.PlayerInfo.Color };
             }
         );
 
@@ -433,10 +422,10 @@ public partial class Main : Node2D
                 obstacle.RotationDegrees = GD.RandRange(0, 360);
 
                 // Random scale
-                obstacle.SetObstacleSize(
-                    GD.RandRange(3, 5),
-                    GD.RandRange(3, 5)
-                );
+                var area = GD.RandRange(15, 25);
+                var side1 = (int)GD.RandRange(1, Math.Sqrt(area));
+                var side2 = area / side1;
+                obstacle.SetObstacleSize(side1, side2);
             }
         );
     }
