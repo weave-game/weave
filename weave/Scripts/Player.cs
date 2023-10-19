@@ -81,14 +81,14 @@ public partial class Player : CharacterBody2D
 
     public override void _Process(double delta)
     {
-        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) < 0.01f)
-        {
-            Scale = _desiredScale;
-            _hasReachedSize = true;
-        }
-        else
+        if (!_hasReachedSize)
         {
             Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
+
+            if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) < 0.01f)
+            {
+                _hasReachedSize = true;
+            }
         }
 
         HandleIndicators();
