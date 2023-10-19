@@ -18,6 +18,11 @@ public sealed class WebInputSource : IInputSource
     {
         if (_directionQueue.Count > 0)
         {
+            var next = _directionQueue.Peek();
+
+            if (next != direction && next != "forward")
+                return false;
+
             _lastDirection = _directionQueue.Dequeue();
             return _lastDirection == direction;
         }
@@ -53,11 +58,11 @@ public sealed class WebInputSource : IInputSource
 
     public string LeftInputString()
     {
-        return "<";
+        return "< (web)";
     }
 
     public string RightInputString()
     {
-        return ">";
+        return "(web) >";
     }
 }
