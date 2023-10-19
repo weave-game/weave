@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://do2omcqx18vk6"]
+[gd_scene load_steps=13 format=3 uid="uid://do2omcqx18vk6"]
 
 [ext_resource type="Script" path="res://Scripts/Main.cs" id="1_x7cvk"]
 [ext_resource type="AudioStream" uid="uid://c1v30d3rogeso" path="res://Assets/Music/weave.mp3" id="4_4yh78"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="7_trvja"]
 [ext_resource type="AudioStream" uid="uid://c4yf6ykqyp4rd" path="res://Assets/SFX/complete.mp3" id="7_wjcpy"]
 [ext_resource type="Script" path="res://Scripts/Camera.cs" id="8_npgvn"]
+[ext_resource type="Script" path="res://Scripts/Outline.cs" id="9_tqo4d"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_wip0u"]
 font = ExtResource("5_1pvgl")
@@ -103,3 +104,8 @@ volume_db = -10.311
 position = Vector2(800, 450)
 ignore_rotation = false
 script = ExtResource("8_npgvn")
+
+[node name="Outline" type="Line2D" parent="."]
+z_index = 10
+default_color = Color(0.145098, 0.145098, 0.145098, 1)
+script = ExtResource("9_tqo4d")
