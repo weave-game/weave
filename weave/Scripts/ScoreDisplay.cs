@@ -74,7 +74,9 @@ public partial class ScoreDisplay : CanvasLayer
                 throw new NotSupportedException($"Unsupported scoring rule: {_scoringRule}");
         }
 
-        _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        // Original
+        // _score += scoreIncrease * MathF.Pow(PlayerMultiplier, _playerCount - 1);
+        _score += scoreIncrease * _playerCount;
 
         _timeSinceRoundStart += delta;
     }
