@@ -194,15 +194,17 @@ public class RTCClientManager
 
     private void HandlePlayerLeave(string clientId)
     {
-        if (!_clientSources.ContainsKey(clientId))
-            return;
-
         _clientSources.TryGetValue(clientId, out var source);
+        _clientConnections.TryGetValue(clientId, out var connection);
+
+        if (connection != null && connection.connectionState == RTCPeerConnectionState.connected)
+            connection.close();
+
+        if (source != null && _webSocket.State == WebSocketState.Open)
+            ClientLeftListeners?.Invoke(source);
+
         _clientConnections.Remove(clientId);
         _clientSources.Remove(clientId);
-
-        if (_webSocket.State == WebSocketState.Open)
-            ClientLeftListeners?.Invoke(source);
     }
 
     private void HandlePlayerInput(string playerId, string input)
