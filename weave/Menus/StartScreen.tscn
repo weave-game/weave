@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cnvxuqog43akx"]
+[gd_scene load_steps=23 format=3 uid="uid://cnvxuqog43akx"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/StartScreen.cs" id="1_bb43u"]
 [ext_resource type="Texture2D" uid="uid://bse0wojmkaxk7" path="res://Assets/weave.png" id="2_gitg2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b0km2s34ci8e3" path="res://Assets/Icons/play-circle.svg" id="5_76tk4"]
 [ext_resource type="Texture2D" uid="uid://djtchdeox7xxd" path="res://Assets/Icons/adjustments-horizontal.svg" id="6_bndfp"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="7_6tkco"]
+[ext_resource type="FontFile" uid="uid://cubowpt0beb6k" path="res://Assets/Fonts/Open_Sans/static/OpenSans-Bold.ttf" id="9_05tpy"]
 [ext_resource type="FontFile" uid="uid://dau4vbgu1330x" path="res://Assets/Fonts/Inconsolata/Inconsolata-VariableFont_wdth,wght.ttf" id="9_joc22"]
 [ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
 [ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
@@ -20,6 +21,11 @@ grow_begin = 0.0
 grow_end = 0.0
 thickness = 3
 vertical = true
+
+[sub_resource type="LabelSettings" id="LabelSettings_o1u1d"]
+font = ExtResource("9_05tpy")
+font_size = 24
+font_color = Color(1, 0.333333, 0.333333, 1)
 
 [sub_resource type="Curve2D" id="Curve2D_b5vkc"]
 _data = {
@@ -44,6 +50,51 @@ _data = {
 "points": PackedVector2Array(-228.356, 119.356, 228.356, -119.356, -182, 0, -155.544, -61.8105, 155.544, 61.8105, 344, 285, -136.364, -55.4701, 136.364, 55.4701, 844, 174, -45.8669, 150.054, 45.8669, -150.054, 1320, 257, -125.521, -20.7385, 125.521, 20.7385, 1591, 80, 68.3913, -202.324, -68.3913, 202.324, 1562, 714, 282.114, 11.3986, -282.114, -11.3986, 549, 1011, 241.777, -9.6594, -241.777, 9.6594, -31, 618)
 }
 point_count = 8
+
+[sub_resource type="Animation" id="Animation_ksaue"]
+resource_name = "NoPlayers"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/NoPlayersLabel:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("UI/NoPlayersLabel:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(-0.1, 0.2, 2),
+"transitions": PackedFloat32Array(2, 2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("UI/NoPlayersLabel:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(-0.1, 2),
+"transitions": PackedFloat32Array(0.1, 1),
+"update": 0,
+"values": [Vector2(600, 750), Vector2(600, 630)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0cqsb"]
+_data = {
+"NoPlayers": SubResource("Animation_ksaue")
+}
 
 [node name="StartScreen" type="Control"]
 layout_mode = 3
@@ -88,14 +139,13 @@ visible = false
 layer = -1
 
 [node name="MemoriesLabel" type="RichTextLabel" parent="UI"]
-visible = false
 clip_contents = false
-offset_left = 640.0
+offset_left = 650.0
 offset_top = 736.0
-offset_right = 901.0
+offset_right = 950.0
 offset_bottom = 759.0
 bbcode_enabled = true
-text = "Ready to [b]weave[/b] some memories?"
+text = "[center]Ready to [b]weave[/b] some memories?[/center]"
 autowrap_mode = 0
 
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
@@ -165,11 +215,21 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 16
 
-[node name="StartButton" type="Button" parent="UI"]
+[node name="NoPlayersLabel" type="Label" parent="UI"]
 visible = false
-offset_left = 608.0
+modulate = Color(1, 1, 1, 0)
+offset_left = 600.0
+offset_top = 630.0
+offset_right = 1000.0
+offset_bottom = 667.0
+text = "Can't start with no players"
+label_settings = SubResource("LabelSettings_o1u1d")
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="UI"]
+offset_left = 640.0
 offset_top = 768.0
-offset_right = 928.0
+offset_right = 960.0
 offset_bottom = 853.0
 size_flags_vertical = 4
 theme = ExtResource("4_8y3os")
@@ -221,3 +281,8 @@ curve = SubResource("Curve2D_bm1nx")
 stream = ExtResource("10_4fvpc")
 volume_db = -5.943
 autoplay = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_0cqsb")
+}

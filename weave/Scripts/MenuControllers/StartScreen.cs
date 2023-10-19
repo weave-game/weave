@@ -28,6 +28,9 @@ public partial class StartScreen : Control
     [GetNode("UI/LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
 
+    [GetNode("AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
     private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
@@ -155,6 +158,12 @@ public partial class StartScreen : Control
 
     private void OnStartButtonPressed()
     {
+        if (_lobby.Count == 0)
+        {
+            _animationPlayer.Stop();
+            _animationPlayer.Play("NoPlayers");
+            return;
+        }
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
