@@ -1,26 +1,44 @@
 using System;
+using Godot;
+using System.Collections.Generic;
 
 namespace Weave.InputSources;
 
 public sealed class WebInputSource : IInputSource
 {
+    public string Id { get; }
+
+    private readonly Queue<string> _directionQueue = new();
+    private string _lastDirection = "forward";
+
     public WebInputSource(string id)
     {
         Id = id;
     }
 
-    public string Id { get; }
-
-    public string DirectionState { get; set; }
+    public bool IsTurning(string direction)
+    {
+        if (_directionQueue.Count > 0)
+        {
+            _lastDirection = _directionQueue.Dequeue();
+            return _lastDirection == direction;
+        }
+        return _lastDirection == direction;
+    }
 
     public bool IsTurningLeft()
     {
-        return string.Equals(DirectionState, "left", StringComparison.OrdinalIgnoreCase);
+        return IsTurning("left");
     }
 
     public bool IsTurningRight()
     {
-        return string.Equals(DirectionState, "right", StringComparison.OrdinalIgnoreCase);
+        return IsTurning("right");
+    }
+
+    public void SetDirection(string direction)
+    {
+        _directionQueue.Enqueue(direction.ToLower());
     }
 
     public InputType Type => InputType.Web;
@@ -37,11 +55,11 @@ public sealed class WebInputSource : IInputSource
 
     public string LeftInputString()
     {
-        return "mobile-left";
+        return "<";
     }
 
     public string RightInputString()
     {
-        return "mobile-right";
+        return ">";
     }
 }

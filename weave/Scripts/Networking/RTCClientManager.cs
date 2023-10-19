@@ -210,7 +210,7 @@ public class RTCClientManager
         if (source == null)
             return;
 
-        source.DirectionState = input;
+        source.SetDirection(input);
     }
 
     public async void NotifyStartGameAsync()

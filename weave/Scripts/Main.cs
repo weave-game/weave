@@ -417,8 +417,8 @@ public partial class Main : Node2D
 
                 // Random scale
                 obstacle.SetObstacleSize(
-                    GD.RandRange(3, 5),
-                    GD.RandRange(3, 5)
+                    GD.RandRange(1, 20),
+                    GD.RandRange(1, 4)
                 );
             }
         );
