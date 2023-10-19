@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://by2pot0p04k5c"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://by2pot0p04k5c"]
 
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="1_wxucp"]
 [ext_resource type="StyleBox" uid="uid://m7ol4vvsflr4" path="res://Themes/base_button.tres" id="1_xvkqr"]
@@ -51,6 +51,19 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_j5dnc"]
+color = Color(1, 0.164706, 0.427451, 0.392157)
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 3
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_gl110"]
+color = Color(1, 0.164706, 0.427451, 0.392157)
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 3
+vertical = true
+
 [resource]
 AccentedButton/base_type = &"Button"
 AccentedButton/colors/font_color = Color(1, 0.164706, 0.427451, 1)
@@ -70,4 +83,6 @@ Button/styles/hover = SubResource("StyleBoxFlat_12c4k")
 Button/styles/normal = ExtResource("1_xvkqr")
 Button/styles/pressed = ExtResource("1_xvkqr")
 HBoxContainer/constants/separation = 16
+HSeparator/styles/separator = SubResource("StyleBoxLine_j5dnc")
 VBoxContainer/constants/separation = 16
+VSeparator/styles/separator = SubResource("StyleBoxLine_gl110")

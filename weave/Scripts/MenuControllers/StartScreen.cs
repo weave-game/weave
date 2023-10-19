@@ -25,7 +25,7 @@ public partial class StartScreen : Control
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
 
-    [GetNode("UI/LobbyCodeLabel")]
+    [GetNode("UI/Instructions/Web/LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
 
     [GetNode("AnimationPlayer")]
@@ -49,7 +49,7 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/QRCodeTexture")]
+    [GetNode("UI/Instructions/Web/QRCodeTexture")]
     private TextureRect _qrCodeTexture;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
@@ -62,6 +62,8 @@ public partial class StartScreen : Control
 
     [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
     private VSeparator _vSeparator;
+
+    [GetNode("UI/Instructions")] private Panel _instructions;
 
     public override void _Ready()
     {
@@ -133,8 +135,7 @@ public partial class StartScreen : Control
         _startButton.Visible = true;
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
-        _lobbyCodeLabel.Visible = true;
-        _qrCodeTexture.Visible = true;
+        _instructions.Visible = true;
         CollapseButtons();
     }
 
@@ -146,8 +147,7 @@ public partial class StartScreen : Control
         _startButton.Visible = false;
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
-        _lobbyCodeLabel.Visible = false;
-        _qrCodeTexture.Visible = false;
+        _instructions.Visible = false;
         ExpandButtons();
     }
 
@@ -286,7 +286,7 @@ public partial class StartScreen : Control
 
     private void SetLobbyCodeLabelText(string newCode)
     {
-        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+        _lobbyCodeLabel.Text = $"[center][b]{newCode}";
     }
 
     private void SetLobbyQrCodeTexture(Texture2D newTexture)
