@@ -22,14 +22,17 @@ public partial class StartScreen : Control
     /// </summary>
     private readonly Dictionary<(Key, Key), (DateTime?, bool)> _pressingSince = new();
 
+    [GetNode("AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
 
+    [GetNode("UI/Instructions")]
+    private Panel _instructions;
+
     [GetNode("UI/Instructions/Web/LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
-
-    [GetNode("AnimationPlayer")]
-    private AnimationPlayer _animationPlayer;
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
@@ -62,8 +65,6 @@ public partial class StartScreen : Control
 
     [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
     private VSeparator _vSeparator;
-
-    [GetNode("UI/Instructions")] private Panel _instructions;
 
     public override void _Ready()
     {
@@ -165,6 +166,7 @@ public partial class StartScreen : Control
             _animationPlayer.Play("NoPlayers");
             return;
         }
+
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());

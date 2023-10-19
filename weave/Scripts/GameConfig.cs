@@ -17,16 +17,6 @@ public static class GameConfig
     public static RTCClientManager MultiplayerManager { get; set; }
 
     /// <summary>
-    ///     Determines whether the game should have locks based on the number of players.
-    /// </summary>
-    /// <param name="nPlayers">The number of players.</param>
-    /// <returns>True if the game should have locks, false otherwise.</returns>
-    public static bool ShouldHaveLocks(int nPlayers)
-    {
-        return nPlayers == 2 || nPlayers == 3;
-    }
-
-    /// <summary>
     ///     Gets the initial movement speed based on the number of players.
     /// </summary>
     /// <param name="nPlayers">The number of players.</param>
@@ -65,8 +55,10 @@ public static class GameConfig
     {
         return nPlayers switch
         {
-            <= 2 => 1.4f,
-            _ => 2.2f
+            <= 2 => 2.1f,
+            3 => 2.05f,
+            4 => 2.0f,
+            _ => 1.8f
         };
     }
 

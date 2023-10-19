@@ -55,7 +55,8 @@ scale_amount_max = 1.5
 color_ramp = SubResource("Gradient_pw2nx")
 
 [node name="LockSprite" type="Sprite2D" parent="."]
-scale = Vector2(1.11667, 1.11667)
+position = Vector2(0, -4)
+scale = Vector2(1.10114, 1.10114)
 texture = ExtResource("3_5ksq6")
 
 [node name="UnlockPlayer" type="AudioStreamPlayer2D" parent="."]
@@ -65,3 +66,13 @@ volume_db = -4.0
 [node name="CollectPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_dflux")
 volume_db = -4.571
+
+[node name="PlayerNameLabel" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -12.0
+offset_right = 20.0
+offset_bottom = 14.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+text = "X"
+horizontal_alignment = 1
