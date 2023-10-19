@@ -30,6 +30,11 @@ public partial class Goal : Node2D
     [GetNode("LockSprite")]
     private Sprite2D _lockSprite;
 
+    private string _playerName;
+
+    [GetNode("PlayerNameLabel")]
+    private Label _playerNameLabel;
+
     private bool _reached;
     private float _unlockAreaRadius;
 
@@ -69,6 +74,7 @@ public partial class Goal : Node2D
         this.GetNodes();
         var area = GetNode<Area2D>("Area2D");
         area.BodyEntered += OnBodyEntered;
+        _playerNameLabel.Text = _playerName;
 
         if (HasLock)
         {
@@ -122,6 +128,16 @@ public partial class Goal : Node2D
         _goalSprite.Show();
         _lockSprite.Hide();
         _unlockSoundPlayer.Play();
+    }
+
+    public void SetPlayerName(string playerName)
+    {
+        if (_playerNameLabel != null)
+        {
+            _playerNameLabel.Text = playerName;
+        }
+
+        _playerName = playerName;
     }
 
     private void OnBodyEntered(Node2D body)
@@ -181,7 +197,7 @@ public partial class Goal : Node2D
         {
             var startAngle = (i * arcAngle) + _unlockDrawingRotation;
             var endAngle = ((i + 1) * arcAngle) + _unlockDrawingRotation;
-            DrawArc(center, _unlockAreaRadius, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
+            DrawArc(center, _unlockAreaRadius - 8, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
         }
     }
 }

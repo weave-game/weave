@@ -19,7 +19,7 @@ outline_color = Color(0, 0, 0, 1)
 script = ExtResource("1_j6e2d")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -2.84217e-14)
+position = Vector2(0, -9)
 scale = Vector2(0.00295557, 0.00304648)
 texture = ExtResource("2_21yul")
 
