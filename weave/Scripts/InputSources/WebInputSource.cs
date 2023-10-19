@@ -1,5 +1,3 @@
-using System;
-using Godot;
 using System.Collections.Generic;
 
 namespace Weave.InputSources;
@@ -9,7 +7,7 @@ public sealed class WebInputSource : IInputSource
     public string Id { get; }
 
     private readonly Queue<string> _directionQueue = new();
-    private string _lastDirection = "forward";
+    private string _lastDirection;
 
     public WebInputSource(string id)
     {
