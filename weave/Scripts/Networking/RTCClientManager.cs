@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -128,6 +127,7 @@ public class RTCClientManager
         dataChannel.onopen += () => HandlePlayerJoin(clientId);
         dataChannel.onclose += () => HandlePlayerLeave(clientId);
         dataChannel.onmessage += (_, _, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
+        dataChannel.onerror += (error) => GD.Print($"Data channel closed: {error}"); 
 
         peerConnection.onconnectionstatechange += state =>
         {
@@ -135,8 +135,6 @@ public class RTCClientManager
 
             switch (state)
             {
-                case RTCPeerConnectionState.connected:
-                    break;
                 case RTCPeerConnectionState.failed:
                     peerConnection.Close("ice disconnection");
                     break;
@@ -144,12 +142,8 @@ public class RTCClientManager
                 case RTCPeerConnectionState.disconnected:
                     HandlePlayerLeave(clientId);
                     break;
-                case RTCPeerConnectionState.@new:
-                    break;
-                case RTCPeerConnectionState.connecting:
-                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                    break;
             }
         };
 
@@ -204,9 +198,11 @@ public class RTCClientManager
             return;
 
         _clientSources.TryGetValue(clientId, out var source);
-        ClientLeftListeners?.Invoke(source);
         _clientConnections.Remove(clientId);
         _clientSources.Remove(clientId);
+
+        if (_webSocket.State == WebSocketState.Open)
+            ClientLeftListeners?.Invoke(source);
     }
 
     private void HandlePlayerInput(string playerId, string input)

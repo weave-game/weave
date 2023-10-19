@@ -13,7 +13,7 @@ public sealed class Lobby
     public delegate void PlayerJoinedEventHandler(IInputSource source);
     public delegate void PlayerLeftEventHandler(IInputSource source);
     public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
-    private const int LobbyCodeLength = 5;
+    private const int LobbyCodeLength = 4;
     private const string LobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
     private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
 
