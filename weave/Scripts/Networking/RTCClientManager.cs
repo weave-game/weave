@@ -106,15 +106,12 @@ public class RTCClientManager
     public async void StopClientAsync()
     {
         if (_webSocket is not { State: WebSocketState.Open })
-        {
             return;
-        }
 
         await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal closure", CancellationToken.None);
+
         foreach (var connection in _clientConnections.Values)
-        {
             connection.Close("");
-        }
     }
 
     private async Task<RTCPeerConnection> CreatePeerConnectionAsync(string clientId)
@@ -127,7 +124,7 @@ public class RTCClientManager
         dataChannel.onopen += () => HandlePlayerJoin(clientId);
         dataChannel.onclose += () => HandlePlayerLeave(clientId);
         dataChannel.onmessage += (_, _, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
-        dataChannel.onerror += (error) => GD.Print($"Data channel closed: {error}"); 
+        dataChannel.onerror += (error) => GD.Print($"Data channel closed: {error}");
 
         peerConnection.onconnectionstatechange += state =>
         {
@@ -211,9 +208,7 @@ public class RTCClientManager
     {
         _clientSources.TryGetValue(playerId, out var source);
         if (source == null)
-        {
             return;
-        }
 
         source.DirectionState = input;
     }
