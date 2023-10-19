@@ -139,6 +139,7 @@ visible = false
 layer = -1
 
 [node name="MemoriesLabel" type="RichTextLabel" parent="UI"]
+visible = false
 clip_contents = false
 offset_left = 650.0
 offset_top = 736.0
@@ -209,7 +210,6 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_y8k07")
 
 [node name="PlayerList" type="VBoxContainer" parent="UI/MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -227,6 +227,7 @@ label_settings = SubResource("LabelSettings_o1u1d")
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="UI"]
+visible = false
 offset_left = 640.0
 offset_top = 768.0
 offset_right = 960.0
