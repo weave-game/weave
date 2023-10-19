@@ -25,6 +25,12 @@ public partial class Player : CharacterBody2D
     [GetNode("Sprite2D")]
     private Sprite2D _sprite2D;
 
+    [GetNode("HorizontalIndicator")]
+    private Sprite2D _indicatorX;
+
+    [GetNode("VerticalIndicator")]
+    private Sprite2D _indicatorY;
+
     public PlayerInfo PlayerInfo { get; set; }
 
     public float MovementSpeed { get; set; }
@@ -61,6 +67,8 @@ public partial class Player : CharacterBody2D
         CircleShape = CollisionShape2D.Shape as CircleShape2D;
         CurveSpawner.Color = PlayerInfo.Color;
         _sprite2D.Modulate = PlayerInfo.Color;
+        _indicatorX.Modulate = PlayerInfo.Color;
+        _indicatorY.Modulate = PlayerInfo.Color;
         _playerName.Text = PlayerInfo.Name;
         _arrow.Modulate = PlayerInfo.Color;
 
@@ -73,21 +81,17 @@ public partial class Player : CharacterBody2D
 
     public override void _Process(double delta)
     {
-        if (_hasReachedSize)
+        if (!_hasReachedSize)
         {
-            return;
+            Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
+
+            if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) < 0.01f)
+            {
+                _hasReachedSize = true;
+            }
         }
 
-        Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
-
-        // Have not reached size yet
-        if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) > 0.01f)
-        {
-            return;
-        }
-
-        Scale = _desiredScale;
-        _hasReachedSize = true;
+        HandleIndicators();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -121,6 +125,36 @@ public partial class Player : CharacterBody2D
         {
             RotationDegrees -= TurnSpeed * (float)delta;
         }
+    }
+
+    private void HandleIndicators()
+    {
+        const float MinDistance = 200;
+        const float MaxScale = 0.003f;
+
+        var width = GetViewportRect().Size.X;
+        var height = GetViewportRect().Size.Y;
+
+        var distance = new Vector2(
+            Mathf.Min(GlobalPosition.X, width - GlobalPosition.X),
+            Mathf.Min(GlobalPosition.Y, height - GlobalPosition.Y)
+        );
+
+        _indicatorX.GlobalPosition = new(
+            (Mathf.Round(GlobalPosition.X / width) + 1) % 2 * width,
+            GlobalPosition.Y
+        );
+
+        _indicatorY.GlobalPosition = new(
+            GlobalPosition.X,
+            (Mathf.Round(GlobalPosition.Y / height) + 1) % 2 * height
+        );
+
+        float scaleX = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.X) / MinDistance), 2) * MaxScale;
+        float scaleY = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.Y) / MinDistance), 2) * MaxScale;
+
+        _indicatorX.GlobalScale = new(scaleX, scaleX);
+        _indicatorY.GlobalScale = new(scaleY, scaleY);
     }
 
     private void SetSize(int x, int y)

@@ -23,6 +23,7 @@ public static class WeaveConstants
     public const string FpsLogFileCsvPath = "./Loggings/fps.csv";
     public const string SpeedLogFileCsvPath = "./Loggings/speed.csv";
     public const string ScoreLogFileJsonPath = "./Loggings/score.json";
+    public const string DifficultyLogFileCsvPath = "./Loggings/difficulty.csv";
 
     #endregion Logging
 

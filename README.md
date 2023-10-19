@@ -6,6 +6,7 @@
 
 - [weave 🧵🕹️ (Game) ](#weave-️-game-)
   - [About](#about)
+    - [Gameplay](#gameplay)
   - [Formatting](#formatting)
     - [CLI](#cli)
     - [Plugins](#plugins)
@@ -32,6 +33,10 @@ A game made in the Game Development Project course at Chalmers/GU.
     </tr>
   </table>
 </center>
+
+### Gameplay
+
+[![Video](https://img.youtube.com/vi/Fw0T2zQHsvo/maxresdefault.jpg)](https://youtu.be/Fw0T2zQHsvo?si=y7i0zsi_a19gQXTo)
 
 ## Formatting
 

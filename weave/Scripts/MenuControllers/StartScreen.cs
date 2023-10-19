@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using GodotSharper;
@@ -14,13 +16,24 @@ public partial class StartScreen : Control
 {
     private readonly Lobby _lobby = new();
 
+    /// <summary>
+    ///     Dictionary mapping a keybinding to a tuple with the time keybinding was pressed
+    ///     and a bool indicating whether the keybinding has left/joined the lobby during this keypress
+    /// </summary>
+    private readonly Dictionary<(Key, Key), (DateTime?, bool)> _pressingSince = new();
+
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
 
-    [GetNode("UI/LobbyCodeLabel")]
+    [GetNode("UI/Instructions/Web/LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
 
+    [GetNode("AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
+
+    private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
 
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
@@ -36,7 +49,7 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
-    [GetNode("UI/QRCodeTexture")]
+    [GetNode("UI/Instructions/Web/QRCodeTexture")]
     private TextureRect _qrCodeTexture;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
@@ -45,8 +58,12 @@ public partial class StartScreen : Control
     [GetNode("UI/StartButton")]
     private Button _startButton;
 
+    private float _turnSpeed = 200;
+
     [GetNode("UI/MarginContainer/HBoxContainer/VSeparator")]
     private VSeparator _vSeparator;
+
+    [GetNode("UI/Instructions")] private Panel _instructions;
 
     public override void _Ready()
     {
@@ -64,7 +81,6 @@ public partial class StartScreen : Control
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
-
         _multiplayerManager.ClientJoinedListeners += _lobby.Join;
         _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
@@ -73,6 +89,25 @@ public partial class StartScreen : Control
             .GetNodesInGroup(WeaveConstants.FireflyGroup)
             .Cast<Firefly>()
             .ForEach(f => f.SetColor(colorGen.NewColor()));
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        _lobbyPlayerDict.ForEach(
+            player =>
+            {
+                var character = player.Value.GetNode<TextureRect>("PlayerCharacter");
+                if (player.Key.InputSource.IsTurningRight())
+                {
+                    character.RotationDegrees += _turnSpeed * (float)delta;
+                }
+
+                if (player.Key.InputSource.IsTurningLeft())
+                {
+                    character.RotationDegrees -= _turnSpeed * (float)delta;
+                }
+            }
+        );
     }
 
     public override void _Input(InputEvent @event)
@@ -101,8 +136,7 @@ public partial class StartScreen : Control
         _startButton.Visible = true;
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
-        _lobbyCodeLabel.Visible = true;
-        _qrCodeTexture.Visible = true;
+        _instructions.Visible = true;
         CollapseButtons();
     }
 
@@ -114,8 +148,7 @@ public partial class StartScreen : Control
         _startButton.Visible = false;
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
-        _lobbyCodeLabel.Visible = false;
-        _qrCodeTexture.Visible = false;
+        _instructions.Visible = false;
         ExpandButtons();
     }
 
@@ -126,6 +159,12 @@ public partial class StartScreen : Control
 
     private void OnStartButtonPressed()
     {
+        if (_lobby.Count == 0)
+        {
+            _animationPlayer.Stop();
+            _animationPlayer.Play("NoPlayers");
+            return;
+        }
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
@@ -159,13 +198,16 @@ public partial class StartScreen : Control
             child.QueueFree();
         }
 
+        _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
+
         foreach (var playerInfo in _lobby.PlayerInfos)
         {
-            var lobbyPlayer = _lobbyPlayer.Instantiate<MarginContainer>();
+            var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
             lobbyPlayer.Modulate = playerInfo.Color;
             lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
             lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
+            _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
         }
     }
 
@@ -179,21 +221,41 @@ public partial class StartScreen : Control
                 Input.IsKeyPressed(keybindingTuple.Item1)
                 && Input.IsKeyPressed(keybindingTuple.Item2);
 
+            var kb = new KeyboardInputSource(keybindingTuple);
+            var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
+
             if (!isPressingBoth)
+            {
+                _pressingSince[keybindingTuple] = (null, false);
+                continue;
+            }
+
+            if (_pressingSince.TryGetValue(keybindingTuple, out var value) && value.Item2)
             {
                 continue;
             }
 
-            var kb = new KeyboardInputSource(keybindingTuple);
-            var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
-
-            if (alreadyExisting != null)
+            if (alreadyExisting == null)
             {
-                _lobby.Leave(alreadyExisting);
+                _lobby.Join(kb);
+                _pressingSince[keybindingTuple] = (null, true);
             }
             else
             {
-                _lobby.Join(kb);
+                if (!_pressingSince.ContainsKey(keybindingTuple) || _pressingSince[keybindingTuple].Item1 == null)
+                {
+                    _pressingSince[keybindingTuple] = (DateTime.Now, false);
+                    continue;
+                }
+
+                if (!(DateTime.Now - _pressingSince[keybindingTuple].Item1 >= TimeSpan.FromSeconds(0.5)))
+                {
+                    continue;
+                }
+
+                _lobby.Leave(alreadyExisting);
+
+                _pressingSince[keybindingTuple] = (null, true);
             }
         }
     }
@@ -225,7 +287,7 @@ public partial class StartScreen : Control
 
     private void SetLobbyCodeLabelText(string newCode)
     {
-        _lobbyCodeLabel.Text = $"[center]Lobby code: {newCode}[/center]";
+        _lobbyCodeLabel.Text = $"[center][b]{newCode}";
     }
 
     private void SetLobbyQrCodeTexture(Texture2D newTexture)
