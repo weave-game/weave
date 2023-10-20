@@ -82,41 +82,32 @@ public sealed class UniqueNameGeneratorTests
     private void ShouldBeSufficientlyRandom()
     {
         // NOTE: This is actually NOT a "fact" and is not guaranteed. Does not prove anything, just a "sanity" check that it's "sufficiently" random.
-        const int NNamesPerInstance = 100_000;
+        const int N = 100_000;
         var instance = new UniqueNameGenerator();
 
         _testOutputHelper.WriteLine(
-            $"{NInstances} instances generating {NNamesPerInstance} names each. Total of {NInstances * NNamesPerInstance} names..."
+            $"Generating {N} names..."
         );
 
         var generatedNames = new List<string>();
-        var namesSet = new HashSet<string>();
-
-        for (var i = 0; i < NNamesPerInstance; i++)
+        for (var i = 0; i < N; i++)
         {
             var n = instance.New();
             generatedNames.Add(n);
-            namesSet.Add(n);
         }
 
-        var nDuplicates = NNamesPerInstance - namesSet.Count;
-        var percentageStr = ((double)nDuplicates / (NNamesPerInstance) * 100).ToString("0.00") + "%";
-
-        _testOutputHelper.WriteLine("");
-        _testOutputHelper.WriteLine(
-            $"Result: Found {nDuplicates} duplicates ({percentageStr})"
-        );
-
-        // Count amount thas has numbers
+        // Count amount that has numbers
         var nBackupIndex = generatedNames.Count(name => name.Any(char.IsDigit));
-        var percentageBackupIndex =
-            ((double)nBackupIndex / (NNamesPerInstance) * 100).ToString("0.00") + "%";
+        var percentageBackupIndex = ((double)nBackupIndex / N * 100).ToString("0.00");
 
         _testOutputHelper.WriteLine(
-            $"Result: Found {nBackupIndex} names with backup index ({percentageBackupIndex}%)"
+            $"Found {nBackupIndex} names with backup index ({percentageBackupIndex}%)"
         );
 
-        Assert.Equal(NNamesPerInstance, generatedNames.Count);
-        _testOutputHelper.WriteLine($"Result: Generated names has {generatedNames.Count} items");
+        _testOutputHelper.WriteLine(
+            $"Total unique: {N - nBackupIndex}"
+        );
+
+        Assert.Equal(N, generatedNames.Count);
     }
 }

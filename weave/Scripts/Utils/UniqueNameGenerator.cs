@@ -76,13 +76,6 @@ public sealed class UniqueNameGenerator
         "A",
         "B",
         "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J"
     };
 
     public string New()
@@ -110,29 +103,9 @@ public sealed class UniqueNameGenerator
 
     private string Generate()
     {
-        var other = GetRandomElement(AnotherList);
-        var prefix = GetRandomElement(Prefixes);
-        var suffix = GetRandomElement(Suffixes);
+        var other = AnotherList.Random();
+        var prefix = Prefixes.Random();
+        var suffix = Suffixes.Random();
         return other + prefix + suffix;
-    }
-
-    private readonly Random _random = new();
-
-    private T GetRandomElement<T>(IEnumerable<T> enumerable)
-    {
-        if (enumerable == null)
-        {
-            throw new ArgumentNullException(nameof(enumerable));
-        }
-
-        var list = enumerable as IList<T> ?? enumerable.ToList();
-
-        if (!list.Any())
-        {
-            throw new InvalidOperationException("The enumerable is empty.");
-        }
-
-        var index = _random.Next(list.Count);
-        return list[index];
     }
 }

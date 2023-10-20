@@ -7,7 +7,7 @@ namespace Weave.Utils;
 
 public static class EnumerableExtensions
 {
-    private static readonly RNGCryptoServiceProvider s_rng = new();
+    private static readonly Random s_random = new();
 
     /// <summary>
     ///     Returns a random element from the given enumerable.
@@ -17,23 +17,8 @@ public static class EnumerableExtensions
     /// <returns>A random element from the given enumerable.</returns>
     public static T Random<T>(this IEnumerable<T> enumerable)
     {
-        var a = enumerable as T[] ?? enumerable.ToArray();
-
-        if (a.Length == 0)
-        {
-            throw new InvalidOperationException("The collection is empty.");
-        }
-
-        var index = GetRandomNumber(0, a.Length);
-        return a[index];
-    }
-
-    private static int GetRandomNumber(int min, int max)
-    {
-        var randomNumber = new byte[4];
-        s_rng.GetBytes(randomNumber);
-        var value = BitConverter.ToInt32(randomNumber, 0);
-        return (Math.Abs(value) % (max - min)) + min;
+        var array = enumerable as T[] ?? enumerable.ToArray();
+        return array[s_random.Next(array.Length)];
     }
 
     /// <summary>
