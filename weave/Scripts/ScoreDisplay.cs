@@ -1,7 +1,6 @@
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
-using Weave.Scoring;
 using Weave.Utils;
 
 namespace Weave;

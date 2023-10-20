@@ -11,7 +11,6 @@ using Weave.Logging;
 using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
 using Weave.Networking;
-using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
 
