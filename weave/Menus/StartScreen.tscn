@@ -32,17 +32,17 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="Curve2D" id="Curve2D_b5vkc"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 1001, -113, -187.887, 294.078, 187.887, -294.078, 259, 114, -313.992, 71.5364, 313.992, -71.5364, 725, 757, -204.445, 131.908, 204.445, -131.908, 614, 174, 157.939, -396.605, -157.939, 396.605, 1762, 536, 0, 0, 0, 0, 374, 1089)
-}
-point_count = 6
-
 [sub_resource type="Curve2D" id="Curve2D_eky13"]
 _data = {
 "points": PackedVector2Array(-31.4964, 160.259, 31.4964, -160.259, 61, 1120, -215.644, 11.8823, 215.644, -11.8823, 414, 669, -95.3672, 37.9185, 95.3672, -37.9185, 768, 467, 0, 0, 0, 0, 989, 453, -63.6776, -4.61465, 63.6776, 4.61465, 1187, 503, -21.5988, 27.5571, 21.5988, -27.5571, 1388, 381, 0, 0, 0, 0, 1519.38, 291.628, -59.7617, -74.0741, 59.7617, 74.0741, 1707, 248, 241.777, -9.6594, -241.777, 9.6594, 1258, 1025)
 }
 point_count = 9
+
+[sub_resource type="Curve2D" id="Curve2D_b5vkc"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1001, -113, -187.887, 294.078, 187.887, -294.078, 259, 114, -313.992, 71.5364, 313.992, -71.5364, 725, 757, -204.445, 131.908, 204.445, -131.908, 614, 174, 157.939, -396.605, -157.939, 396.605, 1762, 536, 0, 0, 0, 0, 374, 1089)
+}
+point_count = 6
 
 [sub_resource type="Curve2D" id="Curve2D_ifgwf"]
 _data = {
@@ -480,11 +480,11 @@ layer = -2
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
-curve = SubResource("Curve2D_b5vkc")
+curve = SubResource("Curve2D_eky13")
 
 [node name="Firefly2" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
-curve = SubResource("Curve2D_eky13")
+curve = SubResource("Curve2D_b5vkc")
 
 [node name="Firefly3" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
 visible = false
