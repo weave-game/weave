@@ -233,7 +233,7 @@ public partial class Main : Node2D
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
-        _gameOverOverlay.Do(_scoreDisplay.Score);
+        _gameOverOverlay.SaveScore(_scoreDisplay.Score);
 
         // Log "difficulty"
         var diffLogger = new CsvLogger(

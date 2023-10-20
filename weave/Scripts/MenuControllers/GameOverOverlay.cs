@@ -18,10 +18,17 @@ public partial class GameOverOverlay : CanvasLayer
     [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
     private Button _retryButton;
 
-    [GetNode("TeamNameLineEdit")]
-    private LineEdit _teamNameLineEdit;
+    [GetNode("NameLineEdit")]
+    private LineEdit _nameLineEdit;
+
+    [GetNode("SaveNameButton")]
+    private Button _save;
+
+    [GetNode("SavedNameEffect")]
+    private CpuParticles2D _savedNameEffect;
 
     private IScoreManager _scoreManager;
+    private Score _score;
 
     public override void _Ready()
     {
@@ -34,6 +41,7 @@ public partial class GameOverOverlay : CanvasLayer
             GameConfig.MultiplayerManager.StopClientAsync();
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<StartScreen>());
         };
+        _save.Pressed += UpdateTeamName;
 
         // On game over, set process mode to idle to stop game, but keep overlays clickable
         ProcessMode = ProcessModeEnum.Always;
@@ -41,13 +49,14 @@ public partial class GameOverOverlay : CanvasLayer
 
     private void UpdateTeamName()
     {
-        var newName = _teamNameLineEdit.Text;
+        var newName = _nameLineEdit.Text;
 
         if (string.IsNullOrWhiteSpace(newName))
             return;
 
-        GD.Print("valid");
-        _scoreManager.Save();
+        _score.Name = newName;
+        _scoreManager.Save(_score);
+        _savedNameEffect.Emitting = true;
     }
 
     public void DisplayGameOver()
@@ -57,20 +66,17 @@ public partial class GameOverOverlay : CanvasLayer
         Show();
     }
 
-    public void Do(int points)
+    public void SaveScore(int points)
     {
         if (points <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(points));
         }
 
-        var score = new Score(
-            points,
-            UniqueNameGenerator.Instance.New()
-        );
+        var name = UniqueNameGenerator.Instance.New();
+        _score = new Score(points, name);
+        _nameLineEdit.Text = name;
 
-        _scoreManager.Save(score);
-
-        throw new NotImplementedException();
+        _scoreManager.Save(_score);
     }
 }

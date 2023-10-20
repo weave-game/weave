@@ -78,10 +78,35 @@ alignment = 0
 stream = ExtResource("6_3if2j")
 volume_db = -7.429
 
-[node name="TeamNameLineEdit" type="LineEdit" parent="."]
-offset_left = 1096.0
-offset_top = 557.0
-offset_right = 1353.0
-offset_bottom = 664.0
+[node name="NameLineEdit" type="LineEdit" parent="."]
+offset_left = 1204.0
+offset_top = 551.0
+offset_right = 1490.0
+offset_bottom = 612.0
 placeholder_text = "lorem"
 alignment = 1
+
+[node name="SaveNameButton" type="Button" parent="."]
+offset_left = 1204.0
+offset_top = 622.0
+offset_right = 1490.0
+offset_bottom = 660.0
+text = "Save"
+
+[node name="SavedNameEffect" type="CPUParticles2D" parent="."]
+position = Vector2(1336, 416)
+emitting = false
+one_shot = true
+spread = 180.0
+initial_velocity_min = 506.1
+initial_velocity_max = 506.1
+scale_amount_min = 32.65
+scale_amount_max = 57.96
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1303.0
+offset_top = 520.0
+offset_right = 1398.0
+offset_bottom = 546.0
+text = "TEAM NAME"
+horizontal_alignment = 1
