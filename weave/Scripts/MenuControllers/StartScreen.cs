@@ -169,7 +169,7 @@ public partial class StartScreen : Control
 
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
-        GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
+        GetTree().ChangeSceneToFile(SceneGetter.GetPath<SplashScreen>());
     }
 
     private void ExpandButtons()
