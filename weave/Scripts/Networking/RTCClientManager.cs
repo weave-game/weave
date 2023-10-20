@@ -139,8 +139,6 @@ public class RTCClientManager
                 case RTCPeerConnectionState.disconnected:
                     HandlePlayerLeave(clientId);
                     break;
-                default:
-                    break;
             }
         };
 

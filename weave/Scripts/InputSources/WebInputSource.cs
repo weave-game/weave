@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 
 namespace Weave.InputSources;
 
@@ -18,13 +19,11 @@ public sealed class WebInputSource : IInputSource
     {
         if (_directionQueue.Count > 0)
         {
-            var next = _directionQueue.Peek();
-
-            if (next != direction && next != "forward")
+            if (_directionQueue.Peek() != direction)
                 return false;
 
             _lastDirection = _directionQueue.Dequeue();
-            return _lastDirection == direction;
+            return true;
         }
         return _lastDirection == direction;
     }
@@ -41,6 +40,9 @@ public sealed class WebInputSource : IInputSource
 
     public void SetDirection(string direction)
     {
+        if (_directionQueue.Count > 0 && _directionQueue.Peek() == "forward")
+            _directionQueue.Dequeue();
+
         _directionQueue.Enqueue(direction.ToLower());
     }
 
