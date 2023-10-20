@@ -23,8 +23,8 @@ public partial class GameOverOverlay : CanvasLayer
     [GetUniqueNode("SaveNameButton")]
     private Button _save;
 
-    [GetNode("Confetti")]
-    private CpuParticles2D _confetti;
+    [GetUniqueNode("SavedNotificationAnimationPlayer")]
+    private AnimationPlayer _savedPlayer;
 
     private IScoreManager _scoreManager;
     private Score _score;
@@ -45,6 +45,8 @@ public partial class GameOverOverlay : CanvasLayer
 
         // On game over, set process mode to idle to stop game, but keep overlays clickable
         ProcessMode = ProcessModeEnum.Always;
+
+        _savedPlayer.Play("hide");
     }
 
     public void DisplayGameOver()
@@ -73,6 +75,7 @@ public partial class GameOverOverlay : CanvasLayer
         }
 
         _scoreManager.Save(_score);
-        _confetti.Emitting = true;
+        _savedPlayer.Play("hide");
+        _savedPlayer.Play("saved");
     }
 }
