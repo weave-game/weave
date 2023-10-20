@@ -300,6 +300,14 @@ public partial class StartScreen : Control
     private void HandleUpdateWebPlayerColor(PlayerInfo playerInfo)
     {
         if (playerInfo.InputSource is WebInputSource source)
-            _multiplayerManager.NotifyChangePlayerColor(source.Id, playerInfo.Color.ToString());
+            _multiplayerManager.NotifyChangePlayerColor(source.Id, ColorToHex(playerInfo.Color));
+    }
+
+    private static string ColorToHex(Color color)
+    {
+        var r = (int)(color.R * 255.0f);
+        var g = (int)(color.G * 255.0f);
+        var b = (int)(color.B * 255.0f);
+        return string.Format("#{0:X2}{1:X2}{2:X2}", r, g, b);
     }
 }
