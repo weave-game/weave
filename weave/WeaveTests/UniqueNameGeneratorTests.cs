@@ -82,34 +82,41 @@ public sealed class UniqueNameGeneratorTests
     private void ShouldBeSufficientlyRandom()
     {
         // NOTE: This is actually NOT a "fact" and is not guaranteed. Does not prove anything, just a "sanity" check that it's "sufficiently" random.
-
-        const int NInstances = 10;
-        const int NNamesPerInstance = 10_000;
-        var instances = new List<UniqueNameGenerator>();
-
-        for (var i = 0; i < NInstances; i++)
-        {
-            instances.Add(new UniqueNameGenerator());
-        }
+        const int NNamesPerInstance = 100_000;
+        var instance = new UniqueNameGenerator();
 
         _testOutputHelper.WriteLine(
-            $"Will generate names using {NInstances} instances generating {NNamesPerInstance} names each. Total of {NInstances * NNamesPerInstance} names..."
+            $"{NInstances} instances generating {NNamesPerInstance} names each. Total of {NInstances * NNamesPerInstance} names..."
         );
 
         var generatedNames = new List<string>();
-        foreach (var instance in instances)
+        var namesSet = new HashSet<string>();
+
+        for (var i = 0; i < NNamesPerInstance; i++)
         {
-            for (var i = 0; i < NNamesPerInstance; i++)
-            {
-                generatedNames.Add(instance.New());
-            }
+            var n = instance.New();
+            generatedNames.Add(n);
+            namesSet.Add(n);
         }
 
-        var nDuplicates = NInstances * NNamesPerInstance - generatedNames.Distinct().Count();
-        var percentageStr = ((double)nDuplicates / (NInstances * NNamesPerInstance) * 100).ToString("0.00") + "%";
-        
+        var nDuplicates = NNamesPerInstance - namesSet.Count;
+        var percentageStr = ((double)nDuplicates / (NNamesPerInstance) * 100).ToString("0.00") + "%";
+
+        _testOutputHelper.WriteLine("");
         _testOutputHelper.WriteLine(
             $"Result: Found {nDuplicates} duplicates ({percentageStr})"
         );
+
+        // Count amount thas has numbers
+        var nBackupIndex = generatedNames.Count(name => name.Any(char.IsDigit));
+        var percentageBackupIndex =
+            ((double)nBackupIndex / (NNamesPerInstance) * 100).ToString("0.00") + "%";
+
+        _testOutputHelper.WriteLine(
+            $"Result: Found {nBackupIndex} names with backup index ({percentageBackupIndex}%)"
+        );
+
+        Assert.Equal(NNamesPerInstance, generatedNames.Count);
+        _testOutputHelper.WriteLine($"Result: Generated names has {generatedNames.Count} items");
     }
 }

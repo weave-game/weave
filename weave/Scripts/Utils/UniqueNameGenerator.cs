@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Weave.Utils;
 
 public sealed class UniqueNameGenerator
 {
     private const int MaxAttempts = 100;
-    private int _backupIndex = 1;
+    private readonly IDictionary<string, int> _backupIndices = new Dictionary<string, int>();
     private ISet<string> UsedNames { get; } = new HashSet<string>();
 
     /// <summary>
@@ -69,6 +71,20 @@ public sealed class UniqueNameGenerator
             "Guerezsa"
         };
 
+    private IEnumerable<string> AnotherList { get; } = new List<string>
+    {
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J"
+    };
+
     public string New()
     {
         var attempts = 0;
@@ -81,7 +97,11 @@ public sealed class UniqueNameGenerator
 
         if (UsedNames.Contains(name))
         {
-            name += $" {_backupIndex++}";
+            if (!_backupIndices.TryGetValue(name, out _))
+                _backupIndices[name] = 0;
+
+            _backupIndices[name]++;
+            name += $" {_backupIndices[name]}";
         }
 
         UsedNames.Add(name);
@@ -90,8 +110,29 @@ public sealed class UniqueNameGenerator
 
     private string Generate()
     {
-        var prefix = Prefixes.Random();
-        var suffix = Suffixes.Random();
-        return prefix + suffix;
+        var other = GetRandomElement(AnotherList);
+        var prefix = GetRandomElement(Prefixes);
+        var suffix = GetRandomElement(Suffixes);
+        return other + prefix + suffix;
+    }
+
+    private readonly Random _random = new();
+
+    private T GetRandomElement<T>(IEnumerable<T> enumerable)
+    {
+        if (enumerable == null)
+        {
+            throw new ArgumentNullException(nameof(enumerable));
+        }
+
+        var list = enumerable as IList<T> ?? enumerable.ToList();
+
+        if (!list.Any())
+        {
+            throw new InvalidOperationException("The enumerable is empty.");
+        }
+
+        var index = _random.Next(list.Count);
+        return list[index];
     }
 }
