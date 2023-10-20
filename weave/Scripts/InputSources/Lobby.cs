@@ -12,7 +12,8 @@ public sealed class Lobby
 {
     public delegate void PlayerJoinedEventHandler(IInputSource source);
     public delegate void PlayerLeftEventHandler(IInputSource source);
-    private const int LobbyCodeLength = 5;
+    public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
+    private const int LobbyCodeLength = 4;
     private const string LobbyCodeCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
     private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
 
@@ -28,6 +29,7 @@ public sealed class Lobby
 
     public PlayerJoinedEventHandler PlayerJoinedListeners { get; set; }
     public PlayerLeftEventHandler PlayerLeftListeners { get; set; }
+    public PlayerInfoUpdatedEventHandler PlayerInfoUpdatedListeners { get; set; }
     public IReadOnlyList<PlayerInfo> PlayerInfos => _playerInfos.AsReadOnly();
 
     public int Count => PlayerInfos.Count;
@@ -85,6 +87,7 @@ public sealed class Lobby
             {
                 playerInfo.Color = colorGenerator.NewColor();
                 playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
+                PlayerInfoUpdatedListeners?.Invoke(playerInfo);
             }
         );
     }
