@@ -65,10 +65,12 @@ public partial class GameOverOverlay : CanvasLayer
         }
 
         var score = new Score(
-            _scoreDisplay.Score,
+            points,
             UniqueNameGenerator.Instance.New()
         );
 
-        throw new System.NotImplementedException();
+        _scoreManager.Save(score);
+
+        throw new NotImplementedException();
     }
 }

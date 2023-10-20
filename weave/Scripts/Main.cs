@@ -240,7 +240,7 @@ public partial class Main : Node2D
             WeaveConstants.DifficultyLogFileCsvPath,
             new List<Func<Log>>
             {
-                () => new("unix_time", Time.GetUnixTimeFromSystem().ToString()),
+                () => new("unix_time", Time.GetUnixTimeFromSystem().ToString(CultureInfo.InvariantCulture)),
                 () => new("players", _lobby.Count.ToString()),
                 () => new("rounds", _round.ToString()),
                 () => new("score", _scoreDisplay.Score.ToString()),
