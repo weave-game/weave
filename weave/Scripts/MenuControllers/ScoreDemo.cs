@@ -13,7 +13,7 @@ public partial class ScoreDemo : Node2D
     [GetNode("LineEdit")]
     private LineEdit _lineEdit;
 
-    private ScoreRecord _score;
+    private Score _score;
     private IScoreManager _scoreManager;
 
     public override void _Ready()

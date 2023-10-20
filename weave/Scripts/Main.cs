@@ -62,7 +62,6 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
-    private IScoreManager _scoreManager;
     private float _turnAcceleration;
 
     private Timer _uiUpdateTimer;
@@ -71,7 +70,6 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
         _multiplayerManager = GameConfig.MultiplayerManager;
         _multiplayerManager.NotifyStartGameAsync();
@@ -235,11 +233,7 @@ public partial class Main : Node2D
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
-        var score = new ScoreRecord(
-            _scoreDisplay.Score,
-            UniqueNameGenerator.Instance.New()
-        );
-        _scoreManager.Save(score);
+        _gameOverOverlay.Do(_scoreDisplay.Score);
 
         // Log "difficulty"
         var diffLogger = new CsvLogger(

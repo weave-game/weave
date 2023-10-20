@@ -77,3 +77,11 @@ alignment = 0
 [node name="ExplosionPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_3if2j")
 volume_db = -7.429
+
+[node name="TeamNameLineEdit" type="LineEdit" parent="."]
+offset_left = 1096.0
+offset_top = 557.0
+offset_right = 1353.0
+offset_bottom = 664.0
+placeholder_text = "lorem"
+alignment = 1

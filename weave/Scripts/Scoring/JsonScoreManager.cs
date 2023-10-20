@@ -8,7 +8,7 @@ namespace Weave.Scoring;
 public class JsonScoreManager : IScoreManager
 {
     private readonly string _filePath;
-    private readonly IDictionary<string, ScoreRecord> _scores;
+    private readonly IDictionary<string, Score> _scores;
 
     public JsonScoreManager(string filePath)
     {
@@ -21,21 +21,21 @@ public class JsonScoreManager : IScoreManager
         _scores = LoadScoresFromFile();
     }
 
-    public void Save(ScoreRecord score)
+    public void Save(Score score)
     {
         _scores[score.Id] = score;
         SaveScoresToFile();
     }
 
-    private IDictionary<string, ScoreRecord> LoadScoresFromFile()
+    private IDictionary<string, Score> LoadScoresFromFile()
     {
         if (!File.Exists(_filePath))
         {
-            return new Dictionary<string, ScoreRecord>();
+            return new Dictionary<string, Score>();
         }
 
         var json = File.ReadAllText(_filePath);
-        return JsonSerializer.Deserialize<Dictionary<string, ScoreRecord>>(json);
+        return JsonSerializer.Deserialize<Dictionary<string, Score>>(json);
     }
 
     private void SaveScoresToFile()
