@@ -479,6 +479,7 @@ vertical_alignment = 1
 layer = -2
 
 [node name="Firefly" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
+visible = false
 curve = SubResource("Curve2D_eky13")
 
 [node name="Firefly2" parent="FireflyLayer" instance=ExtResource("3_r76ru")]
