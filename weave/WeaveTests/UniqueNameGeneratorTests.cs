@@ -1,17 +1,26 @@
 ﻿using System.Reflection;
+using Godot;
 using Weave.Utils;
+using Xunit.Abstractions;
 
 namespace WeaveTests;
 
 public sealed class UniqueNameGeneratorTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public UniqueNameGeneratorTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     private void GeneratesRandomNames()
     {
-        const int times = 10_000;
+        const int Times = 10_000;
         var generatedNames = new List<string>();
 
-        for (var i = 0; i < times; i++)
+        for (var i = 0; i < Times; i++)
         {
             var name = UniqueNameGenerator.Instance.New();
             Assert.DoesNotContain(name, generatedNames);
@@ -23,8 +32,8 @@ public sealed class UniqueNameGeneratorTests
     private void UsesBackupId()
     {
         var generator = UniqueNameGenerator.Instance;
-        const string prefix = "prefix";
-        const string suffix = "suffix";
+        const string Prefix = "prefix";
+        const string Suffix = "suffix";
 
         var type = generator.GetType();
         var backupIndexField = type.GetField("_backupIndex", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -43,7 +52,7 @@ public sealed class UniqueNameGeneratorTests
                 prefixesList.RemoveAt(0);
             }
 
-            prefixesList.Add(prefix);
+            prefixesList.Add(Prefix);
         }
         else
         {
@@ -57,15 +66,50 @@ public sealed class UniqueNameGeneratorTests
                 suffixesList.RemoveAt(0);
             }
 
-            suffixesList.Add(suffix);
+            suffixesList.Add(Suffix);
         }
         else
         {
             Assert.Fail("Suffixes is not a List<string>, this test will not work");
         }
 
-        Assert.Equal(prefix + suffix, generator.New());
-        Assert.Equal(prefix + suffix + " 1", generator.New());
-        Assert.Equal(prefix + suffix + " 2", generator.New());
+        Assert.Equal(Prefix + Suffix, generator.New());
+        Assert.Equal(Prefix + Suffix + " 1", generator.New());
+        Assert.Equal(Prefix + Suffix + " 2", generator.New());
+    }
+
+    [Fact]
+    private void ShouldBeSufficientlyRandom()
+    {
+        // NOTE: This is actually NOT a "fact" and is not guaranteed. Does not prove anything, just a "sanity" check that it's "sufficiently" random.
+
+        const int NInstances = 10;
+        const int NNamesPerInstance = 10_000;
+        var instances = new List<UniqueNameGenerator>();
+
+        for (var i = 0; i < NInstances; i++)
+        {
+            instances.Add(new UniqueNameGenerator());
+        }
+
+        _testOutputHelper.WriteLine(
+            $"Will generate names using {NInstances} instances generating {NNamesPerInstance} names each. Total of {NInstances * NNamesPerInstance} names..."
+        );
+
+        var generatedNames = new List<string>();
+        foreach (var instance in instances)
+        {
+            for (var i = 0; i < NNamesPerInstance; i++)
+            {
+                generatedNames.Add(instance.New());
+            }
+        }
+
+        var nDuplicates = NInstances * NNamesPerInstance - generatedNames.Distinct().Count();
+        var percentageStr = ((double)nDuplicates / (NInstances * NNamesPerInstance) * 100).ToString("0.00") + "%";
+        
+        _testOutputHelper.WriteLine(
+            $"Result: Found {nDuplicates} duplicates ({percentageStr})"
+        );
     }
 }
