@@ -16,6 +16,11 @@ public static class GameConfig
 
     public static RTCClientManager MultiplayerManager { get; set; }
 
+    public static bool HasLocks(int nPlayers)
+    {
+        return nPlayers != 1;
+    }
+
     /// <summary>
     ///     Gets the initial movement speed based on the number of players.
     /// </summary>

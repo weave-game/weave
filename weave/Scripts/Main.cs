@@ -380,7 +380,7 @@ public partial class Main : Node2D
                 goalPositions.RemoveAt(0);
                 goal.PlayerReachedGoal += OnPlayerReachedGoal;
                 goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
-                goal.HasLock = true;
+                goal.HasLock = GameConfig.HasLocks(_players.Count);
                 goal.SetPlayerName(player.PlayerInfo.Name);
                 goal.UnlockAreaColors = new List<Color> { player.PlayerInfo.Color };
             }

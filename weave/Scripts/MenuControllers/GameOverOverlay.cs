@@ -1,4 +1,3 @@
-using System;
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
@@ -12,20 +11,20 @@ public partial class GameOverOverlay : CanvasLayer
     [GetNode("ExplosionPlayer")]
     private AudioStreamPlayer _explosionPlayer;
 
-    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/MenuButton")]
+    [GetUniqueNode("MenuButton")]
     private Button _menuButton;
 
-    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
+    [GetUniqueNode("RetryButton")]
     private Button _retryButton;
 
-    [GetNode("NameLineEdit")]
+    [GetUniqueNode("NameLineEdit")]
     private LineEdit _nameLineEdit;
 
-    [GetNode("SaveNameButton")]
+    [GetUniqueNode("SaveNameButton")]
     private Button _save;
 
-    [GetNode("SavedNameEffect")]
-    private CpuParticles2D _savedNameEffect;
+    [GetNode("Confetti")]
+    private CpuParticles2D _confetti;
 
     private IScoreManager _scoreManager;
     private Score _score;
@@ -33,6 +32,7 @@ public partial class GameOverOverlay : CanvasLayer
     public override void _Ready()
     {
         this.GetNodes();
+        _nameLineEdit.Text = GameConfig.Lobby.Name;
         _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
@@ -41,22 +41,10 @@ public partial class GameOverOverlay : CanvasLayer
             GameConfig.MultiplayerManager.StopClientAsync();
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<StartScreen>());
         };
-        _save.Pressed += UpdateTeamName;
+        _save.Pressed += () => SaveScore();
 
         // On game over, set process mode to idle to stop game, but keep overlays clickable
         ProcessMode = ProcessModeEnum.Always;
-    }
-
-    private void UpdateTeamName()
-    {
-        var newName = _nameLineEdit.Text;
-
-        if (string.IsNullOrWhiteSpace(newName))
-            return;
-
-        _score.Name = newName;
-        _scoreManager.Save(_score);
-        _savedNameEffect.Emitting = true;
     }
 
     public void DisplayGameOver()
@@ -66,17 +54,25 @@ public partial class GameOverOverlay : CanvasLayer
         Show();
     }
 
-    public void SaveScore(int points)
+    public void SaveScore(int points = 0)
     {
-        if (points <= 0)
+        // First time saving score
+        _score ??= new Score(points, GameConfig.Lobby.Name);
+
+        // Dont save bad scores
+        if (_score.Value <= 0)
+            return;
+
+        // Players have filled in a new name, update lobby name
+        var newName = _nameLineEdit.Text;
+        if (!string.IsNullOrWhiteSpace(newName) && newName != _score.Name)
         {
-            throw new ArgumentOutOfRangeException(nameof(points));
+            GameConfig.Lobby.Name = newName;
+            _score.Name = newName;
+            _nameLineEdit.Text = newName;
         }
 
-        var name = UniqueNameGenerator.Instance.New();
-        _score = new Score(points, name);
-        _nameLineEdit.Text = name;
-
         _scoreManager.Save(_score);
+        _confetti.Emitting = true;
     }
 }

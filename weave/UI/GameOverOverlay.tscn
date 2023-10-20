@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dfn3svkimd3s4"]
+[gd_scene load_steps=10 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
 [ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="2_5xrrk"]
@@ -6,12 +6,20 @@
 [ext_resource type="FontFile" uid="uid://c3a6bjpr2ppwy" path="res://Assets/Fonts/Open_Sans/static/OpenSans-ExtraBold.ttf" id="3_13lak"]
 [ext_resource type="Texture2D" uid="uid://devx10rh1eqbt" path="res://Assets/Icons/arrow-right-on-rectangle.svg" id="4_ci4ui"]
 [ext_resource type="AudioStream" uid="uid://drclr0x038ndn" path="res://Assets/SFX/explosion.mp3" id="6_3if2j"]
+[ext_resource type="PackedScene" uid="uid://ddpnlaadc5wyu" path="res://Objects/Confetti.tscn" id="7_b75um"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rm0a5"]
 font = ExtResource("3_13lak")
 font_size = 100
 outline_size = 16
 outline_color = Color(0.0666667, 0.0745098, 0.0705882, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_knnq6"]
+bg_color = Color(0.0196078, 0.72549, 0.913725, 0.290196)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
 
 [node name="GameOverOverlay" type="CanvasLayer"]
 script = ExtResource("1_xbr3w")
@@ -78,35 +86,38 @@ alignment = 0
 stream = ExtResource("6_3if2j")
 volume_db = -7.429
 
-[node name="NameLineEdit" type="LineEdit" parent="."]
-offset_left = 1204.0
-offset_top = 551.0
-offset_right = 1490.0
-offset_bottom = 612.0
+[node name="Panel" type="Panel" parent="."]
+offset_left = 1108.0
+offset_top = 555.0
+offset_right = 1484.0
+offset_bottom = 772.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_knnq6")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "TEAM NAME"
+horizontal_alignment = 1
+
+[node name="NameLineEdit" type="LineEdit" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
 placeholder_text = "lorem"
 alignment = 1
 
-[node name="SaveNameButton" type="Button" parent="."]
-offset_left = 1204.0
-offset_top = 622.0
-offset_right = 1490.0
-offset_bottom = 660.0
+[node name="SaveNameButton" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
 text = "Save"
 
-[node name="SavedNameEffect" type="CPUParticles2D" parent="."]
-position = Vector2(1336, 416)
-emitting = false
-one_shot = true
-spread = 180.0
-initial_velocity_min = 506.1
-initial_velocity_max = 506.1
-scale_amount_min = 32.65
-scale_amount_max = 57.96
-
-[node name="Label" type="Label" parent="."]
-offset_left = 1303.0
-offset_top = 520.0
-offset_right = 1398.0
-offset_bottom = 546.0
-text = "TEAM NAME"
-horizontal_alignment = 1
+[node name="Confetti" parent="." instance=ExtResource("7_b75um")]
+position = Vector2(1301, 647)
