@@ -229,7 +229,7 @@ public class RTCClientManager
         }
     }
 
-    public async Task NotifyChangePlayerColor(string clientId, string newColor)
+    public async void NotifyChangePlayerColor(string clientId, string newColor)
     {
         var colorMessage = new { type = "color-change", color = newColor, clientId, lobbyCode = _lobbyCode };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(colorMessage));

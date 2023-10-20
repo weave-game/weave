@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dfn3svkimd3s4"]
+[gd_scene load_steps=12 format=3 uid="uid://dfn3svkimd3s4"]
 
 [ext_resource type="Script" path="res://Scripts/MenuControllers/GameOverOverlay.cs" id="1_xbr3w"]
 [ext_resource type="Theme" uid="uid://by2pot0p04k5c" path="res://Themes/weave_theme.tres" id="2_5xrrk"]
@@ -12,6 +12,58 @@ font = ExtResource("3_13lak")
 font_size = 100
 outline_size = 16
 outline_color = Color(0.0666667, 0.0745098, 0.0705882, 1)
+
+[sub_resource type="Animation" id="Animation_dwwli"]
+resource_name = "saved"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_r3anb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_5ublq"]
+resource_name = "hide"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_72tkv"]
+_data = {
+"RESET": SubResource("Animation_r3anb"),
+"hide": SubResource("Animation_5ublq"),
+"saved": SubResource("Animation_dwwli")
+}
 
 [node name="GameOverOverlay" type="CanvasLayer"]
 script = ExtResource("1_xbr3w")
@@ -45,10 +97,24 @@ text = "GAME OVER"
 label_settings = SubResource("LabelSettings_rm0a5")
 horizontal_alignment = 1
 
+[node name="NameHBox" type="HBoxContainer" parent="CenterContainer/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="NameLineEdit" type="LineEdit" parent="CenterContainer/VBox/NameHBox"]
+custom_minimum_size = Vector2(477.025, 0)
+layout_mode = 2
+placeholder_text = "Team Name"
+alignment = 1
+
+[node name="SaveNameButton" type="Button" parent="CenterContainer/VBox/NameHBox"]
+layout_mode = 2
+text = "Save"
+
 [node name="HSeparator" type="HSeparator" parent="CenterContainer/VBox"]
 modulate = Color(1, 1, 1, 0)
 self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="CenterContainer/VBox"]
@@ -77,3 +143,17 @@ alignment = 0
 [node name="ExplosionPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_3if2j")
 volume_db = -7.429
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1117.0
+offset_top = 415.0
+offset_right = 1236.0
+offset_bottom = 475.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 31
+text = "Saved 🗸"
+
+[node name="SavedNotificationAnimationPlayer" type="AnimationPlayer" parent="Label"]
+libraries = {
+"": SubResource("AnimationLibrary_72tkv")
+}

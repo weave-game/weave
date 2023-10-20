@@ -10,6 +10,8 @@ namespace Weave.InputSources;
 
 public sealed class Lobby
 {
+    public string Name { get; set; }
+
     public delegate void PlayerJoinedEventHandler(IInputSource source);
     public delegate void PlayerLeftEventHandler(IInputSource source);
     public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
@@ -22,6 +24,7 @@ public sealed class Lobby
 
     public Lobby()
     {
+        Name = UniqueNameGenerator.Instance.New();
         _qrCodeGenerator = new GdQrCodeGenerator();
         LobbyCode = GenerateLobbyCode(LobbyCodeCharacters, LobbyCodeLength);
         LobbyQrCode = GenerateLobbyQrCode($"{LobbyQrCodePath}/{LobbyCode}");
