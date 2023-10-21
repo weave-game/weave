@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
 namespace Weave.Utils;
 
@@ -15,7 +14,21 @@ public sealed class UniqueNameGenerator
     /// </summary>
     public static UniqueNameGenerator Instance { get; } = new();
 
-    private IEnumerable<string> Prefixes { get; } =
+    private IEnumerable<string> A { get; } = new List<string>
+    {
+        "Mega",
+        "Uber",
+        "Ultra",
+        "Super",
+        "Hyper",
+        "Mighty",
+        "Giga",
+        "Tera",
+        "Epic",
+        "Grand"
+    };
+
+    private IEnumerable<string> B { get; } =
         new List<string>
         {
             "Red",
@@ -42,7 +55,7 @@ public sealed class UniqueNameGenerator
             "Poisoned"
         };
 
-    private IEnumerable<string> Suffixes { get; } =
+    private IEnumerable<string> C { get; } =
         new List<string>
         {
             "Lemurs",
@@ -71,13 +84,6 @@ public sealed class UniqueNameGenerator
             "Guerezsa"
         };
 
-    private IEnumerable<string> AnotherList { get; } = new List<string>
-    {
-        "A",
-        "B",
-        "C",
-    };
-
     public string New()
     {
         var attempts = 0;
@@ -91,7 +97,9 @@ public sealed class UniqueNameGenerator
         if (UsedNames.Contains(name))
         {
             if (!_backupIndices.TryGetValue(name, out _))
+            {
                 _backupIndices[name] = 0;
+            }
 
             _backupIndices[name]++;
             name += $" {_backupIndices[name]}";
@@ -103,9 +111,22 @@ public sealed class UniqueNameGenerator
 
     private string Generate()
     {
-        var other = AnotherList.Random();
-        var prefix = Prefixes.Random();
-        var suffix = Suffixes.Random();
-        return other + prefix + suffix;
+        var output = new StringBuilder();
+        var prefixes = new List<string>();
+
+        if (GsRandom.CoinToss())
+        {
+            prefixes.Add(A.Random());
+        }
+
+        if (GsRandom.CoinToss())
+        {
+            prefixes.Add(B.Random());
+        }
+
+        // Possible prefixes
+        output.Append(string.Concat(prefixes.Shuffled()));
+
+        return output.Append(C.Random()).ToString();
     }
 }

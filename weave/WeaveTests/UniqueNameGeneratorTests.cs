@@ -82,7 +82,7 @@ public sealed class UniqueNameGeneratorTests
     private void ShouldBeSufficientlyRandom()
     {
         // NOTE: This is actually NOT a "fact" and is not guaranteed. Does not prove anything, just a "sanity" check that it's "sufficiently" random.
-        const int N = 100_000;
+        const int N = 300_000;
         var instance = new UniqueNameGenerator();
 
         _testOutputHelper.WriteLine(
