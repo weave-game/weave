@@ -2,7 +2,7 @@ namespace Weave.Utils;
 
 public static class WeaveConstants
 {
-    public static bool DevButtonsEnabled => true;
+    public static bool DevButtonsEnabled => false;
 
     #region Lines
 

@@ -11,7 +11,6 @@ using Weave.Logging;
 using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
 using Weave.Networking;
-using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
 
@@ -62,7 +61,6 @@ public partial class Main : Node2D
     [GetNode("ScoreDisplay")]
     private ScoreDisplay _scoreDisplay;
 
-    private IScoreManager _scoreManager;
     private float _turnAcceleration;
 
     private Timer _uiUpdateTimer;
@@ -71,7 +69,6 @@ public partial class Main : Node2D
     public override void _Ready()
     {
         this.GetNodes();
-        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
         _lobby = GameConfig.Lobby;
         _multiplayerManager = GameConfig.MultiplayerManager;
         _multiplayerManager.NotifyStartGameAsync();
@@ -235,18 +232,14 @@ public partial class Main : Node2D
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
-        var score = new ScoreRecord(
-            _scoreDisplay.Score,
-            UniqueNameGenerator.Instance.New()
-        );
-        _scoreManager.Save(score);
+        _gameOverOverlay.SaveScore(_scoreDisplay.Score);
 
         // Log "difficulty"
         var diffLogger = new CsvLogger(
             WeaveConstants.DifficultyLogFileCsvPath,
             new List<Func<Log>>
             {
-                () => new("unix_time", Time.GetUnixTimeFromSystem().ToString()),
+                () => new("unix_time", Time.GetUnixTimeFromSystem().ToString(CultureInfo.InvariantCulture)),
                 () => new("players", _lobby.Count.ToString()),
                 () => new("rounds", _round.ToString()),
                 () => new("score", _scoreDisplay.Score.ToString()),
@@ -386,7 +379,7 @@ public partial class Main : Node2D
                 goalPositions.RemoveAt(0);
                 goal.PlayerReachedGoal += OnPlayerReachedGoal;
                 goal.CallDeferred("set", nameof(Goal.Color), player.PlayerInfo.Color);
-                goal.HasLock = true;
+                goal.HasLock = GameConfig.HasLocks(_players.Count);
                 goal.SetPlayerName(player.PlayerInfo.Name);
                 goal.UnlockAreaColors = new List<Color> { player.PlayerInfo.Color };
             }

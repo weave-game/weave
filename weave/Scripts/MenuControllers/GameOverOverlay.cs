@@ -1,6 +1,8 @@
 using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
+using Weave.Scoring;
+using Weave.Utils;
 
 namespace Weave.MenuControllers;
 
@@ -9,23 +11,42 @@ public partial class GameOverOverlay : CanvasLayer
     [GetNode("ExplosionPlayer")]
     private AudioStreamPlayer _explosionPlayer;
 
-    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/MenuButton")]
+    [GetUniqueNode("MenuButton")]
     private Button _menuButton;
 
-    [GetNode("CenterContainer/VBox/CenterContainer/VBoxContainer/RetryButton")]
+    [GetUniqueNode("RetryButton")]
     private Button _retryButton;
+
+    [GetUniqueNode("NameLineEdit")]
+    private LineEdit _nameLineEdit;
+
+    [GetUniqueNode("SaveNameButton")]
+    private Button _save;
+
+    [GetUniqueNode("SavedNotificationAnimationPlayer")]
+    private AnimationPlayer _savedPlayer;
+
+    private IScoreManager _scoreManager;
+    private Score _score;
 
     public override void _Ready()
     {
         this.GetNodes();
+        _nameLineEdit.Text = GameConfig.Lobby.Name;
+        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
+
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
         _menuButton.Pressed += () =>
         {
             GameConfig.MultiplayerManager.StopClientAsync();
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<StartScreen>());
         };
+        _save.Pressed += () => SaveScore();
+
         // On game over, set process mode to idle to stop game, but keep overlays clickable
         ProcessMode = ProcessModeEnum.Always;
+
+        _savedPlayer.Play("hide");
     }
 
     public void DisplayGameOver()
@@ -33,5 +54,28 @@ public partial class GameOverOverlay : CanvasLayer
         _explosionPlayer.Play();
         _retryButton.GrabFocus();
         Show();
+    }
+
+    public void SaveScore(int points = 0)
+    {
+        // First time saving score
+        _score ??= new Score(points, GameConfig.Lobby.Name);
+
+        // Dont save bad scores
+        if (_score.Value <= 0)
+            return;
+
+        // Players have filled in a new name, update lobby name
+        var newName = _nameLineEdit.Text;
+        if (!string.IsNullOrWhiteSpace(newName) && newName != _score.Name)
+        {
+            GameConfig.Lobby.Name = newName;
+            _score.Name = newName;
+            _nameLineEdit.Text = newName;
+        }
+
+        _scoreManager.Save(_score);
+        _savedPlayer.Play("hide");
+        _savedPlayer.Play("saved");
     }
 }

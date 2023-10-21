@@ -2,9 +2,9 @@ using System;
 
 namespace Weave.Scoring;
 
-public class ScoreRecord
+public class Score
 {
-    public ScoreRecord(int value, string name)
+    public Score(int value, string name)
     {
         Id = Guid.NewGuid().ToString();
         Value = value;

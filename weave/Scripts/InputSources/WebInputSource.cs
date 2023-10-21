@@ -14,7 +14,7 @@ public sealed class WebInputSource : IInputSource
         Id = id;
     }
 
-    public bool IsTurning(string direction)
+    private bool IsTurning(string direction)
     {
         if (_directionQueue.Count > 0)
         {
