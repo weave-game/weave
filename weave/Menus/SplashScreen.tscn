@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ceetfs6pj5auq"]
+[gd_scene load_steps=6 format=3 uid="uid://j51pxlqf5t2n"]
 
+[ext_resource type="Script" path="res://Scripts/MenuControllers/SplashScreen.cs" id="1_k4bbs"]
 [ext_resource type="Texture2D" uid="uid://qvudp8hyalw6" path="res://Assets/splash-screen.png" id="1_yrha0"]
-[ext_resource type="Script" path="res://Scripts/SplashScreen.cs" id="2_pja8k"]
+[ext_resource type="AudioStream" uid="uid://7fu6ktqrmcnc" path="res://Assets/Music/tutor.mp3" id="3_rcd23"]
 
 [sub_resource type="Animation" id="Animation_5soif"]
 resource_name = "SkipLabel"
@@ -49,7 +50,7 @@ _data = {
 
 [node name="SplashScreen" type="Node2D"]
 position = Vector2(2.08165e-12, 2.08165e-12)
-script = ExtResource("2_pja8k")
+script = ExtResource("1_k4bbs")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-53, -48)
@@ -75,3 +76,7 @@ color = Color(0.117647, 0.117647, 0.117647, 0)
 libraries = {
 "": SubResource("AnimationLibrary_b1brr")
 }
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rcd23")
+autoplay = true
