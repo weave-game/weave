@@ -451,8 +451,7 @@ offset_bottom = 76.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
-text = "[b]JOIN WITH KEYBINDING: [/b]  
-← + → | 1 + Q | Z + X | B + N"
+text = "[b]JOIN WITH KEYBINDING: [/b] "
 
 [node name="Leave" type="RichTextLabel" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
@@ -472,6 +471,16 @@ offset_top = 25.0
 offset_right = 22.0
 offset_bottom = 89.0
 texture = ExtResource("19_7atba")
+
+[node name="JoinKeybinding" type="Label" parent="UI/Instructions/Keyboard"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 40.0
+offset_right = 381.0
+offset_bottom = 77.0
+theme_override_font_sizes/font_size = 24
+text = "-
+"
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2

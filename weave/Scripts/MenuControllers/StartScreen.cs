@@ -41,6 +41,9 @@ public partial class StartScreen : Control
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
 
+    [GetUniqueNode("JoinKeybinding")]
+    private Label _joinKeybindingLabel;
+
     private RTCClientManager _multiplayerManager;
 
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
@@ -78,7 +81,9 @@ public partial class StartScreen : Control
         _startButton.Pressed += OnStartButtonPressed;
 
         _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintLobbyPlayers));
+        _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintJoinKeybindingLabel));
         _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintLobbyPlayers));
+        _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintJoinKeybindingLabel));
         _lobby.PlayerInfoUpdatedListeners += HandleUpdateWebPlayerColor;
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
@@ -165,6 +170,8 @@ public partial class StartScreen : Control
         _playButton.MouseExited += CollapseButtons;
         _quitButton.MouseEntered += ExpandButtons;
         _quitButton.MouseExited += CollapseButtons;
+
+        PrintJoinKeybindingLabel();
 
         CollapseButtons();
     }
@@ -254,6 +261,21 @@ public partial class StartScreen : Control
             lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
             _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
+        }
+    }
+
+    private void PrintJoinKeybindingLabel()
+    {
+        foreach (var keybindingTuple in KeyboardBindings.Keybindings)
+        {
+            if (!_lobby.PlayerInfos.Any(playerInfo =>
+                    playerInfo.InputSource.Equals(new KeyboardInputSource(keybindingTuple))))
+            {
+                _joinKeybindingLabel.Text = $"{keybindingTuple.Item1} + {keybindingTuple.Item2}";
+                break;
+            }
+
+            _joinKeybindingLabel.Text = "NO MORE KEYBINDINGS";
         }
     }
 
