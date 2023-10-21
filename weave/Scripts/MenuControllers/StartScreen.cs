@@ -73,7 +73,7 @@ public partial class StartScreen : Control
     {
         this.GetNodes();
 
-        _playButton.Pressed += OpenLobby;
+        _playButton.Pressed += ToggleLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
@@ -133,13 +133,25 @@ public partial class StartScreen : Control
         }
     }
 
+    private void ToggleLobby()
+    {
+        if (_lobby.Open)
+        {
+            CloseLobby();
+        }
+        else
+        {
+            OpenLobby();
+        }
+    }
+
     private void OpenLobby()
     {
         if (_lobby.Open)
         {
             return;
         }
-      
+
         _lobby.Open = true;
         _blurLayer.Visible = true;
         _playerList.Visible = true;
