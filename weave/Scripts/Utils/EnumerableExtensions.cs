@@ -6,6 +6,8 @@ namespace Weave.Utils;
 
 public static class EnumerableExtensions
 {
+    private static readonly Random s_random = new();
+
     /// <summary>
     ///     Returns a random element from the given enumerable.
     /// </summary>
@@ -14,10 +16,8 @@ public static class EnumerableExtensions
     /// <returns>A random element from the given enumerable.</returns>
     public static T Random<T>(this IEnumerable<T> enumerable)
     {
-        var rnd = new Random();
-        var a = enumerable as T[] ?? enumerable.ToArray();
-        var index = rnd.Next(0, a.Length);
-        return a[index];
+        var array = enumerable as T[] ?? enumerable.ToArray();
+        return array[s_random.Next(array.Length)];
     }
 
     /// <summary>
@@ -33,5 +33,22 @@ public static class EnumerableExtensions
         {
             list.Remove(item);
         }
+    }
+
+    /// <summary>
+    ///     Returns a new list containing the elements of the original list in a shuffled order.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements of the list.</typeparam>
+    /// <param name="list">The list to be shuffled.</param>
+    /// <returns>A new list containing the shuffled elements of the original list.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the provided list is null.</exception>
+    public static IList<T> Shuffled<T>(this IList<T> list)
+    {
+        if (list == null)
+        {
+            throw new ArgumentNullException(nameof(list));
+        }
+
+        return list.OrderBy(_ => s_random.Next()).ToList();
     }
 }

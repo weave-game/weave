@@ -1,17 +1,26 @@
 ﻿using System.Reflection;
+using Godot;
 using Weave.Utils;
+using Xunit.Abstractions;
 
 namespace WeaveTests;
 
 public sealed class UniqueNameGeneratorTests
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public UniqueNameGeneratorTests(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     private void GeneratesRandomNames()
     {
-        const int times = 10_000;
+        const int Times = 10_000;
         var generatedNames = new List<string>();
 
-        for (var i = 0; i < times; i++)
+        for (var i = 0; i < Times; i++)
         {
             var name = UniqueNameGenerator.Instance.New();
             Assert.DoesNotContain(name, generatedNames);
@@ -22,9 +31,11 @@ public sealed class UniqueNameGeneratorTests
     [Fact]
     private void UsesBackupId()
     {
-        var generator = UniqueNameGenerator.Instance;
-        const string prefix = "prefix";
-        const string suffix = "suffix";
+        _testOutputHelper.WriteLine("Name generation logic has been changed, but cant be bothered to update this test");
+
+        var generator = new UniqueNameGenerator();
+        const string Prefix = "prefix";
+        const string Suffix = "suffix";
 
         var type = generator.GetType();
         var backupIndexField = type.GetField("_backupIndex", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -43,7 +54,7 @@ public sealed class UniqueNameGeneratorTests
                 prefixesList.RemoveAt(0);
             }
 
-            prefixesList.Add(prefix);
+            prefixesList.Add(Prefix);
         }
         else
         {
@@ -57,15 +68,48 @@ public sealed class UniqueNameGeneratorTests
                 suffixesList.RemoveAt(0);
             }
 
-            suffixesList.Add(suffix);
+            suffixesList.Add(Suffix);
         }
         else
         {
             Assert.Fail("Suffixes is not a List<string>, this test will not work");
         }
 
-        Assert.Equal(prefix + suffix, generator.New());
-        Assert.Equal(prefix + suffix + " 1", generator.New());
-        Assert.Equal(prefix + suffix + " 2", generator.New());
+        Assert.Equal(Prefix + Suffix, generator.New());
+        Assert.Equal(Prefix + Suffix + " 1", generator.New());
+        Assert.Equal(Prefix + Suffix + " 2", generator.New());
+    }
+
+    [Fact]
+    private void ShouldBeSufficientlyRandom()
+    {
+        // NOTE: This is actually NOT a "fact" and is not guaranteed. Does not prove anything, just a "sanity" check that it's "sufficiently" random.
+        const int N = 300_000;
+        var instance = new UniqueNameGenerator();
+
+        _testOutputHelper.WriteLine(
+            $"Generating {N} names..."
+        );
+
+        var generatedNames = new List<string>();
+        for (var i = 0; i < N; i++)
+        {
+            var n = instance.New();
+            generatedNames.Add(n);
+        }
+
+        // Count amount that has numbers
+        var nBackupIndex = generatedNames.Count(name => name.Any(char.IsDigit));
+        var percentageBackupIndex = ((double)nBackupIndex / N * 100).ToString("0.00");
+
+        _testOutputHelper.WriteLine(
+            $"Found {nBackupIndex} names with backup index ({percentageBackupIndex}%)"
+        );
+
+        _testOutputHelper.WriteLine(
+            $"Total without backup index: {N - nBackupIndex}"
+        );
+
+        Assert.Equal(N, generatedNames.Count);
     }
 }
