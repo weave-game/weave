@@ -13,21 +13,6 @@ font_size = 100
 outline_size = 16
 outline_color = Color(0.0666667, 0.0745098, 0.0705882, 1)
 
-[sub_resource type="Animation" id="Animation_dwwli"]
-resource_name = "saved"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:theme_override_colors/font_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_r3anb"]
 length = 0.001
 tracks/0/type = "value"
@@ -56,6 +41,21 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_dwwli"]
+resource_name = "saved"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_72tkv"]
@@ -151,7 +151,7 @@ offset_right = 1236.0
 offset_bottom = 475.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 31
-text = "Saved 🗸"
+text = "Saved"
 
 [node name="SavedNotificationAnimationPlayer" type="AnimationPlayer" parent="Label"]
 libraries = {
