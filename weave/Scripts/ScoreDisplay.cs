@@ -105,14 +105,9 @@ public sealed class ScoreLogicDelegate
     /// </summary>
     private const float UndefinedFactor = 1;
 
-    private readonly IDictionary<int, float> OPTIMIZED_SCALING_FACTORS = new Dictionary<int, float>
+    private readonly IDictionary<int, float> _scalingFactors = new Dictionary<int, float>
     {
         { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
-    };
-
-    private IDictionary<int, float> PlayerScalingFactors { get; } = new Dictionary<int, float>
-    {
-        { 2, 0.912722f }, { 3, 1.081312f }, { 4, 1.119835f }, { 5, 0.907749f }
     };
 
     public static float CalcLinearScore(double delta)
@@ -122,7 +117,7 @@ public sealed class ScoreLogicDelegate
 
     public float CalcRoundBonus(int nPlayers)
     {
-        var scalingFactor = OPTIMIZED_SCALING_FACTORS.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
+        var scalingFactor = _scalingFactors.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
         return PointsForRound * scalingFactor;
     }
 }
