@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 type Score = {
   name: string
-  score: number
+  points: number
 }
 
 type ScoresDTO = {
@@ -38,7 +38,7 @@ const fetchScores = async () => {
 }
 
 const filter = (scores: Score[]) => {
-  const things = scores.sort((a, b) => b.score - a.score).slice(0, scoresToDisplay)
+  const things = scores.sort((a, b) => b.points - a.points).slice(0, scoresToDisplay)
 
   // Insert a score with the name "..." at the next last position if there are items in the array
   const fakeScore: Score = {
@@ -87,7 +87,7 @@ onUnmounted(() => {
         <td>{{ score.name }}</td>
         <td>
           <div class="flex items-center">
-            {{ score.score }}
+            {{ score.points }}
 
             <img v-if="index === 0" :src="crownSrc" alt="crown" class="crown ml-7">
 

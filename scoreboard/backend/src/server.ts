@@ -11,7 +11,7 @@ app.use(cors());
 
 type Score = {
   name: string;
-  score: number;
+  points: number;
 };
 
 const jsonParser = bodyParser.json();
@@ -37,7 +37,7 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
       const team = jsonData[key];
       scores.push({
         name: team.Name,
-        score: team.Value,
+        points: team.Points,
       });
     }
 
