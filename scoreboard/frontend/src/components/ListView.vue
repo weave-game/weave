@@ -15,11 +15,26 @@ type ScoresDTO = {
 }
 
 const scores = ref([] as Score[])
-const fetchIntervalSeconds = 10 // fetch every 10 seconds
-const scoresToDisplay = 13;
+const fetchIntervalSeconds = 5
+const scoresToDisplay = 10
 const countdown = ref(fetchIntervalSeconds)
-const crownSrc = 'https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png';
-const lSrc = 'https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif'
+
+const getHiddenScores = () => {
+  const hiddenScores = localStorage.getItem('hiddenScores')
+
+  if (!hiddenScores) {
+    return []
+  }
+
+  return JSON.parse(hiddenScores)
+}
+
+const hideScore = (score: Score) => {
+  const hiddenScores = getHiddenScores()
+  hiddenScores.push(score.name)
+  localStorage.setItem('hiddenScores', JSON.stringify(hiddenScores))
+  scores.value = filter(scores.value)
+}
 
 // Fetch scores from the server
 const fetchScores = async () => {
@@ -38,18 +53,18 @@ const fetchScores = async () => {
 }
 
 const filter = (scores: Score[]) => {
-  const things = scores.sort((a, b) => b.points - a.points).slice(0, scoresToDisplay)
+  const sorted = scores.sort((a, b) => b.points - a.points).slice(0, scoresToDisplay)
 
   // Insert a score with the name "..." at the next last position if there are items in the array
-  const fakeScore: Score = {
-    name: '...',
-  } as Score
+  if (scores.length > scoresToDisplay) {
+    const fakeScore: Score = {
+      name: '...',
+    } as Score
 
-  if (things.length > 0) {
-    things.splice(things.length - 1, 0, fakeScore)
+    sorted.splice(sorted.length - 1, 0, fakeScore)
   }
 
-  return things;
+  return sorted;
 }
 
 // Fetch scores when the component is mounted and every X seconds
@@ -87,11 +102,13 @@ onUnmounted(() => {
         <td>{{ score.name }}</td>
         <td>
           <div class="flex items-center">
-            {{ score.points }}
+            <span class="my-mono">
+              {{ score.points.toLocaleString('sv-SE') }}
+            </span>
 
-            <img v-if="index === 0" :src="crownSrc" alt="crown" class="crown ml-7">
+            <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7">
 
-            <img v-if="index + 1 === scores.length" :src="lSrc" alt="crown" class="crown ml-7">
+            <img v-if="index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7">
           </div>
         </td>
       </tr>
