@@ -11,6 +11,7 @@ using Weave.Logging;
 using Weave.Logging.ConcreteCsv;
 using Weave.MenuControllers;
 using Weave.Networking;
+using Weave.Scoring;
 using Weave.Utils;
 using static Weave.InputSources.KeyboardBindings;
 
@@ -232,7 +233,8 @@ public partial class Main : Node2D
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
-        _gameOverOverlay.SaveScore(_scoreDisplay.Score);
+        var score = new Score(_scoreDisplay.Score, GameConfig.Lobby.Name, GameConfig.Lobby.Count, _round);
+        _gameOverOverlay.SaveScore(score);
 
         // Log "difficulty"
         var diffLogger = new CsvLogger(
