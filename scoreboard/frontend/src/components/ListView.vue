@@ -22,6 +22,7 @@ const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
   JSON.parse(localStorage.getItem("hiddenScores") || "[]")
 );
+const showL = ref(localStorage.getItem("L") === "true");
 
 // Fetch scores from the server
 const fetchScores = async () => {
@@ -114,7 +115,7 @@ onUnmounted(() => {
         <!-- Possible images -->
         <td>
           <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7" />
-          <img v-if="index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7" />
+          <img v-if="showL && index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7" />
         </td>
 
         <!-- Hide button -->
