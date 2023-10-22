@@ -41,19 +41,25 @@ public partial class StartScreen : Control
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
 
+    [GetUniqueNode("JoinKeybinding")]
+    private Label _joinKeybindingLabel;
+
     private RTCClientManager _multiplayerManager;
-
-    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Options")]
-    private Button _optionsButton;
-
-    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
-    private Button _playButton;
 
     [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
     private VBoxContainer _playerList;
 
+    [GetUniqueNode("EmptyLobbyLabel")]
+    private Label _emptyLobbyLabel;
+
     [GetNode("UI/Instructions/Web/QRCodeTexture")]
     private TextureRect _qrCodeTexture;
+
+    [GetUniqueNode("ButtonContainer")]
+    private BoxContainer _buttonContainer;
+
+    [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
+    private Button _playButton;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
     private Button _quitButton;
@@ -69,12 +75,15 @@ public partial class StartScreen : Control
     public override void _Ready()
     {
         this.GetNodes();
-        _playButton.Pressed += OpenLobby;
+
+        _playButton.Pressed += ToggleLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
 
-        _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintInputSources));
-        _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintInputSources));
+        _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintLobbyPlayers));
+        _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintJoinKeybindingLabel));
+        _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintLobbyPlayers));
+        _lobby.PlayerLeftListeners += _ => CallDeferred(nameof(PrintJoinKeybindingLabel));
         _lobby.PlayerInfoUpdatedListeners += HandleUpdateWebPlayerColor;
 
         SetLobbyCodeLabelText(_lobby.LobbyCode);
@@ -129,8 +138,25 @@ public partial class StartScreen : Control
         }
     }
 
+    private void ToggleLobby()
+    {
+        if (_lobby.Open)
+        {
+            CloseLobby();
+        }
+        else
+        {
+            OpenLobby();
+        }
+    }
+
     private void OpenLobby()
     {
+        if (_lobby.Open)
+        {
+            return;
+        }
+
         _lobby.Open = true;
         _blurLayer.Visible = true;
         _playerList.Visible = true;
@@ -138,6 +164,15 @@ public partial class StartScreen : Control
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
         _instructions.Visible = true;
+        _emptyLobbyLabel.Visible = true;
+
+        _playButton.MouseEntered += ExpandButtons;
+        _playButton.MouseExited += CollapseButtons;
+        _quitButton.MouseEntered += ExpandButtons;
+        _quitButton.MouseExited += CollapseButtons;
+
+        PrintJoinKeybindingLabel();
+
         CollapseButtons();
     }
 
@@ -150,6 +185,13 @@ public partial class StartScreen : Control
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
         _instructions.Visible = false;
+        _emptyLobbyLabel.Visible = false;
+
+        _playButton.MouseEntered -= ExpandButtons;
+        _playButton.MouseExited -= CollapseButtons;
+        _quitButton.MouseEntered -= ExpandButtons;
+        _quitButton.MouseExited -= CollapseButtons;
+
         ExpandButtons();
     }
 
@@ -175,24 +217,26 @@ public partial class StartScreen : Control
     private void ExpandButtons()
     {
         _playButton.Text = "PLAY";
-        _optionsButton.Text = "OPTIONS";
+        _playButton.CustomMinimumSize = new Vector2(200, 0);
+
         _quitButton.Text = "QUIT";
-        _playButton.CustomMinimumSize = new(200, 0);
-        _optionsButton.CustomMinimumSize = new(200, 0);
-        _quitButton.CustomMinimumSize = new(200, 0);
+        _quitButton.CustomMinimumSize = new Vector2(200, 0);
     }
 
     private void CollapseButtons()
     {
-        _playButton.Text = "";
-        _optionsButton.Text = "";
-        _quitButton.Text = "";
-        _playButton.CustomMinimumSize = new(0, 0);
-        _optionsButton.CustomMinimumSize = new(0, 0);
-        _quitButton.CustomMinimumSize = new(0, 0);
-    }
+        if (_buttonContainer.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
+        {
+            return;
+        }
 
-    private void PrintInputSources()
+        _playButton.Text = "";
+        _playButton.CustomMinimumSize = new Vector2(0, 0);
+
+        _quitButton.Text = "";
+        _quitButton.CustomMinimumSize = new Vector2(0, 0);
+    }
+    private void PrintLobbyPlayers()
     {
         foreach (var child in _playerList.GetChildren())
         {
@@ -202,14 +246,36 @@ public partial class StartScreen : Control
 
         _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
 
+        if (_lobby.Count == 0)
+        {
+            _emptyLobbyLabel.Visible = true;
+            return;
+        }
+
         foreach (var playerInfo in _lobby.PlayerInfos)
         {
+            _emptyLobbyLabel.Visible = false;
             var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
             lobbyPlayer.Modulate = playerInfo.Color;
             lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
             lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
             _playerList.AddChild(lobbyPlayer);
             _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
+        }
+    }
+
+    private void PrintJoinKeybindingLabel()
+    {
+        foreach (var keybindingTuple in KeyboardBindings.Keybindings)
+        {
+            if (!_lobby.PlayerInfos.Any(playerInfo =>
+                    playerInfo.InputSource.Equals(new KeyboardInputSource(keybindingTuple))))
+            {
+                _joinKeybindingLabel.Text = $"{keybindingTuple.Item1} + {keybindingTuple.Item2}";
+                break;
+            }
+
+            _joinKeybindingLabel.Text = "NO MORE KEYBINDINGS";
         }
     }
 
@@ -308,6 +374,6 @@ public partial class StartScreen : Control
         var r = (int)(color.R * 255.0f);
         var g = (int)(color.G * 255.0f);
         var b = (int)(color.B * 255.0f);
-        return string.Format("#{0:X2}{1:X2}{2:X2}", r, g, b);
+        return $"#{r:X2}{g:X2}{b:X2}";
     }
 }
