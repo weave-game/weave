@@ -70,11 +70,19 @@ public sealed class WebInputSource : IInputSource
 
     public TextureRect LeftInputIcon()
     {
-        return null;
+        var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/phone.svg");
+        var icon = new TextureRect() { Texture = imageResource };
+        icon.CustomMinimumSize = new Vector2(38, 38);
+        icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+        return icon;
     }
 
     public TextureRect RightInputIcon()
     {
-        return null;
+        var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/phone.svg");
+        var icon = new TextureRect() { Texture = imageResource };
+        icon.CustomMinimumSize = new Vector2(38, 38);
+        icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+        return icon;
     }
 }

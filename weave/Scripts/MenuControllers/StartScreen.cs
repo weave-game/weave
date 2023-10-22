@@ -261,8 +261,8 @@ public partial class StartScreen : Control
             }
             else
             {
-                lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding/Label").Text = $"← {playerInfo.InputSource.LeftInputString()}";
-                lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding/Label").Text = $"{playerInfo.InputSource.RightInputString()} →";
+                lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding/Label").Text = $"\u2b05 {playerInfo.InputSource.LeftInputString()}";
+                lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding/Label").Text = $"{playerInfo.InputSource.RightInputString()} \u2b95";
             }
             _playerList.AddChild(lobbyPlayer);
             _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
