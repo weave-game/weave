@@ -30,12 +30,12 @@ jobs:
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Restore dependencies
-        run: dotnet restore ./Weave.sln
+        run: dotnet restore ./WeaveGame.sln
 
       - name: Run Roslynator and capture Output
         continue-on-error: true
         run: |
-          roslynator analyze "./Weave.sln" > roslynator_output.txt
+          roslynator analyze "./WeaveGame.sln" > roslynator_output.txt
 
       - name: PR comment with file
         if: always()
