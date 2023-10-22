@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 
 namespace Weave.InputSources;
 
@@ -59,11 +60,21 @@ public sealed class WebInputSource : IInputSource
 
     public string LeftInputString()
     {
-        return "< (web)";
+        return "web left";
     }
 
     public string RightInputString()
     {
-        return "(web) >";
+        return "web right";
+    }
+
+    public TextureRect LeftInputIcon()
+    {
+        return null;
+    }
+
+    public TextureRect RightInputIcon()
+    {
+        return null;
     }
 }

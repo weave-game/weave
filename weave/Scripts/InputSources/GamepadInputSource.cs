@@ -34,6 +34,16 @@ public sealed class GamepadInputSource : IInputSource
         return "R2/RT";
     }
 
+    public TextureRect LeftInputIcon()
+    {
+        return null;
+    }
+
+    public TextureRect RightInputIcon()
+    {
+        return null;
+    }
+
     public bool Equals(IInputSource other)
     {
         if (other is GamepadInputSource gamepad)

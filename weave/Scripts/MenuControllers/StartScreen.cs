@@ -42,7 +42,7 @@ public partial class StartScreen : Control
     private RichTextLabel _memoriesLabel;
 
     [GetUniqueNode("JoinKeybinding")]
-    private Label _joinKeybindingLabel;
+    private HBoxContainer _joinKeybindingContainer;
 
     private RTCClientManager _multiplayerManager;
 
@@ -152,11 +152,6 @@ public partial class StartScreen : Control
 
     private void OpenLobby()
     {
-        if (_lobby.Open)
-        {
-            return;
-        }
-
         _lobby.Open = true;
         _blurLayer.Visible = true;
         _playerList.Visible = true;
@@ -164,7 +159,6 @@ public partial class StartScreen : Control
         _vSeparator.Visible = true;
         _memoriesLabel.Visible = true;
         _instructions.Visible = true;
-        _emptyLobbyLabel.Visible = true;
 
         _playButton.MouseEntered += ExpandButtons;
         _playButton.MouseExited += CollapseButtons;
@@ -172,6 +166,7 @@ public partial class StartScreen : Control
         _quitButton.MouseExited += CollapseButtons;
 
         PrintJoinKeybindingLabel();
+        PrintLobbyPlayers();
 
         CollapseButtons();
     }
@@ -185,12 +180,13 @@ public partial class StartScreen : Control
         _vSeparator.Visible = false;
         _memoriesLabel.Visible = false;
         _instructions.Visible = false;
-        _emptyLobbyLabel.Visible = false;
 
         _playButton.MouseEntered -= ExpandButtons;
         _playButton.MouseExited -= CollapseButtons;
         _quitButton.MouseEntered -= ExpandButtons;
         _quitButton.MouseExited -= CollapseButtons;
+
+        PrintLobbyPlayers();
 
         ExpandButtons();
     }
@@ -217,10 +213,10 @@ public partial class StartScreen : Control
     private void ExpandButtons()
     {
         _playButton.Text = "PLAY";
-        _playButton.CustomMinimumSize = new Vector2(200, 0);
+        _playButton.CustomMinimumSize = new Vector2(200, 66);
 
         _quitButton.Text = "QUIT";
-        _quitButton.CustomMinimumSize = new Vector2(200, 0);
+        _quitButton.CustomMinimumSize = new Vector2(200, 66);
     }
 
     private void CollapseButtons()
@@ -231,10 +227,10 @@ public partial class StartScreen : Control
         }
 
         _playButton.Text = "";
-        _playButton.CustomMinimumSize = new Vector2(0, 0);
+        _playButton.CustomMinimumSize = new Vector2(66, 66);
 
         _quitButton.Text = "";
-        _quitButton.CustomMinimumSize = new Vector2(0, 0);
+        _quitButton.CustomMinimumSize = new Vector2(66, 66);
     }
     private void PrintLobbyPlayers()
     {
@@ -257,8 +253,17 @@ public partial class StartScreen : Control
             _emptyLobbyLabel.Visible = false;
             var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
             lobbyPlayer.Modulate = playerInfo.Color;
-            lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding").Text = $"← {playerInfo.InputSource.LeftInputString()}";
-            lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding").Text = $"{playerInfo.InputSource.RightInputString()} →";
+
+            if (playerInfo.InputSource.LeftInputIcon() != null && playerInfo.InputSource.RightInputIcon() != null)
+            {
+                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/LeftBinding").AddChild(playerInfo.InputSource.LeftInputIcon());
+                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/RightBinding").AddChild(playerInfo.InputSource.RightInputIcon());
+            }
+            else
+            {
+                lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding/Label").Text = $"← {playerInfo.InputSource.LeftInputString()}";
+                lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding/Label").Text = $"{playerInfo.InputSource.RightInputString()} →";
+            }
             _playerList.AddChild(lobbyPlayer);
             _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
         }
@@ -266,16 +271,28 @@ public partial class StartScreen : Control
 
     private void PrintJoinKeybindingLabel()
     {
+        foreach (var child in _joinKeybindingContainer.GetChildren())
+        {
+            _joinKeybindingContainer.RemoveChild(child);
+            child.QueueFree();
+        }
+
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
+            var kb = new KeyboardInputSource(keybindingTuple);
             if (!_lobby.PlayerInfos.Any(playerInfo =>
-                    playerInfo.InputSource.Equals(new KeyboardInputSource(keybindingTuple))))
+                    playerInfo.InputSource.Equals(kb)))
             {
-                _joinKeybindingLabel.Text = $"{keybindingTuple.Item1} + {keybindingTuple.Item2}";
+                _joinKeybindingContainer.AddChild(kb.LeftInputIcon());
+                _joinKeybindingContainer.AddChild(new Label() { Text = " + " });
+                _joinKeybindingContainer.AddChild(kb.RightInputIcon());
                 break;
             }
+        }
 
-            _joinKeybindingLabel.Text = "NO MORE KEYBINDINGS";
+        if (_joinKeybindingContainer.GetChildCount() == 0)
+        {
+            _joinKeybindingContainer.AddChild(new Label() { Text = "-"} );
         }
     }
 

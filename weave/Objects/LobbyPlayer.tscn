@@ -6,8 +6,8 @@
 custom_minimum_size = Vector2(300, 40)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 291.0
-offset_bottom = 37.0
+offset_right = 300.0
+offset_bottom = 40.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
@@ -22,20 +22,24 @@ expand_mode = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-offset_left = 59.0
-offset_right = 291.0
+offset_left = 64.0
+offset_right = 256.0
 offset_bottom = 38.0
-theme_override_constants/separation = 32
+theme_override_constants/separation = 64
 
-[node name="LeftBinding" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(100, 2.08165e-12)
+[node name="LeftBinding" type="HBoxContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(64, 2.08165e-12)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "← Left"
 
-[node name="RightBinding" type="Label" parent="HBoxContainer"]
-custom_minimum_size = Vector2(100, 2.08165e-12)
+[node name="Label" type="Label" parent="HBoxContainer/LeftBinding"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Right →"
-horizontal_alignment = 2
+text = "←"
+
+[node name="RightBinding" type="HBoxContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(64, 2.08165e-12)
+layout_direction = 3
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/RightBinding"]
+layout_mode = 2
+text = "→"
