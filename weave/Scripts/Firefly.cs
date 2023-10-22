@@ -90,7 +90,7 @@ public partial class Firefly : Path2D
         }
 
         _lastProgress = _pathFollow.Progress;
-        _currentSpeed = Mathf.Lerp(_currentSpeed, _goalSpeed, 0.3f);
+        _currentSpeed = Mathf.Lerp(_currentSpeed, _goalSpeed, 0.3f * (float)delta);
         _pathFollow.Progress += _currentSpeed;
     }
 

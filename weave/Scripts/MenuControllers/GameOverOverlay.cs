@@ -27,7 +27,7 @@ public partial class GameOverOverlay : CanvasLayer
     private AnimationPlayer _savedPlayer;
 
     private IScoreManager _scoreManager;
-    private Score _score;
+    private Score _sessionScore;
 
     public override void _Ready()
     {
@@ -41,7 +41,7 @@ public partial class GameOverOverlay : CanvasLayer
             GameConfig.MultiplayerManager.StopClientAsync();
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<StartScreen>());
         };
-        _save.Pressed += () => SaveScore();
+        _save.Pressed += () => SaveScore(_sessionScore);
 
         // On game over, set process mode to idle to stop game, but keep overlays clickable
         ProcessMode = ProcessModeEnum.Always;
@@ -56,25 +56,25 @@ public partial class GameOverOverlay : CanvasLayer
         Show();
     }
 
-    public void SaveScore(int points = 0)
+    public void SaveScore(Score score)
     {
-        // First time saving score
-        _score ??= new Score(points, GameConfig.Lobby.Name);
+        // First time saving score, save as session score to update later
+        _sessionScore ??= score;
 
         // Dont save bad scores
-        if (_score.Value <= 0)
+        if (score.Points <= 0)
             return;
 
         // Players have filled in a new name, update lobby name
         var newName = _nameLineEdit.Text;
-        if (!string.IsNullOrWhiteSpace(newName) && newName != _score.Name)
+        if (!string.IsNullOrWhiteSpace(newName) && newName != score.Name)
         {
             GameConfig.Lobby.Name = newName;
-            _score.Name = newName;
+            score.Name = newName;
             _nameLineEdit.Text = newName;
         }
 
-        _scoreManager.Save(_score);
+        _scoreManager.Save(score);
         _savedPlayer.Play("hide");
         _savedPlayer.Play("saved");
     }

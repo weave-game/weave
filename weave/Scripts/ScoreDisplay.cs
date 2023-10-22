@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Globalization;
 using Godot;
 using GodotSharper;
 using GodotSharper.AutoGetNode;
@@ -7,8 +9,7 @@ namespace Weave;
 
 public partial class ScoreDisplay : CanvasLayer
 {
-    private const float PointsForSeconds = 25;
-    private const float PointsForRound = 500;
+    private readonly ScoreLogicDelegate _scoreLogicDelegate = new();
 
     [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
@@ -33,21 +34,33 @@ public partial class ScoreDisplay : CanvasLayer
     public override void _Ready()
     {
         this.GetNodes();
+
+        // Update UI periodically
+        AddChild(TimerFactory.StartedRepeating(0.01, () => _scoreLabel.Text = ReadableInteger(Score)));
     }
 
     public override void _Process(double delta)
     {
-        _scoreLabel.Text = ((int)_score).ToString();
-
         if (!Enabled)
         {
             return;
         }
 
-        var scoreIncrease = (float)delta * PointsForSeconds;
-        _score += scoreIncrease * _playerCount;
-
+        _score += ScoreLogicDelegate.CalcLinearScore(delta);
         _timeSinceRoundStart += delta;
+    }
+
+    /// <summary>
+    ///     Example:
+    ///     - 1000 -> 1 000
+    ///     - 1000000 -> 1 000 000
+    /// </summary>
+    /// <param name="number">The number to format.</param>
+    /// <returns>A readable integer.</returns>
+    private static string ReadableInteger(int number)
+    {
+        var culture = new CultureInfo("en-US"); // To get the correct thousand separator
+        return number.ToString("N0", culture).Replace(",", " ");
     }
 
     public void OnRoundComplete()
@@ -65,7 +78,7 @@ public partial class ScoreDisplay : CanvasLayer
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(
                 WeaveConstants.CountdownLength / 2f,
-                () => _score += PointsForRound * _playerCount
+                () => _score += _scoreLogicDelegate.CalcRoundBonus(_playerCount)
             )
         );
     }
@@ -79,5 +92,32 @@ public partial class ScoreDisplay : CanvasLayer
     {
         Enabled = false;
         _animationPlayer.Play("ScoreDisplayEnd");
+    }
+
+    private sealed class ScoreLogicDelegate
+    {
+        private const float PointsForSeconds = 1000;
+        private const float PointsForRound = 5_000;
+
+        /// <summary>
+        ///     All factors are close to 1, so if the player count is not defined, we just use 1.
+        /// </summary>
+        private const float UndefinedFactor = 1;
+
+        private readonly IDictionary<int, float> _scalingFactors = new Dictionary<int, float>
+        {
+            { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
+        };
+
+        public static float CalcLinearScore(double delta)
+        {
+            return PointsForSeconds * (float)delta;
+        }
+
+        public float CalcRoundBonus(int nPlayers)
+        {
+            var scalingFactor = _scalingFactors.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
+            return PointsForRound * scalingFactor;
+        }
     }
 }
