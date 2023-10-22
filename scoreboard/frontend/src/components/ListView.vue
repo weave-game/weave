@@ -120,7 +120,7 @@ onUnmounted(() => {
         <!-- Hide button -->
         <td>
           <button @click="toggleScoreVisibility(score.id)" class="ml-3">
-            X
+            Hide
           </button>
         </td>
       </tr>
@@ -148,5 +148,18 @@ onUnmounted(() => {
   animation: float 6s ease-in-out infinite;
   width: 80px;
   height: 80px;
+}
+
+/* Hide "hide" button */
+tr button {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Display "hide" button when hovering over the row */
+tr:hover button {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
