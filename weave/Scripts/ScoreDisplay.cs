@@ -34,12 +34,13 @@ public partial class ScoreDisplay : CanvasLayer
     public override void _Ready()
     {
         this.GetNodes();
+
+        // Update UI periodically
+        AddChild(TimerFactory.StartedRepeating(0.01, () => _scoreLabel.Text = ReadableInteger(Score)));
     }
 
     public override void _Process(double delta)
     {
-        _scoreLabel.Text = ReadableInteger(Score);
-
         if (!Enabled)
         {
             return;
