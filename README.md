@@ -53,13 +53,13 @@ dotnet tool install -g roslynator.dotnet.cli
 Analyze project (inside the weave directory):
 
 ```bash
-roslynator analyze .\Weave.sln
+roslynator analyze .\WeaveGame.sln
 ```
 
 Fix and format project (inside the weave directory):
 
 ```bash
-roslynator fix .\Weave.sln --format
+roslynator fix .\WeaveGame.sln --format
 ```
 
 ### Plugins

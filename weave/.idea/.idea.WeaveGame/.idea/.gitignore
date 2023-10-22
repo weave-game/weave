@@ -1,11 +1,11 @@
-# Default ignored files
+﻿# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
-/.idea.Weave.iml
+/contentModel.xml
 /modules.xml
 /projectSettingsUpdater.xml
-/contentModel.xml
+/.idea.WeaveGame.iml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files
