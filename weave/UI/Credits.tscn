@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwckube55tv2b"]
+
+[ext_resource type="Script" path="res://Scripts/MenuControllers/Credits.cs" id="1_1v636"]
+
+[node name="Credits" type="CanvasLayer"]
+script = ExtResource("1_1v636")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.694118)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer"]
+custom_minimum_size = Vector2(500, 530)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]
+[b]Game by:[/b]
+Elias Carlson
+Christos Vazouras
+Levente Varga
+Erik Wessman
+Theo Wiik
+Krystyna Ziobro
+
+[b]Networking[/b]
+Erik Wessman
+
+[b]Theme & UI[/b]
+Elias Carlson
+Krystyna Ziobro
+
+[b]Music[/b]
+Theo Wiik
+
+[b]Icons[/b]
+Icons8
+[/center]
+"
