@@ -28,6 +28,12 @@ function updateFilePath() {
       console.log(error);
     });
 }
+
+function clearHiddenScores() {
+  localStorage.removeItem("hiddenScores");
+  window.location.reload();
+}
+
 </script>
 
 <template>
@@ -46,6 +52,12 @@ function updateFilePath() {
         <label for="file-path" class="text-white my-mono">Enter file path:</label>
         <input type="text" id="file-path" v-model="newFilePath" class="my-mono mx-3" />
         <button type="submit" class="text-white my-mono">Save</button>
+      </form>
+
+      <hr class="my-4">
+
+      <form @submit.prevent="clearHiddenScores">
+        <button class="text-white">Unhide all scores</button>
       </form>
     </div>
   </div>

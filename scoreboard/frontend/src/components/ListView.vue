@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 type Score = {
+  id: string;
   name: string
   points: number
 }
@@ -18,23 +19,7 @@ const scores = ref([] as Score[])
 const fetchIntervalSeconds = 5
 const scoresToDisplay = 10
 const countdown = ref(fetchIntervalSeconds)
-
-const getHiddenScores = () => {
-  const hiddenScores = localStorage.getItem('hiddenScores')
-
-  if (!hiddenScores) {
-    return []
-  }
-
-  return JSON.parse(hiddenScores)
-}
-
-const hideScore = (score: Score) => {
-  const hiddenScores = getHiddenScores()
-  hiddenScores.push(score.name)
-  localStorage.setItem('hiddenScores', JSON.stringify(hiddenScores))
-  scores.value = filter(scores.value)
-}
+const hiddenScores = ref<string[]>(JSON.parse(localStorage.getItem('hiddenScores') || '[]'))
 
 // Fetch scores from the server
 const fetchScores = async () => {
@@ -52,10 +37,17 @@ const fetchScores = async () => {
   }
 }
 
-const filter = (scores: Score[]) => {
-  const sorted = scores.sort((a, b) => b.points - a.points).slice(0, scoresToDisplay)
+const toggleScoreVisibility = (name: string) => {
+  if (window.confirm('Are you sure you want to hide this score?')) {
+    hiddenScores.value.push(name)
+    localStorage.setItem('hiddenScores', JSON.stringify(hiddenScores.value))
+  }
+}
 
-  // Insert a score with the name "..." at the next last position if there are items in the array
+const filter = (scores: Score[]) => {
+  const visibleScores = scores.filter(score => !hiddenScores.value.includes(score.id))
+  const sorted = visibleScores.sort((a, b) => b.points - a.points).slice(0, scoresToDisplay)
+
   if (scores.length > scoresToDisplay) {
     const fakeScore: Score = {
       name: '...',
@@ -67,7 +59,6 @@ const filter = (scores: Score[]) => {
   return sorted;
 }
 
-// Fetch scores when the component is mounted and every X seconds
 let fetchInterval: number
 let countdownInterval: number
 
@@ -109,6 +100,8 @@ onUnmounted(() => {
             <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7">
 
             <img v-if="index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7">
+
+            <button @click="toggleScoreVisibility(score.id)" class="ml-3">--- Hide</button>
           </div>
         </td>
       </tr>
