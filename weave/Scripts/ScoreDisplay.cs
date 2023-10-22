@@ -93,31 +93,31 @@ public partial class ScoreDisplay : CanvasLayer
         Enabled = false;
         _animationPlayer.Play("ScoreDisplayEnd");
     }
-}
 
-public sealed class ScoreLogicDelegate
-{
-    private const float PointsForSeconds = 1000;
-    private const float PointsForRound = 5_000;
-
-    /// <summary>
-    ///     All factors are close to 1, so if the player count is not defined, we just use 1.
-    /// </summary>
-    private const float UndefinedFactor = 1;
-
-    private readonly IDictionary<int, float> _scalingFactors = new Dictionary<int, float>
+    private sealed class ScoreLogicDelegate
     {
-        { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
-    };
+        private const float PointsForSeconds = 1000;
+        private const float PointsForRound = 5_000;
 
-    public static float CalcLinearScore(double delta)
-    {
-        return PointsForSeconds * (float)delta;
-    }
+        /// <summary>
+        ///     All factors are close to 1, so if the player count is not defined, we just use 1.
+        /// </summary>
+        private const float UndefinedFactor = 1;
 
-    public float CalcRoundBonus(int nPlayers)
-    {
-        var scalingFactor = _scalingFactors.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
-        return PointsForRound * scalingFactor;
+        private readonly IDictionary<int, float> _scalingFactors = new Dictionary<int, float>
+        {
+            { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
+        };
+
+        public static float CalcLinearScore(double delta)
+        {
+            return PointsForSeconds * (float)delta;
+        }
+
+        public float CalcRoundBonus(int nPlayers)
+        {
+            var scalingFactor = _scalingFactors.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
+            return PointsForRound * scalingFactor;
+        }
     }
 }
