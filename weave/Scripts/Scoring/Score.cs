@@ -42,5 +42,5 @@ public class Score
     /// <summary>
     ///     The score.
     /// </summary>
-    public int Points { get; }
+    public int Points { get; set; }
 }
