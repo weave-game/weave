@@ -10,8 +10,9 @@ const PORT = 3000;
 app.use(cors());
 
 type Score = {
+  id: string;
   name: string;
-  score: number;
+  points: number;
 };
 
 const jsonParser = bodyParser.json();
@@ -36,8 +37,9 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
     for (const key in jsonData) {
       const team = jsonData[key];
       scores.push({
+        id: team.Id,
         name: team.Name,
-        score: team.Value,
+        points: team.Points,
       });
     }
 
