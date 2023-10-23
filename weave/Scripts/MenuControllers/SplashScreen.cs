@@ -68,7 +68,8 @@ public partial class SplashScreen : Node2D
     {
         if (!_allowInputs) return;
 
-        if (@event is not InputEventKey { Pressed: true })
+        // Valid inputs: any key or any button on a gamepad
+        if (@event is not (InputEventKey { Pressed: true } or InputEventJoypadButton { Pressed: true }))
         {
             return;
         }
