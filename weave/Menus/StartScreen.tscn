@@ -272,7 +272,6 @@ theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
 [node name="Instructions" type="Panel" parent="UI"]
-visible = false
 offset_left = 1152.0
 offset_top = 1.0
 offset_right = 1600.0
@@ -481,10 +480,10 @@ texture = ExtResource("19_7atba")
 
 [node name="JoinKeybinding" type="HBoxContainer" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
-offset_left = 57.0
-offset_top = 40.0
-offset_right = 344.0
-offset_bottom = 78.0
+offset_left = 56.0
+offset_top = 9.0
+offset_right = 343.0
+offset_bottom = 47.0
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2
