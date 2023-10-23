@@ -46,8 +46,8 @@ public static class GameConfig
         return nPlayers switch
         {
             1 => 6,
-            2 => 6,
-            3 => 6,
+            2 => 5,
+            3 => 4,
             _ => 0
         };
     }
