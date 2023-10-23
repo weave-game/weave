@@ -259,15 +259,10 @@ public partial class StartScreen : Control
 
         _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
 
-        if (_lobby.Count == 0)
-        {
-            _emptyLobbyLabel.Visible = true;
-            return;
-        }
+        _emptyLobbyLabel.Visible = _lobby.Count == 0 && _lobby.Open;
 
         foreach (var playerInfo in _lobby.PlayerInfos)
         {
-            _emptyLobbyLabel.Visible = false;
             var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
             lobbyPlayer.Modulate = playerInfo.Color;
 
