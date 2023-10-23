@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using Godot;
 using GodotSharper;
@@ -9,8 +8,6 @@ namespace Weave;
 
 public partial class ScoreDisplay : CanvasLayer
 {
-    private readonly ScoreLogicDelegate _scoreLogicDelegate = new();
-
     [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
 
@@ -94,7 +91,7 @@ public partial class ScoreDisplay : CanvasLayer
         _animationPlayer.Play("ScoreDisplayEnd");
     }
 
-    private sealed class ScoreLogicDelegate
+    private static class ScoreLogicDelegate
     {
         private const float PointsPerSeconds = 25;
         private const float PointsPerRound = 500;
