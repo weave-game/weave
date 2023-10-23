@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 
 namespace Weave.InputSources;
 
@@ -59,11 +60,29 @@ public sealed class WebInputSource : IInputSource
 
     public string LeftInputString()
     {
-        return "< (web)";
+        return "web left";
     }
 
     public string RightInputString()
     {
-        return "(web) >";
+        return "web right";
+    }
+
+    public TextureRect LeftInputIcon()
+    {
+        var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/phone.svg");
+        var icon = new TextureRect() { Texture = imageResource };
+        icon.CustomMinimumSize = new Vector2(38, 38);
+        icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+        return icon;
+    }
+
+    public TextureRect RightInputIcon()
+    {
+        var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/phone.svg");
+        var icon = new TextureRect() { Texture = imageResource };
+        icon.CustomMinimumSize = new Vector2(38, 38);
+        icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+        return icon;
     }
 }

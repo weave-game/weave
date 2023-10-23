@@ -28,11 +28,7 @@ font_size = 24
 font_color = Color(1, 0.333333, 0.333333, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j55x4"]
-bg_color = Color(0, 0, 0, 0.662745)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+bg_color = Color(0, 0, 0, 0.431373)
 
 [sub_resource type="Curve2D" id="Curve2D_eky13"]
 _data = {
@@ -207,7 +203,7 @@ theme = ExtResource("4_8y3os")
 alignment = 1
 
 [node name="Play" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(200, 2.08165e-12)
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 theme_type_variation = &"AccentedButton"
@@ -216,7 +212,7 @@ icon = ExtResource("5_76tk4")
 alignment = 0
 
 [node name="Quit" type="Button" parent="UI/MarginContainer/HBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(200, 2.08165e-12)
+custom_minimum_size = Vector2(200, 66)
 layout_mode = 2
 theme = ExtResource("4_8y3os")
 text = "QUIT
@@ -245,11 +241,11 @@ theme_override_constants/separation = 16
 
 [node name="NoPlayersLabel" type="Label" parent="UI"]
 visible = false
-modulate = Color(1, 1, 1, 0.802469)
+modulate = Color(1, 1, 1, 0)
 offset_left = 600.0
-offset_top = 630.072
+offset_top = 630.0
 offset_right = 1000.0
-offset_bottom = 667.072
+offset_bottom = 667.0
 text = "Can't start with no players"
 label_settings = SubResource("LabelSettings_o1u1d")
 horizontal_alignment = 1
@@ -266,19 +262,18 @@ theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
 [node name="Instructions" type="Panel" parent="UI"]
-visible = false
-offset_left = 1056.0
-offset_top = 96.0
-offset_right = 1536.0
-offset_bottom = 795.0
+offset_left = 1152.0
+offset_top = 1.0
+offset_right = 1600.0
+offset_bottom = 900.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_j55x4")
 
 [node name="Controller" type="Control" parent="UI/Instructions"]
 anchors_preset = 0
-offset_left = 43.0
-offset_top = -8.0
-offset_right = 43.0
-offset_bottom = -8.0
+offset_left = 61.0
+offset_top = 102.0
+offset_right = 61.0
+offset_bottom = 102.0
 
 [node name="Join2" type="RichTextLabel" parent="UI/Instructions/Controller"]
 layout_mode = 0
@@ -351,9 +346,9 @@ expand_mode = 1
 
 [node name="Leave2" type="RichTextLabel" parent="UI/Instructions/Controller"]
 layout_mode = 0
-offset_left = 79.0
+offset_left = 78.0
 offset_top = 128.0
-offset_right = 177.0
+offset_right = 176.0
 offset_bottom = 165.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
@@ -371,18 +366,18 @@ texture = ExtResource("15_cbm4d")
 
 [node name="HSeparator" type="HSeparator" parent="UI/Instructions"]
 layout_mode = 0
-offset_left = 105.0
-offset_top = 220.0
-offset_right = 369.0
-offset_bottom = 224.0
+offset_left = 123.0
+offset_top = 330.0
+offset_right = 387.0
+offset_bottom = 334.0
 theme = ExtResource("4_8y3os")
 
 [node name="Web" type="Control" parent="UI/Instructions"]
 anchors_preset = 0
-offset_left = 43.0
-offset_top = -78.0
-offset_right = 83.0
-offset_bottom = -38.0
+offset_left = 61.0
+offset_top = 32.0
+offset_right = 101.0
+offset_bottom = 72.0
 
 [node name="QRCodeTexture" type="TextureRect" parent="UI/Instructions/Web"]
 texture_filter = 1
@@ -430,35 +425,36 @@ texture = ExtResource("18_qgjwh")
 
 [node name="HSeparator2" type="HSeparator" parent="UI/Instructions"]
 layout_mode = 0
-offset_left = 105.0
-offset_top = 458.0
-offset_right = 369.0
-offset_bottom = 462.0
+offset_left = 123.0
+offset_top = 568.0
+offset_right = 387.0
+offset_bottom = 572.0
 theme = ExtResource("4_8y3os")
 
 [node name="Keyboard" type="Control" parent="UI/Instructions"]
 anchors_preset = 0
-offset_left = 65.0
-offset_top = 529.0
-offset_right = 105.0
-offset_bottom = 569.0
+offset_left = 83.0
+offset_top = 639.0
+offset_right = 123.0
+offset_bottom = 679.0
 
 [node name="Join" type="RichTextLabel" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
 offset_left = 56.0
-offset_right = 458.0
-offset_bottom = 76.0
+offset_top = -25.0
+offset_right = 351.0
+offset_bottom = 51.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
-text = "[b]JOIN WITH KEYBINDING: [/b] "
+text = "[b]JOIN: [/b] PRESS"
 
 [node name="Leave" type="RichTextLabel" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
 offset_left = 56.0
 offset_top = 86.0
-offset_right = 408.0
-offset_bottom = 197.0
+offset_right = 351.0
+offset_bottom = 128.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
@@ -467,20 +463,17 @@ text = "[b]LEAVE: [/b]HOLD YOUR KEYS"
 [node name="Icon" type="TextureRect" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
 offset_left = -42.0
-offset_top = 25.0
+offset_top = 9.0
 offset_right = 22.0
-offset_bottom = 89.0
+offset_bottom = 73.0
 texture = ExtResource("19_7atba")
 
-[node name="JoinKeybinding" type="Label" parent="UI/Instructions/Keyboard"]
+[node name="JoinKeybinding" type="HBoxContainer" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
 offset_left = 57.0
 offset_top = 40.0
-offset_right = 381.0
-offset_bottom = 77.0
-theme_override_font_sizes/font_size = 24
-text = "-
-"
+offset_right = 344.0
+offset_bottom = 78.0
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2
