@@ -1,77 +1,89 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 
 type Score = {
-  name: string
-  score: number
-}
+  id: string;
+  name: string;
+  points: number;
+};
 
 type ScoresDTO = {
-  scores: Score[],
-  timestamp: string,
+  scores: Score[];
+  timestamp: string;
   error: {
-    message: string
-  }
-}
+    message: string;
+  };
+};
 
-const scores = ref([] as Score[])
-const fetchIntervalSeconds = 10 // fetch every 10 seconds
-const scoresToDisplay = 13;
-const countdown = ref(fetchIntervalSeconds)
-const crownSrc = 'https://static.vecteezy.com/system/resources/thumbnails/010/331/776/small/3d-rendering-gold-crown-with-three-blue-diamonds-isolated-png.png';
-const lSrc = 'https://media.tenor.com/FnFH6kxGLbUAAAAM/red-alphabet-letter-dancing-letter-l.gif'
+const scores = ref([] as Score[]);
+const fetchIntervalSeconds = 5;
+const scoresToDisplay = 10;
+const countdown = ref(fetchIntervalSeconds);
+const hiddenScores = ref<string[]>(
+  JSON.parse(localStorage.getItem("hiddenScores") || "[]")
+);
+const showL = ref(localStorage.getItem("L") === "true");
 
 // Fetch scores from the server
 const fetchScores = async () => {
   try {
-    const response = await fetch('http://localhost:3000/scores')
+    const response = await fetch("http://localhost:3000/scores");
 
     if (!response.ok) {
-      throw new Error('Failed to fetch scores')
+      throw new Error("Failed to fetch scores");
     }
 
-    const data: ScoresDTO = await response.json()
+    const data: ScoresDTO = await response.json();
     scores.value = filter(data.scores);
   } catch (error) {
-    console.error('Error fetching scores:', error)
+    console.error("Error fetching scores:", error);
   }
-}
+};
+
+const toggleScoreVisibility = (name: string) => {
+  if (window.confirm("Are you sure you want to hide this score?")) {
+    hiddenScores.value.push(name);
+    localStorage.setItem("hiddenScores", JSON.stringify(hiddenScores.value));
+  }
+};
 
 const filter = (scores: Score[]) => {
-  const things = scores.sort((a, b) => b.score - a.score).slice(0, scoresToDisplay)
+  const visibleScores = scores.filter(
+    (score) => !hiddenScores.value.includes(score.id)
+  );
+  const sorted = visibleScores
+    .sort((a, b) => b.points - a.points)
+    .slice(0, scoresToDisplay);
 
-  // Insert a score with the name "..." at the next last position if there are items in the array
-  const fakeScore: Score = {
-    name: '...',
-  } as Score
+  if (scores.length > scoresToDisplay) {
+    const fakeScore: Score = {
+      name: "...",
+    } as Score;
 
-  if (things.length > 0) {
-    things.splice(things.length - 1, 0, fakeScore)
+    sorted.splice(sorted.length - 1, 0, fakeScore);
   }
 
-  return things;
-}
+  return sorted;
+};
 
-// Fetch scores when the component is mounted and every X seconds
-let fetchInterval: number
-let countdownInterval: number
+let fetchInterval: number;
+let countdownInterval: number;
 
 onMounted(() => {
-  fetchScores()
-  fetchInterval = setInterval(fetchScores, fetchIntervalSeconds * 1000)
+  fetchScores();
+  fetchInterval = setInterval(fetchScores, fetchIntervalSeconds * 1000);
   countdownInterval = setInterval(() => {
-    countdown.value--
+    countdown.value--;
     if (countdown.value <= 0) {
-      countdown.value = fetchIntervalSeconds
+      countdown.value = fetchIntervalSeconds;
     }
-  }, 1000)
-})
+  }, 1000);
+});
 
 onUnmounted(() => {
-  clearInterval(fetchInterval)
-  clearInterval(countdownInterval)
-})
-
+  clearInterval(fetchInterval);
+  clearInterval(countdownInterval);
+});
 </script>
 
 <template>
@@ -81,18 +93,36 @@ onUnmounted(() => {
 
   <table class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800">
     <tbody>
-      <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px"
-        :class="{ 'bg-neutral-800': index % 2 === 0, 'bg-neutral-900': index % 2 === 1 }">
+      <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px" :class="{
+        'bg-neutral-800': index % 2 === 0,
+        'bg-neutral-900': index % 2 === 1,
+      }">
+        <!-- Position -->
         <td class="pl-8">{{ index + 1 }}.</td>
-        <td>{{ score.name }}</td>
+
+        <!-- Team name -->
         <td>
-          <div class="flex items-center">
-            {{ score.score }}
+          {{ score.name }}
+        </td>
 
-            <img v-if="index === 0" :src="crownSrc" alt="crown" class="crown ml-7">
+        <!-- Score -->
+        <td class="text-end">
+          <span class="my-mono">
+            {{ score.points.toLocaleString("sv-SE") }}
+          </span>
+        </td>
 
-            <img v-if="index + 1 === scores.length" :src="lSrc" alt="crown" class="crown ml-7">
-          </div>
+        <!-- Possible images -->
+        <td>
+          <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7" />
+          <img v-if="showL && index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7" />
+        </td>
+
+        <!-- Hide button -->
+        <td>
+          <button @click="toggleScoreVisibility(score.id)" class="ml-3">
+            Hide
+          </button>
         </td>
       </tr>
     </tbody>
@@ -119,5 +149,18 @@ onUnmounted(() => {
   animation: float 6s ease-in-out infinite;
   width: 80px;
   height: 80px;
+}
+
+/* Hide "hide" button */
+tr button {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Display "hide" button when hovering over the row */
+tr:hover button {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
