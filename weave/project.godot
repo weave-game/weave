@@ -17,6 +17,10 @@ boot_splash/image="res://Assets/logo-small.png"
 boot_splash/fullsize=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+KeyCatcher="*res://Autoloads/KeyCatcher.tscn"
+
 [display]
 
 window/size/viewport_width=1600

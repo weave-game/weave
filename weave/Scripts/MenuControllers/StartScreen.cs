@@ -109,16 +109,6 @@ public partial class StartScreen : Control
             .ForEach(f => f.SetColor(colorGen.NewColor()));
     }
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed(WeaveConstants.ToggleFullscreenAction))
-        {
-            var isFullScreen = DisplayServer.WindowGetMode() == DisplayServer.WindowMode.Fullscreen;
-            if (_buttonContainer)
-            DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
-        }
-    }
-
     public override void _PhysicsProcess(double delta)
     {
         _lobbyPlayerDict.ForEach(
