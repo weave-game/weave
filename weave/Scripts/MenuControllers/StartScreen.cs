@@ -98,6 +98,7 @@ public partial class StartScreen : Control
 
         _multiplayerManager = new(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
+        _multiplayerManager.IsAcceptingInput = true;
         _multiplayerManager.ClientJoinedListeners += _lobby.Join;
         _multiplayerManager.ClientLeftListeners += _lobby.Leave;
 
@@ -218,6 +219,7 @@ public partial class StartScreen : Control
 
         GameConfig.Lobby = _lobby;
         GameConfig.MultiplayerManager = _multiplayerManager;
+        _multiplayerManager.IsAcceptingInput = false;
         GetTree().ChangeSceneToFile(SceneGetter.GetPath<SplashScreen>());
     }
 
