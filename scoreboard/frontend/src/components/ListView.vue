@@ -31,7 +31,8 @@ const fetchScores = async () => {
     }
 
     const data: ScoresDTO = await response.json()
-    scores.value = filter(data.scores);
+    //scores.value = filter(data.scores);
+    scores.value = data.scores;
   } catch (error) {
     console.error('Error fetching scores:', error)
   }

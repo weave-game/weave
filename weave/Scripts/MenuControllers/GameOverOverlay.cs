@@ -2,7 +2,6 @@ using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Scoring;
-using Weave.Utils;
 
 namespace Weave.MenuControllers;
 
@@ -33,7 +32,7 @@ public partial class GameOverOverlay : CanvasLayer
     {
         this.GetNodes();
         _nameLineEdit.Text = GameConfig.Lobby.Name;
-        _scoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
+        _scoreManager = new MongoDBScoreManager();
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
         _menuButton.Pressed += () =>

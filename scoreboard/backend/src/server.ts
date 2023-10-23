@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import fs from "fs";
 import util from "util";
 import { ConfigManager } from "./config-manager";
+import { MongoClient } from 'mongodb';
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +14,14 @@ type Score = {
   name: string;
   score: number;
 };
+
+interface ScoreNew {
+  Id: string;
+  Name: string;
+  Players: number;
+  Rounds: number;
+  Points: number;
+}
 
 const jsonParser = bodyParser.json();
 let cachedScores: Score[] = [];
@@ -48,16 +57,40 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
   }
 };
 
+async function fetchAllScores(): Promise<Score[]> {
+  const connectionString = 'mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/';
+  const client = new MongoClient(connectionString);
+
+  try {
+    await client.connect();
+    const database = client.db('weave');
+    const collection = database.collection<ScoreNew>('scores');
+
+    const rawScores = await collection.find({}).toArray();
+    const scores: Score[] = rawScores.map(score => {
+      return {
+        name: score.Name,
+        score: score.Points
+      };
+    });
+    return scores
+  } catch (error) {
+    console.error('Error fetching scores:', error);
+    return []
+  } finally {
+    await client.close();
+  }
+}
+
 /***************
  * CONTROLLERS *
  ***************/
 
 app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
-  let errorDetail = null;
+  let errorDetail = {}
 
-  // Attempt to read scores
   try {
-    const scores = await readScoresFromFile(configManager.getFilePath());
+    const scores = await fetchAllScores();
     cachedScores = scores;
     lastSuccessfulReadTimestamp = new Date().toISOString();
   } catch (error) {
