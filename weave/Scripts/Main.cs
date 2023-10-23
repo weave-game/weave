@@ -233,7 +233,14 @@ public partial class Main : Node2D
         GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
-        var score = new Score(_scoreDisplay.Score, GameConfig.Lobby.Name, GameConfig.Lobby.Count, _round);
+        var score = new Score(
+            id: _lobby.Id,
+            points: _scoreDisplay.Score,
+            name: GameConfig.Lobby.Name,
+            players: GameConfig.Lobby.Count,
+            rounds: _round
+        );
+
         _gameOverOverlay.SaveScore(score);
 
         // Log "difficulty"
@@ -323,14 +330,16 @@ public partial class Main : Node2D
         ResetMap();
         SetPlayerMovement(false);
         _uiUpdateTimer.Timeout += UpdateCountdown;
-        _playerDelayTimer.WaitTime = _round == 0 ? WeaveConstants.InitialCountdownLength : WeaveConstants.CountdownLength;
+        _playerDelayTimer.WaitTime =
+            _round == 0 ? WeaveConstants.InitialCountdownLength : WeaveConstants.CountdownLength;
         _playerDelayTimer.Start();
         _scoreDisplay.Enabled = false;
 
         if (_round == 0)
         {
             AddChild(
-                TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
+                TimerFactory.StartedSelfDestructingOneShot(
+                    WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, IncreaseRound)
             );
         }
         else
@@ -537,5 +546,4 @@ public partial class Main : Node2D
     }
 
     #endregion Loggers
-
 }
