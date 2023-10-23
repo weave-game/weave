@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Globalization;
 using Godot;
 using GodotSharper;
@@ -78,7 +78,7 @@ public partial class ScoreDisplay : CanvasLayer
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(
                 WeaveConstants.CountdownLength / 2f,
-                () => _score += _scoreLogicDelegate.CalcRoundBonus(_playerCount)
+                () => _score += ScoreLogicDelegate.CalcRoundBonus(_playerCount)
             )
         );
     }
@@ -96,28 +96,17 @@ public partial class ScoreDisplay : CanvasLayer
 
     private sealed class ScoreLogicDelegate
     {
-        private const float PointsForSeconds = 1000;
-        private const float PointsForRound = 5_000;
-
-        /// <summary>
-        ///     All factors are close to 1, so if the player count is not defined, we just use 1.
-        /// </summary>
-        private const float UndefinedFactor = 1;
-
-        private readonly IDictionary<int, float> _scalingFactors = new Dictionary<int, float>
-        {
-            { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
-        };
+        private const float PointsPerSeconds = 25;
+        private const float PointsPerRound = 500;
 
         public static float CalcLinearScore(double delta, int nPlayers)
         {
-            return PointsForSeconds * nPlayers * (float)delta;
+            return PointsPerSeconds * nPlayers * (float)delta;
         }
 
-        public float CalcRoundBonus(int nPlayers)
+        public static float CalcRoundBonus(int nPlayers)
         {
-            var scalingFactor = _scalingFactors.TryGetValue(nPlayers, out var factor) ? factor : UndefinedFactor;
-            return PointsForRound * scalingFactor;
+            return PointsPerRound * nPlayers;
         }
     }
 }
