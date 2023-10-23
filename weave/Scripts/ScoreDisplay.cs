@@ -15,6 +15,8 @@ public partial class ScoreDisplay : CanvasLayer
     private int _playerCount;
     private double _points;
     private float _score;
+    private const float PointsPerSeconds = 25;
+    private const float PointsPerRound = 500;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -43,7 +45,7 @@ public partial class ScoreDisplay : CanvasLayer
             return;
         }
 
-        _score += ScoreLogicDelegate.CalcLinearScore(delta, _playerCount);
+        _score += PointsPerSeconds * (float)delta;
         _timeSinceRoundStart += delta;
     }
 
@@ -75,7 +77,7 @@ public partial class ScoreDisplay : CanvasLayer
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(
                 WeaveConstants.CountdownLength / 2f,
-                () => _score += ScoreLogicDelegate.CalcRoundBonus(_playerCount)
+                () => _score += PointsPerRound
             )
         );
     }
@@ -89,21 +91,5 @@ public partial class ScoreDisplay : CanvasLayer
     {
         Enabled = false;
         _animationPlayer.Play("ScoreDisplayEnd");
-    }
-
-    private static class ScoreLogicDelegate
-    {
-        private const float PointsPerSeconds = 25;
-        private const float PointsPerRound = 500;
-
-        public static float CalcLinearScore(double delta, int nPlayers)
-        {
-            return PointsPerSeconds * nPlayers * (float)delta;
-        }
-
-        public static float CalcRoundBonus(int nPlayers)
-        {
-            return PointsPerRound * nPlayers;
-        }
     }
 }
