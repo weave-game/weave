@@ -169,6 +169,8 @@ public partial class StartScreen : Control
 
         _playButton.MouseEntered += ExpandButtons;
         _playButton.MouseExited += CollapseButtons;
+        _creditsButton.MouseEntered += ExpandButtons;
+        _creditsButton.MouseExited += CollapseButtons;
         _quitButton.MouseEntered += ExpandButtons;
         _quitButton.MouseExited += CollapseButtons;
 
@@ -190,6 +192,8 @@ public partial class StartScreen : Control
 
         _playButton.MouseEntered -= ExpandButtons;
         _playButton.MouseExited -= CollapseButtons;
+        _creditsButton.MouseEntered -= ExpandButtons;
+        _creditsButton.MouseExited -= CollapseButtons;
         _quitButton.MouseEntered -= ExpandButtons;
         _quitButton.MouseExited -= CollapseButtons;
 
@@ -224,6 +228,9 @@ public partial class StartScreen : Control
 
         _quitButton.Text = "QUIT";
         _quitButton.CustomMinimumSize = new Vector2(200, 66);
+
+        _creditsButton.Text = "CREDITS";
+        _creditsButton.CustomMinimumSize = new Vector2(200, 66);
     }
 
     private void CollapseButtons()
@@ -238,6 +245,9 @@ public partial class StartScreen : Control
 
         _quitButton.Text = "";
         _quitButton.CustomMinimumSize = new Vector2(66, 66);
+
+        _creditsButton.Text = "";
+        _creditsButton.CustomMinimumSize = new Vector2(66, 66);
     }
     private void PrintLobbyPlayers()
     {
@@ -299,7 +309,7 @@ public partial class StartScreen : Control
 
         if (_joinKeybindingContainer.GetChildCount() == 0)
         {
-            _joinKeybindingContainer.AddChild(new Label() { Text = "-"} );
+            _joinKeybindingContainer.AddChild(new Label() { Text = "-" });
         }
     }
 
