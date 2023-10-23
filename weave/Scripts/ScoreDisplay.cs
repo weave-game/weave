@@ -46,7 +46,7 @@ public partial class ScoreDisplay : CanvasLayer
             return;
         }
 
-        _score += ScoreLogicDelegate.CalcLinearScore(delta);
+        _score += ScoreLogicDelegate.CalcLinearScore(delta, _playerCount);
         _timeSinceRoundStart += delta;
     }
 
@@ -109,9 +109,9 @@ public partial class ScoreDisplay : CanvasLayer
             { 2, 0.5f }, { 3, 1.5f }, { 4, 1.5f }, { 5, 0.5f }
         };
 
-        public static float CalcLinearScore(double delta)
+        public static float CalcLinearScore(double delta, int nPlayers)
         {
-            return PointsForSeconds * (float)delta;
+            return PointsForSeconds * nPlayers * (float)delta;
         }
 
         public float CalcRoundBonus(int nPlayers)

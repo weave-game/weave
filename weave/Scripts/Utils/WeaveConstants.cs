@@ -1,3 +1,5 @@
+using Godot;
+
 namespace Weave.Utils;
 
 public static class WeaveConstants
@@ -31,6 +33,7 @@ public static class WeaveConstants
 
     public const string GamepadJoinAction = "gamepad_join";
     public const string GamepadLeaveAction = "gamepad_leave";
+    public const string ToggleFullscreenAction = "toggle_fullscreen";
 
     #endregion Inputs
 
