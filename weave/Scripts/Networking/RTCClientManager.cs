@@ -22,6 +22,7 @@ public class RTCClientManager
 
     private readonly RTCConfiguration _connectionConfig = new() { iceServers = new() { new() { urls = WeaveConstants.StunServerUrl } } };
 
+    public bool IsAcceptingInput { get; set; }
     private readonly string _lobbyCode;
     private readonly ClientWebSocket _webSocket = new();
 
@@ -204,6 +205,9 @@ public class RTCClientManager
 
     private void HandlePlayerInput(string playerId, string input)
     {
+        if (!IsAcceptingInput)
+            return;
+
         _clientSources.TryGetValue(playerId, out var source);
         if (source == null)
             return;
@@ -213,6 +217,7 @@ public class RTCClientManager
 
     public async void NotifyStartGameAsync()
     {
+        IsAcceptingInput = true;
         foreach (var clientId in _clientConnections.Keys)
         {
             var startMessage = new { type = "message", message = "start", clientId, lobbyCode = _lobbyCode };
@@ -222,6 +227,7 @@ public class RTCClientManager
 
     public async void NotifyEndGameAsync()
     {
+        IsAcceptingInput = false;
         foreach (var clientId in _clientConnections.Keys)
         {
             var endMessage = new { type = "message", message = "end", clientId, lobbyCode = _lobbyCode };
