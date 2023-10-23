@@ -19,7 +19,8 @@ public sealed class UniqueColorGenerator
         new("8cff98"), // Green
         new("05b9e9"), // Blue
         new("ffb237"), // Yellow
-        new("5b507a") // Dark green
+        new("07864a"), // Dark green
+        new("f5f5f5") // White smoke
     };
 
     private readonly ISet<Color> _usedColors = new HashSet<Color>();
