@@ -10,7 +10,12 @@ namespace Weave.InputSources;
 
 public sealed class Lobby
 {
+    #region GameSessionIdentifiers
+
+    public string Id { get; set; }
     public string Name { get; set; }
+
+    #endregion GameSessionIdentifiers
 
     public delegate void PlayerJoinedEventHandler(IInputSource source);
     public delegate void PlayerLeftEventHandler(IInputSource source);
@@ -22,8 +27,12 @@ public sealed class Lobby
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
     private readonly IQrCodeGenerator _qrCodeGenerator;
 
+    /// <summary>
+    ///     Note: Lobby is reset on start screen, so its one "session"
+    /// </summary>
     public Lobby()
     {
+        Id = Guid.NewGuid().ToString();
         Name = UniqueNameGenerator.Instance.New();
         _qrCodeGenerator = new GdQrCodeGenerator();
         LobbyCode = GenerateLobbyCode(LobbyCodeCharacters, LobbyCodeLength);

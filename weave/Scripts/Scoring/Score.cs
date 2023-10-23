@@ -4,11 +4,17 @@ namespace Weave.Scoring;
 
 public class Score
 {
-    public Score(int points, string name, int players, int rounds)
+    public Score(string id, int points, string name, int players, int rounds)
     {
-        Id = Guid.NewGuid().ToString();
+        if (string.IsNullOrWhiteSpace(id))
+            throw new ArgumentException("Id cannot be null or whitespace.", nameof(id));
+
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be null or whitespace.", nameof(id));
+
+        Id = id;
         Points = points;
-        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Name = name;
         Players = players;
         Rounds = rounds;
     }
