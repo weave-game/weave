@@ -64,6 +64,12 @@ public partial class StartScreen : Control
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
     private Button _quitButton;
 
+    [GetUniqueNode("CreditsButton")]
+    private Button _creditsButton;
+
+    [GetNode("Credits")]
+    private Credits _credits;
+
     [GetNode("UI/StartButton")]
     private Button _startButton;
 
@@ -79,6 +85,7 @@ public partial class StartScreen : Control
         _playButton.Pressed += ToggleLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
+        _creditsButton.Pressed += () => _credits.Show();
 
         _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintLobbyPlayers));
         _lobby.PlayerJoinedListeners += _ => CallDeferred(nameof(PrintJoinKeybindingLabel));
