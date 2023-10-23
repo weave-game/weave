@@ -45,6 +45,7 @@ public partial class Main : Node2D
     private Lobby _lobby = new();
     private RTCClientManager _multiplayerManager;
     private Timer _playerDelayTimer;
+    private double _gameStartedAt;
 
     /// <summary>
     ///     The current round, starts from 1.
@@ -91,6 +92,7 @@ public partial class Main : Node2D
 
         _scoreDisplay.OnGameStart(_players.Count);
         _gameIsRunning = true;
+        _gameStartedAt = Time.GetUnixTimeFromSystem();
     }
 
     public override void _Process(double delta)
@@ -252,7 +254,7 @@ public partial class Main : Node2D
                 () => new("players", _lobby.Count.ToString()),
                 () => new("rounds", _round.ToString()),
                 () => new("score", _scoreDisplay.Score.ToString()),
-                () => new("time_ms", Time.GetTicksMsec().ToString())
+                () => new("time_s", (Time.GetUnixTimeFromSystem() - _gameStartedAt).ToString(CultureInfo.InvariantCulture))
             },
             LoggerMode.Append
         );
