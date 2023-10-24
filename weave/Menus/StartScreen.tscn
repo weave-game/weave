@@ -272,6 +272,7 @@ theme_override_font_sizes/font_size = 38
 text = "START GAME"
 
 [node name="Instructions" type="Panel" parent="UI"]
+visible = false
 offset_left = 1152.0
 offset_top = 1.0
 offset_right = 1600.0
