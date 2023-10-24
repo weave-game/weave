@@ -71,8 +71,9 @@ async function fetchAllScores(): Promise<Score[]> {
     const rawScores = await collection.find({}).toArray();
     const scores: Score[] = rawScores.map(score => {
       return {
+        id: score.Id,
         name: score.Name,
-        score: score.Points
+        points: score.Points
       };
     });
     return scores
