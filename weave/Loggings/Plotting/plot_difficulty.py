@@ -11,7 +11,7 @@ average_score_per_player = data.groupby('players')['score'].mean()
 
 # Calculate the average time taken per player count (converted to minutes)
 average_time_per_player_minutes = data.groupby(
-    'players')['time_ms'].mean() / 60000
+    'players')['time_s'].mean() / 60
 
 # Display the distribution of rounds based on player count
 rounds_distribution = data.groupby(
@@ -27,9 +27,9 @@ fig1 = px.bar(average_score_per_player.reset_index(),
 # Plotting the average time taken per player count
 fig2 = px.bar(average_time_per_player_minutes.reset_index(),
               x='players',
-              y='time_ms',
+              y='time_s',
               labels={'players': 'Player Count',
-                      'time_ms': 'Average Time (in minutes)'},
+                      'time_s': 'Average Time (in minutes)'},
               title='Average Time (in minutes) Per Player Count')
 
 # Displaying the distribution of rounds based on player count

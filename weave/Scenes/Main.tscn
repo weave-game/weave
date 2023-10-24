@@ -98,7 +98,7 @@ autoplay = true
 
 [node name="ClearedLevelPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_wjcpy")
-volume_db = -10.311
+volume_db = -16.0
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2(800, 450)

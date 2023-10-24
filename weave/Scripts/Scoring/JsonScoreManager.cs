@@ -21,6 +21,11 @@ public class JsonScoreManager : IScoreManager
         _scores = LoadScoresFromFile();
     }
 
+    public int GetPoints(string id)
+    {
+        return _scores.TryGetValue(id, out var score) ? score.Points : 0;
+    }
+
     public void Save(Score score)
     {
         _scores[score.Id] = score;

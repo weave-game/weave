@@ -82,6 +82,7 @@ public partial class StartScreen : Control
     {
         this.GetNodes();
 
+        _playButton.GrabFocus();
         _playButton.Pressed += ToggleLobby;
         _quitButton.Pressed += OnQuitButtonPressed;
         _startButton.Pressed += OnStartButtonPressed;
@@ -203,6 +204,14 @@ public partial class StartScreen : Control
         ExpandButtons();
     }
 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed(WeaveConstants.GamepadStart))
+        {
+            OnStartButtonPressed();
+        }
+    }
+
     private void OnQuitButtonPressed()
     {
         GetTree().Quit();
@@ -237,6 +246,8 @@ public partial class StartScreen : Control
 
     private void CollapseButtons()
     {
+        _playButton.ReleaseFocus();
+
         if (_buttonContainer.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
         {
             return;
@@ -251,6 +262,7 @@ public partial class StartScreen : Control
         _creditsButton.Text = "";
         _creditsButton.CustomMinimumSize = new Vector2(66, 66);
     }
+
     private void PrintLobbyPlayers()
     {
         foreach (var child in _playerList.GetChildren())
@@ -270,14 +282,19 @@ public partial class StartScreen : Control
 
             if (playerInfo.InputSource.LeftInputIcon() != null && playerInfo.InputSource.RightInputIcon() != null)
             {
-                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/LeftBinding").AddChild(playerInfo.InputSource.LeftInputIcon());
-                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/RightBinding").AddChild(playerInfo.InputSource.RightInputIcon());
+                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/LeftBinding")
+                    .AddChild(playerInfo.InputSource.LeftInputIcon());
+                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/RightBinding")
+                    .AddChild(playerInfo.InputSource.RightInputIcon());
             }
             else
             {
-                lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding/Label").Text = $"\u2b05 {playerInfo.InputSource.LeftInputString()}";
-                lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding/Label").Text = $"{playerInfo.InputSource.RightInputString()} \u2b95";
+                lobbyPlayer.GetNode<Label>("HBoxContainer/LeftBinding/Label").Text =
+                    $"\u2b05 {playerInfo.InputSource.LeftInputString()}";
+                lobbyPlayer.GetNode<Label>("HBoxContainer/RightBinding/Label").Text =
+                    $"{playerInfo.InputSource.RightInputString()} \u2b95";
             }
+
             _playerList.AddChild(lobbyPlayer);
             _lobbyPlayerDict.Add(playerInfo, lobbyPlayer);
         }

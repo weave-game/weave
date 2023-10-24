@@ -67,6 +67,16 @@ public partial class GameOverOverlay : CanvasLayer
         if (score.Points <= 0)
             return;
 
+        // Session has a better score
+        if (score.Points < GameConfig.Lobby.HighScore)
+        {
+            score.Points = GameConfig.Lobby.HighScore;
+        }
+        else
+        {
+            GameConfig.Lobby.HighScore = score.Points;
+        }
+
         // Players have filled in a new name, update lobby name
         var newName = _nameLineEdit.Text;
         if (!string.IsNullOrWhiteSpace(newName) && newName != score.Name)
