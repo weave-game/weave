@@ -2,6 +2,7 @@ using Godot;
 using GodotSharper.AutoGetNode;
 using GodotSharper.Instancing;
 using Weave.Scoring;
+using Weave.Utils;
 
 namespace Weave.MenuControllers;
 
@@ -26,6 +27,7 @@ public partial class GameOverOverlay : CanvasLayer
     private AnimationPlayer _savedPlayer;
 
     private IScoreManager _scoreManager;
+    private IScoreManager _jsonScoreManager;
     private Score _sessionScore;
 
     public override void _Ready()
@@ -33,6 +35,7 @@ public partial class GameOverOverlay : CanvasLayer
         this.GetNodes();
         _nameLineEdit.Text = GameConfig.Lobby.Name;
         _scoreManager = new MongoDBScoreManager();
+        _jsonScoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
         _menuButton.Pressed += () =>
@@ -74,6 +77,7 @@ public partial class GameOverOverlay : CanvasLayer
         }
 
         _scoreManager.Save(score);
+        _jsonScoreManager.Save(score);
         _savedPlayer.Play("hide");
         _savedPlayer.Play("saved");
     }

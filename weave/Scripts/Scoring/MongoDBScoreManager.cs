@@ -6,14 +6,14 @@ namespace Weave.Scoring;
 
 public class MongoDBScoreManager : IScoreManager
 {
-    private const string connectionString = "mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/";
+    private const string ConnectionString = "mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/";
     private readonly IMongoCollection<Score> _scores;
 
     public MongoDBScoreManager()
     {
         try
         {
-            var client = new MongoClient(connectionString);
+            var client = new MongoClient(ConnectionString);
             var database = client.GetDatabase("weave");
             _scores = database.GetCollection<Score>("scores");
         }
