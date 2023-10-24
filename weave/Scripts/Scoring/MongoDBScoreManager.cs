@@ -23,6 +23,11 @@ public class MongoDBScoreManager : IScoreManager
         }
     }
 
+    public int GetPoints(string id)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Save(Score score)
     {
         if (_scores != null)
