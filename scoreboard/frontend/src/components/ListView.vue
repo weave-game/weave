@@ -108,7 +108,7 @@ onUnmounted(() => {
         <!-- Score -->
         <td class="text-end">
           <span class="my-mono">
-            {{ score.points.toLocaleString("sv-SE") }}
+            {{ score?.points?.toLocaleString("sv-SE") }}
           </span>
         </td>
 
