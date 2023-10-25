@@ -1,0 +1,387 @@
+{
+  "28ee6d30-350a-419f-ba63-1a1c6a53598d": {
+    "Id": "05a3c7f5-9489-4de5-86e8-8363b5e02284",
+    "Name": "Sifakas",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 16774
+  },
+  "56c7759f-5f02-46b4-a69d-ee1a20de738a": {
+    "Id": "3be55f71-e9ae-42d8-aef3-e058be64f9b8",
+    "Name": "Sifakas",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 16000
+  },
+  "7f55754e-3674-4435-a489-eb8e2592a2c3": {
+    "Id": "f0583d06-b540-48e4-9deb-416929a7bd2f",
+    "Name": "Sifakas",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 55909
+  },
+  "d0bf4534-b249-4282-867d-a81d1b54d93c": {
+    "Id": "3741a070-b923-49fb-92d6-d624bc97d2a2",
+    "Name": "Jaguars",
+    "Players": 4,
+    "Rounds": 3,
+    "Points": 65203
+  },
+  "56b3360e-e1d4-40ea-b4c3-d95c4637f6c9": {
+    "Id": "4225f7b0-869c-4681-9540-26f2798121af",
+    "Name": "Jaguars",
+    "Players": 4,
+    "Rounds": 6,
+    "Points": 123921
+  },
+  "0381dd33-94e7-4950-8a9b-4451b67ddc26": {
+    "Id": "0381dd33-94e7-4950-8a9b-4451b67ddc26",
+    "Name": "\uD83D\uDE0E",
+    "Players": 4,
+    "Rounds": 7,
+    "Points": 148073
+  },
+  "f290c826-e464-4ee1-a3b5-8a122e53623c": {
+    "Id": "f290c826-e464-4ee1-a3b5-8a122e53623c",
+    "Name": "Chimpanzees",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 317
+  },
+  "e212cc5d-0839-42e6-84e7-0950d42e817a": {
+    "Id": "e212cc5d-0839-42e6-84e7-0950d42e817a",
+    "Name": "GloomyKomodos",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 170
+  },
+  "379009b1-2ae5-4fec-a145-522b308e1bfe": {
+    "Id": "379009b1-2ae5-4fec-a145-522b308e1bfe",
+    "Name": "GigaBushbabys",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 885
+  },
+  "85e086a8-883d-4d84-8d3c-2787ae6967f4": {
+    "Id": "85e086a8-883d-4d84-8d3c-2787ae6967f4",
+    "Name": "RancidMarmosets",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 594
+  },
+  "6160b17e-8a36-45a7-b810-893a99ab65f2": {
+    "Id": "6160b17e-8a36-45a7-b810-893a99ab65f2",
+    "Name": "MightyLangurs",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 577
+  },
+  "7289c0e5-5388-4314-8347-7ae32c683519": {
+    "Id": "7289c0e5-5388-4314-8347-7ae32c683519",
+    "Name": "NotExtraSnakes",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 2262
+  },
+  "8160fed7-090d-4c00-a979-6f5b651001db": {
+    "Id": "8160fed7-090d-4c00-a979-6f5b651001db",
+    "Name": "MaMaMo",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 1705
+  },
+  "2e835566-1ab7-402c-a2ba-f4151c61846a": {
+    "Id": "2e835566-1ab7-402c-a2ba-f4151c61846a",
+    "Name": "TwistedCapuchins",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 16
+  },
+  "5fd88073-0423-49b8-9835-162d11e14659": {
+    "Id": "5fd88073-0423-49b8-9835-162d11e14659",
+    "Name": "Bombskod",
+    "Players": 3,
+    "Rounds": 5,
+    "Points": 3214
+  },
+  "4f835719-f819-43b1-b7be-16c904d1283c": {
+    "Id": "4f835719-f819-43b1-b7be-16c904d1283c",
+    "Name": "RancidSifakas",
+    "Players": 3,
+    "Rounds": 7,
+    "Points": 4972
+  },
+  "03fb024b-2cf8-42fc-8f11-e92cc4e50938": {
+    "Id": "03fb024b-2cf8-42fc-8f11-e92cc4e50938",
+    "Name": "GigaCorruptChimpanzees",
+    "Players": 3,
+    "Rounds": 7,
+    "Points": 4278
+  },
+  "d2ac56a4-5585-4dea-9f75-a22a4aa42839": {
+    "Id": "d2ac56a4-5585-4dea-9f75-a22a4aa42839",
+    "Name": "Guerezsa",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 4094
+  },
+  "47bc004f-b0b6-4197-b88b-c42b60888f23": {
+    "Id": "47bc004f-b0b6-4197-b88b-c42b60888f23",
+    "Name": "Snow",
+    "Players": 3,
+    "Rounds": 8,
+    "Points": 5189
+  },
+  "2179af20-8574-4fdc-9193-751ad4af0fd6": {
+    "Id": "2179af20-8574-4fdc-9193-751ad4af0fd6",
+    "Name": "The devs \uD83D\uDE0E",
+    "Players": 2,
+    "Rounds": 15,
+    "Points": 9014
+  },
+  "d6618bdc-df5a-4f4b-b5d9-0c0d1bc3f24c": {
+    "Id": "d6618bdc-df5a-4f4b-b5d9-0c0d1bc3f24c",
+    "Name": "AR Mirror",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 1075
+  },
+  "616b675c-17fd-43b8-92e6-ffbe1b4876de": {
+    "Id": "616b675c-17fd-43b8-92e6-ffbe1b4876de",
+    "Name": "More devs! \uD83D\uDE1C",
+    "Players": 4,
+    "Rounds": 4,
+    "Points": 6633
+  },
+  "5e3f7f18-fa20-4bcd-8fa0-c6f11935a249": {
+    "Id": "5e3f7f18-fa20-4bcd-8fa0-c6f11935a249",
+    "Name": "Suck it Jets",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 4355
+  },
+  "3d18b806-9598-403f-a485-564371c3f172": {
+    "Id": "3d18b806-9598-403f-a485-564371c3f172",
+    "Name": "AR Mirrro\u00B4r 2",
+    "Players": 4,
+    "Rounds": 4,
+    "Points": 2655
+  },
+  "9ba1cfc5-6d43-464f-9f11-47273bcfbbce": {
+    "Id": "9ba1cfc5-6d43-464f-9f11-47273bcfbbce",
+    "Name": "GrandChimpanzees",
+    "Players": 2,
+    "Rounds": 2,
+    "Points": 1088
+  },
+  "7083a36d-2ed7-4b43-bacb-7cb1ae3f6939": {
+    "Id": "7083a36d-2ed7-4b43-bacb-7cb1ae3f6939",
+    "Name": "TwistedKomodos",
+    "Players": 1,
+    "Rounds": 1,
+    "Points": 449
+  },
+  "783370ca-fc23-4efb-8ceb-e7509e966523": {
+    "Id": "783370ca-fc23-4efb-8ceb-e7509e966523",
+    "Name": "Orangutans",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 2476
+  },
+  "f85d9b45-4077-45fc-af49-9b45509aa352": {
+    "Id": "f85d9b45-4077-45fc-af49-9b45509aa352",
+    "Name": "\uD83D\uDE03\uD83D\uDE03\uD83D\uDE03\uD83D\uDE03\uD83D\uDE03",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 3663
+  },
+  "1a06fccf-eb62-48fc-9f52-fe6337b21524": {
+    "Id": "1a06fccf-eb62-48fc-9f52-fe6337b21524",
+    "Name": "SavageHyperCheetahs",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 1151
+  },
+  "c365b74e-e84a-4e77-a98a-f8e987052bf9": {
+    "Id": "c365b74e-e84a-4e77-a98a-f8e987052bf9",
+    "Name": "RancidMandrills",
+    "Players": 3,
+    "Rounds": 5,
+    "Points": 3548
+  },
+  "03013bd9-ce1e-4f2a-87ba-0d7060f78f9b": {
+    "Id": "03013bd9-ce1e-4f2a-87ba-0d7060f78f9b",
+    "Name": "arvindhan",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 1273
+  },
+  "b83effbd-34bc-4242-b8d2-f21d7a7d06e5": {
+    "Id": "b83effbd-34bc-4242-b8d2-f21d7a7d06e5",
+    "Name": "LC",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 2189
+  },
+  "a81f29a7-a8c2-405a-8693-aaee2f54d98b": {
+    "Id": "a81f29a7-a8c2-405a-8693-aaee2f54d98b",
+    "Name": "Kaffe bois",
+    "Players": 2,
+    "Rounds": 7,
+    "Points": 6372
+  },
+  "aca2d605-be0c-414b-9c43-cfca0ec76c86": {
+    "Id": "aca2d605-be0c-414b-9c43-cfca0ec76c86",
+    "Name": "MidnightTeraGibbons",
+    "Players": 2,
+    "Rounds": 3,
+    "Points": 2405
+  },
+  "05119efc-7b51-4142-9fc7-23a146203095": {
+    "Id": "05119efc-7b51-4142-9fc7-23a146203095",
+    "Name": "MightySifakas",
+    "Players": 4,
+    "Rounds": 5,
+    "Points": 3718
+  },
+  "99292351-c755-461d-b7d0-9518c89234de": {
+    "Id": "99292351-c755-461d-b7d0-9518c89234de",
+    "Name": "Sys6",
+    "Players": 4,
+    "Rounds": 4,
+    "Points": 4207
+  },
+  "ea1a088f-1814-4626-8b8b-2e9b37936eda": {
+    "Id": "ea1a088f-1814-4626-8b8b-2e9b37936eda",
+    "Name": "Manatees",
+    "Players": 3,
+    "Rounds": 8,
+    "Points": 5013
+  },
+  "b849b1e3-33f6-4ed5-bff1-c7fc83043bd8": {
+    "Id": "b849b1e3-33f6-4ed5-bff1-c7fc83043bd8",
+    "Name": "CruelKinkajous",
+    "Players": 3,
+    "Rounds": 4,
+    "Points": 2809
+  },
+  "1100f339-29d5-4bfb-a0bb-1786c2750839": {
+    "Id": "1100f339-29d5-4bfb-a0bb-1786c2750839",
+    "Name": "CruelGibbons",
+    "Players": 3,
+    "Rounds": 4,
+    "Points": 2518
+  },
+  "819c7185-eb0f-4657-92e9-472ec7056bbe": {
+    "Id": "819c7185-eb0f-4657-92e9-472ec7056bbe",
+    "Name": "CorruptEpicKinkajous",
+    "Players": 4,
+    "Rounds": 3,
+    "Points": 2682
+  },
+  "1a3902de-7f86-4083-9681-48730f270582": {
+    "Id": "1a3902de-7f86-4083-9681-48730f270582",
+    "Name": "DreadedMightyTarsiers",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 1079
+  },
+  "e68dbca5-1436-43f5-b602-41f180cf9c34": {
+    "Id": "e68dbca5-1436-43f5-b602-41f180cf9c34",
+    "Name": "IDK",
+    "Players": 3,
+    "Rounds": 6,
+    "Points": 5182
+  },
+  "fb6cd878-3d58-4af8-873d-1203e069133c": {
+    "Id": "fb6cd878-3d58-4af8-873d-1203e069133c",
+    "Name": "Corrupt devs \uD83D\uDE08",
+    "Players": 3,
+    "Rounds": 13,
+    "Points": 8349
+  },
+  "2c536392-2385-47f7-ad2a-29f7d40dda07": {
+    "Id": "2c536392-2385-47f7-ad2a-29f7d40dda07",
+    "Name": "big lads",
+    "Players": 4,
+    "Rounds": 6,
+    "Points": 5721
+  },
+  "f56e02a1-7961-4c8f-b358-b7e5034f191b": {
+    "Id": "f56e02a1-7961-4c8f-b358-b7e5034f191b",
+    "Name": "Langurs",
+    "Players": 3,
+    "Rounds": 6,
+    "Points": 4216
+  },
+  "673d7ea6-2671-48e4-b0e6-6d5be46691da": {
+    "Id": "673d7ea6-2671-48e4-b0e6-6d5be46691da",
+    "Name": "RuthlessCheetahs",
+    "Players": 4,
+    "Rounds": 5,
+    "Points": 3458
+  },
+  "92ad8f3e-4275-4fef-aa8c-bea6a601317d": {
+    "Id": "92ad8f3e-4275-4fef-aa8c-bea6a601317d",
+    "Name": "ingen aning",
+    "Players": 3,
+    "Rounds": 8,
+    "Points": 5378
+  },
+  "009d8a44-d0c7-448b-ad01-65c39489acfa": {
+    "Id": "009d8a44-d0c7-448b-ad01-65c39489acfa",
+    "Name": "DreadedHyperGibbons",
+    "Players": 2,
+    "Rounds": 6,
+    "Points": 3471
+  },
+  "56e51c81-042e-4a70-8831-efa97460eb06": {
+    "Id": "56e51c81-042e-4a70-8831-efa97460eb06",
+    "Name": "MurkyOrangutans",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 4703
+  },
+  "012a2c69-1c09-49b7-ad68-e122f59f06ea": {
+    "Id": "012a2c69-1c09-49b7-ad68-e122f59f06ea",
+    "Name": "RuthlessOrangutans",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 2160
+  },
+  "9745a989-0ea3-4046-8dd2-c08041000393": {
+    "Id": "9745a989-0ea3-4046-8dd2-c08041000393",
+    "Name": "Bushbabys",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 3713
+  },
+  "7434b3cc-66fa-4fd9-a34e-7652492a5438": {
+    "Id": "7434b3cc-66fa-4fd9-a34e-7652492a5438",
+    "Name": "Prison Island",
+    "Players": 2,
+    "Rounds": 4,
+    "Points": 2430
+  },
+  "a12a4482-7409-441c-820f-b696bdbc9812": {
+    "Id": "a12a4482-7409-441c-820f-b696bdbc9812",
+    "Name": "UberOminousSifakas",
+    "Players": 2,
+    "Rounds": 3,
+    "Points": 2088
+  },
+  "d3a4a552-1dff-4c1e-96f3-42aee5bcae4d": {
+    "Id": "d3a4a552-1dff-4c1e-96f3-42aee5bcae4d",
+    "Name": "UltraSifakas",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 3650
+  },
+  "81b51a7b-77ac-4eb5-8edf-839041cfc826": {
+    "Id": "81b51a7b-77ac-4eb5-8edf-839041cfc826",
+    "Name": "VioletLemurs",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 2288
+  }
+}
