@@ -1,0 +1,296 @@
+{
+  "1798f6a9-299a-4fda-ad80-cc339539bd20": {
+    "Id": "1798f6a9-299a-4fda-ad80-cc339539bd20",
+    "Name": "Ocelots",
+    "Players": 2,
+    "Rounds": 2,
+    "Points": 1273
+  },
+  "b63119a8-910b-4ee9-ad80-e5b831ef5976": {
+    "Id": "b63119a8-910b-4ee9-ad80-e5b831ef5976",
+    "Name": "VioletBaboons",
+    "Players": 3,
+    "Rounds": 4,
+    "Points": 2490
+  },
+  "15b0e2da-0ce8-4e08-acef-621285290413": {
+    "Id": "15b0e2da-0ce8-4e08-acef-621285290413",
+    "Name": "Erik \u0026 Shyanne",
+    "Players": 2,
+    "Rounds": 7,
+    "Points": 4146
+  },
+  "5bd6b465-1f9f-4bcd-be59-566bb67b58f6": {
+    "Id": "5bd6b465-1f9f-4bcd-be59-566bb67b58f6",
+    "Name": "Thomas princesses",
+    "Players": 2,
+    "Rounds": 14,
+    "Points": 8187
+  },
+  "a4376f94-585f-4eb1-a5e0-857626e897ca": {
+    "Id": "a4376f94-585f-4eb1-a5e0-857626e897ca",
+    "Name": "MightySinisterTamarins",
+    "Players": 2,
+    "Rounds": 10,
+    "Points": 5688
+  },
+  "92d5a44f-871f-4a25-9471-ca2c3b116727": {
+    "Id": "92d5a44f-871f-4a25-9471-ca2c3b116727",
+    "Name": "The Devs \uD83E\uDD13",
+    "Players": 2,
+    "Rounds": 19,
+    "Points": 11299
+  },
+  "101ce535-51f6-4ca5-a030-a589c312232d": {
+    "Id": "101ce535-51f6-4ca5-a030-a589c312232d",
+    "Name": "Orangutans",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 2793
+  },
+  "96eef346-319c-4b80-a4ff-9b485a0e6f1b": {
+    "Id": "96eef346-319c-4b80-a4ff-9b485a0e6f1b",
+    "Name": "TeraTarsiers",
+    "Players": 4,
+    "Rounds": 5,
+    "Points": 3197
+  },
+  "d988c52a-2808-4c8c-9602-1eac7fa8701e": {
+    "Id": "d988c52a-2808-4c8c-9602-1eac7fa8701e",
+    "Name": "last",
+    "Players": 2,
+    "Rounds": 8,
+    "Points": 5268
+  },
+  "09569989-bc4c-4985-bc4b-62286837c4c5": {
+    "Id": "09569989-bc4c-4985-bc4b-62286837c4c5",
+    "Name": "UberAyeAyes",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 2358
+  },
+  "316a608a-70f7-4906-9b8d-7fefa7fd670f": {
+    "Id": "316a608a-70f7-4906-9b8d-7fefa7fd670f",
+    "Name": "Gren Gamers",
+    "Players": 4,
+    "Rounds": 13,
+    "Points": 8517
+  },
+  "7c234c43-ee2d-48df-8125-d5e093de2592": {
+    "Id": "7c234c43-ee2d-48df-8125-d5e093de2592",
+    "Name": "Locked Gamers \u002B Investor",
+    "Players": 4,
+    "Rounds": 6,
+    "Points": 4915
+  },
+  "209b776e-83d6-4c9b-a2ec-bf468dd61e29": {
+    "Id": "209b776e-83d6-4c9b-a2ec-bf468dd61e29",
+    "Name": "We Tried",
+    "Players": 4,
+    "Rounds": 9,
+    "Points": 6348
+  },
+  "4100eff5-9c9c-47ea-b3f3-75d2f1799480": {
+    "Id": "4100eff5-9c9c-47ea-b3f3-75d2f1799480",
+    "Name": "GrandOminousLemurs",
+    "Players": 2,
+    "Rounds": 2,
+    "Points": 667
+  },
+  "df7841a3-36a8-4809-b36c-d26372e04b9e": {
+    "Id": "df7841a3-36a8-4809-b36c-d26372e04b9e",
+    "Name": "Epic Gamers",
+    "Players": 4,
+    "Rounds": 4,
+    "Points": 2764
+  },
+  "c647dff7-2e05-43e6-8b8d-4c8ec257f267": {
+    "Id": "c647dff7-2e05-43e6-8b8d-4c8ec257f267",
+    "Name": "Dev and fren : )",
+    "Players": 2,
+    "Rounds": 19,
+    "Points": 11161
+  },
+  "db7c44cb-42a4-409c-bad9-1f8775fafe4e": {
+    "Id": "db7c44cb-42a4-409c-bad9-1f8775fafe4e",
+    "Name": "OminousKinkajous",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 335
+  },
+  "705b14d5-8ccb-4042-8822-a7b8281e6bf4": {
+    "Id": "705b14d5-8ccb-4042-8822-a7b8281e6bf4",
+    "Name": "SinisterTeraCheetahs",
+    "Players": 3,
+    "Rounds": 5,
+    "Points": 3247
+  },
+  "6c1fc838-3dc7-4c32-8fb3-5f47de8fe55c": {
+    "Id": "6c1fc838-3dc7-4c32-8fb3-5f47de8fe55c",
+    "Name": "GigaKomodos",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 196
+  },
+  "4b569c24-cb88-48e6-9b7c-3936278e7e9c": {
+    "Id": "4b569c24-cb88-48e6-9b7c-3936278e7e9c",
+    "Name": "Six people playinbg",
+    "Players": 6,
+    "Rounds": 5,
+    "Points": 3301
+  },
+  "f6f9f903-b435-4bbd-ae0d-1d02f29121fa": {
+    "Id": "f6f9f903-b435-4bbd-ae0d-1d02f29121fa",
+    "Name": "Design Queens",
+    "Players": 3,
+    "Rounds": 1,
+    "Points": 2609
+  },
+  "839c5360-8c20-4dc2-914d-7b4992d0e91d": {
+    "Id": "839c5360-8c20-4dc2-914d-7b4992d0e91d",
+    "Name": "GrandShadowyOcelots",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 2655
+  },
+  "38edad73-5208-4576-b5d3-dd90b368c25b": {
+    "Id": "38edad73-5208-4576-b5d3-dd90b368c25b",
+    "Name": "Guerezsa",
+    "Players": 4,
+    "Rounds": 2,
+    "Points": 1400
+  },
+  "1b68f74a-748a-4e97-8088-5d2c17675d22": {
+    "Id": "1b68f74a-748a-4e97-8088-5d2c17675d22",
+    "Name": "HyperGuerezsa",
+    "Players": 2,
+    "Rounds": 5,
+    "Points": 2807
+  },
+  "8b52c2ce-2ddd-43b9-a2f9-0ec43490e3c9": {
+    "Id": "8b52c2ce-2ddd-43b9-a2f9-0ec43490e3c9",
+    "Name": "Frozen",
+    "Players": 2,
+    "Rounds": 8,
+    "Points": 6874
+  },
+  "284440df-d7f8-4644-abf1-68c7ef1be520": {
+    "Id": "284440df-d7f8-4644-abf1-68c7ef1be520",
+    "Name": "Destroyers",
+    "Players": 4,
+    "Rounds": 1,
+    "Points": 2531
+  },
+  "28622187-a3dc-4863-93ae-1fdbce78f0ae": {
+    "Id": "28622187-a3dc-4863-93ae-1fdbce78f0ae",
+    "Name": "EpicSavageSifakas",
+    "Players": 1,
+    "Rounds": 1,
+    "Points": 71
+  },
+  "2646116d-f6bb-4732-b3be-3e3c8ca322b7": {
+    "Id": "2646116d-f6bb-4732-b3be-3e3c8ca322b7",
+    "Name": "last",
+    "Players": 3,
+    "Rounds": 14,
+    "Points": 8720
+  },
+  "323865b3-d9a4-473f-bef1-bc476dac47ee": {
+    "Id": "323865b3-d9a4-473f-bef1-bc476dac47ee",
+    "Name": "losers",
+    "Players": 3,
+    "Rounds": 10,
+    "Points": 6404
+  },
+  "cc6b0428-f2c9-4874-8a0b-d36202b8134a": {
+    "Id": "cc6b0428-f2c9-4874-8a0b-d36202b8134a",
+    "Name": "BYQ",
+    "Players": 3,
+    "Rounds": 7,
+    "Points": 4696
+  },
+  "2c30d0c6-65b4-447f-ae4e-110b174a808b": {
+    "Id": "2c30d0c6-65b4-447f-ae4e-110b174a808b",
+    "Name": "MurkyKinkajous",
+    "Players": 3,
+    "Rounds": 3,
+    "Points": 1765
+  },
+  "ed82665f-913d-4022-90be-f5d6e6ca1b71": {
+    "Id": "ed82665f-913d-4022-90be-f5d6e6ca1b71",
+    "Name": "BYQ",
+    "Players": 4,
+    "Rounds": 3,
+    "Points": 5362
+  },
+  "194b4f18-59d2-4824-8962-c2c692f5655d": {
+    "Id": "194b4f18-59d2-4824-8962-c2c692f5655d",
+    "Name": "Wasp \u003C3",
+    "Players": 3,
+    "Rounds": 2,
+    "Points": 3665
+  },
+  "b2fde8ac-6c69-4192-8b35-d4c0e6751737": {
+    "Id": "b2fde8ac-6c69-4192-8b35-d4c0e6751737",
+    "Name": "Alligatorzz",
+    "Players": 3,
+    "Rounds": 4,
+    "Points": 4902
+  },
+  "1f7a0dff-aabc-474f-85d3-918fe15cf91a": {
+    "Id": "1f7a0dff-aabc-474f-85d3-918fe15cf91a",
+    "Name": "Toxic Team",
+    "Players": 3,
+    "Rounds": 5,
+    "Points": 5390
+  },
+  "89952b49-1ddb-4bdd-8d95-ab52eaef3229": {
+    "Id": "89952b49-1ddb-4bdd-8d95-ab52eaef3229",
+    "Name": "Team Name",
+    "Players": 3,
+    "Rounds": 3,
+    "Points": 2172
+  },
+  "09c8030d-c13d-483b-9bf8-1a7e0162c847": {
+    "Id": "09c8030d-c13d-483b-9bf8-1a7e0162c847",
+    "Name": "Rotselleri",
+    "Players": 3,
+    "Rounds": 7,
+    "Points": 4305
+  },
+  "f29f03f6-e755-4a40-8b2b-a33203fc0379": {
+    "Id": "f29f03f6-e755-4a40-8b2b-a33203fc0379",
+    "Name": "shapzels",
+    "Players": 4,
+    "Rounds": 7,
+    "Points": 8733
+  },
+  "ca46bb99-53e1-49c7-870d-f0a03a64d5d9": {
+    "Id": "ca46bb99-53e1-49c7-870d-f0a03a64d5d9",
+    "Name": "IxD Stars",
+    "Players": 2,
+    "Rounds": 4,
+    "Points": 2260
+  },
+  "7be5a1c7-4add-4bf4-a8c5-9ea281c8b8f8": {
+    "Id": "7be5a1c7-4add-4bf4-a8c5-9ea281c8b8f8",
+    "Name": "Snigel",
+    "Players": 6,
+    "Rounds": 1,
+    "Points": 4439
+  },
+  "ec0c3d95-c448-4ecd-9330-72fe4ca0b35d": {
+    "Id": "ec0c3d95-c448-4ecd-9330-72fe4ca0b35d",
+    "Name": "Balancing Act",
+    "Players": 3,
+    "Rounds": 14,
+    "Points": 10562
+  },
+  "6e0e1956-5fc9-4e0d-a45e-4480787404ef": {
+    "Id": "6e0e1956-5fc9-4e0d-a45e-4480787404ef",
+    "Name": "UberAyeAyes",
+    "Players": 2,
+    "Rounds": 1,
+    "Points": 3603
+  }
+}
