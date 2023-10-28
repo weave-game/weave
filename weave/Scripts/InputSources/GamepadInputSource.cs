@@ -37,7 +37,7 @@ public sealed class GamepadInputSource : IInputSource
     public TextureRect LeftInputIcon()
     {
         var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/xbox_lt.png");
-        var icon = new TextureRect() { Texture = imageResource };
+        var icon = new TextureRect { Texture = imageResource };
         icon.CustomMinimumSize = new Vector2(38, 38);
         icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
         return icon;
@@ -46,7 +46,7 @@ public sealed class GamepadInputSource : IInputSource
     public TextureRect RightInputIcon()
     {
         var imageResource = GD.Load<CompressedTexture2D>("res://Assets/Icons/xbox_rt.png");
-        var icon = new TextureRect() { Texture = imageResource };
+        var icon = new TextureRect { Texture = imageResource };
         icon.CustomMinimumSize = new Vector2(38, 38);
         icon.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
         return icon;
@@ -55,9 +55,7 @@ public sealed class GamepadInputSource : IInputSource
     public bool Equals(IInputSource other)
     {
         if (other is GamepadInputSource gamepad)
-        {
             return _deviceId == gamepad._deviceId;
-        }
 
         return false;
     }

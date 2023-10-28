@@ -14,19 +14,20 @@ public sealed class UniqueNameGenerator
     /// </summary>
     public static UniqueNameGenerator Instance { get; } = new();
 
-    private IEnumerable<string> A { get; } = new List<string>
-    {
-        "Mega",
-        "Uber",
-        "Ultra",
-        "Super",
-        "Hyper",
-        "Mighty",
-        "Giga",
-        "Tera",
-        "Epic",
-        "Grand"
-    };
+    private IEnumerable<string> A { get; } =
+        new List<string>
+        {
+            "Mega",
+            "Uber",
+            "Ultra",
+            "Super",
+            "Hyper",
+            "Mighty",
+            "Giga",
+            "Tera",
+            "Epic",
+            "Grand"
+        };
 
     private IEnumerable<string> B { get; } =
         new List<string>
@@ -97,9 +98,7 @@ public sealed class UniqueNameGenerator
         if (UsedNames.Contains(name))
         {
             if (!_backupIndices.TryGetValue(name, out _))
-            {
                 _backupIndices[name] = 0;
-            }
 
             _backupIndices[name]++;
             name += $" {_backupIndices[name]}";
@@ -115,14 +114,10 @@ public sealed class UniqueNameGenerator
         var prefixes = new List<string>();
 
         if (GsRandom.CoinToss())
-        {
             prefixes.Add(A.Random());
-        }
 
         if (GsRandom.CoinToss())
-        {
             prefixes.Add(B.Random());
-        }
 
         // Possible prefixes
         output.Append(string.Concat(prefixes.Shuffled()));

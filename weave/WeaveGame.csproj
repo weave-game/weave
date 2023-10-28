@@ -4,7 +4,7 @@
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <RootNamespace>Weave</RootNamespace>
         <UserSecretsId>eaf11a62-b813-42c9-b90b-997143dd52fb</UserSecretsId>
-  </PropertyGroup>
+    </PropertyGroup>
 
     <ItemGroup>
         <Reference Include="GodotSharper">
@@ -13,24 +13,19 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-        <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="SIPSorcery" Version="6.0.12" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0"/>
+        <PackageReference Include="MongoDB.Driver" Version="2.22.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="SIPSorcery" Version="6.0.12"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="WeaveTests\**" />
+        <Compile Remove="WeaveTests\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="WeaveTests\**" />
+        <EmbeddedResource Remove="WeaveTests\**"/>
     </ItemGroup>
-
 
     <PropertyGroup>
         <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>

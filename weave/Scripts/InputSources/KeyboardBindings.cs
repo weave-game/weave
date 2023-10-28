@@ -7,6 +7,11 @@ public static class KeyboardBindings
 {
     public static readonly IReadOnlyList<(Key, Key)> Keybindings = new List<(Key, Key)>
     {
-        (Key.Left, Key.Right), (Key.Key1, Key.Q), (Key.B, Key.N), (Key.Z, Key.X), (Key.L, Key.O), (Key.Key5, Key.Key6)
+        (Key.Left, Key.Right),
+        (Key.Key1, Key.Q),
+        (Key.B, Key.N),
+        (Key.Z, Key.X),
+        (Key.L, Key.O),
+        (Key.Key5, Key.Key6)
     };
 }

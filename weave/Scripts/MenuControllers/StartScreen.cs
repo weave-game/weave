@@ -28,47 +28,48 @@ public partial class StartScreen : Control
     [GetNode("BlurLayer")]
     private CanvasLayer _blurLayer;
 
+    [GetUniqueNode("ButtonContainer")]
+    private BoxContainer _buttonContainer;
+
+    [GetNode("Credits")]
+    private Credits _credits;
+
+    [GetUniqueNode("CreditsButton")]
+    private Button _creditsButton;
+
+    [GetUniqueNode("EmptyLobbyLabel")]
+    private Label _emptyLobbyLabel;
+
     [GetNode("UI/Instructions")]
     private Panel _instructions;
+
+    [GetUniqueNode("JoinKeybinding")]
+    private HBoxContainer _joinKeybindingContainer;
 
     [GetNode("UI/Instructions/Web/LobbyCodeLabel")]
     private RichTextLabel _lobbyCodeLabel;
 
     private PackedScene _lobbyPlayer = GD.Load<PackedScene>("res://Objects/LobbyPlayer.tscn");
 
-    private IDictionary<PlayerInfo, Control> _lobbyPlayerDict = new Dictionary<PlayerInfo, Control>();
+    private IDictionary<PlayerInfo, Control> _lobbyPlayerDict =
+        new Dictionary<PlayerInfo, Control>();
 
     [GetNode("UI/MemoriesLabel")]
     private RichTextLabel _memoriesLabel;
 
-    [GetUniqueNode("JoinKeybinding")]
-    private HBoxContainer _joinKeybindingContainer;
-
     private RTCClientManager _multiplayerManager;
-
-    [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
-    private VBoxContainer _playerList;
-
-    [GetUniqueNode("EmptyLobbyLabel")]
-    private Label _emptyLobbyLabel;
-
-    [GetNode("UI/Instructions/Web/QRCodeTexture")]
-    private TextureRect _qrCodeTexture;
-
-    [GetUniqueNode("ButtonContainer")]
-    private BoxContainer _buttonContainer;
 
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Play")]
     private Button _playButton;
 
+    [GetNode("UI/MarginContainer/HBoxContainer/PlayerList")]
+    private VBoxContainer _playerList;
+
+    [GetNode("UI/Instructions/Web/QRCodeTexture")]
+    private TextureRect _qrCodeTexture;
+
     [GetNode("UI/MarginContainer/HBoxContainer/ButtonContainer/Quit")]
     private Button _quitButton;
-
-    [GetUniqueNode("CreditsButton")]
-    private Button _creditsButton;
-
-    [GetNode("Credits")]
-    private Credits _credits;
 
     [GetNode("UI/StartButton")]
     private Button _startButton;
@@ -97,7 +98,7 @@ public partial class StartScreen : Control
         SetLobbyCodeLabelText(_lobby.LobbyCode);
         SetLobbyQrCodeTexture(_lobby.LobbyQrCode);
 
-        _multiplayerManager = new(_lobby.LobbyCode);
+        _multiplayerManager = new RTCClientManager(_lobby.LobbyCode);
         _multiplayerManager.StartClientAsync();
         _multiplayerManager.IsAcceptingInput = true;
         _multiplayerManager.ClientJoinedListeners += _lobby.Join;
@@ -112,29 +113,21 @@ public partial class StartScreen : Control
 
     public override void _PhysicsProcess(double delta)
     {
-        _lobbyPlayerDict.ForEach(
-            player =>
-            {
-                var character = player.Value.GetNode<TextureRect>("PlayerCharacter");
-                if (player.Key.InputSource.IsTurningRight())
-                {
-                    character.RotationDegrees += _turnSpeed * (float)delta;
-                }
+        _lobbyPlayerDict.ForEach(player =>
+        {
+            var character = player.Value.GetNode<TextureRect>("PlayerCharacter");
+            if (player.Key.InputSource.IsTurningRight())
+                character.RotationDegrees += _turnSpeed * (float)delta;
 
-                if (player.Key.InputSource.IsTurningLeft())
-                {
-                    character.RotationDegrees -= _turnSpeed * (float)delta;
-                }
-            }
-        );
+            if (player.Key.InputSource.IsTurningLeft())
+                character.RotationDegrees -= _turnSpeed * (float)delta;
+        });
     }
 
     public override void _Input(InputEvent @event)
     {
         if (!_lobby.Open)
-        {
             return;
-        }
 
         switch (@event)
         {
@@ -150,13 +143,9 @@ public partial class StartScreen : Control
     private void ToggleLobby()
     {
         if (_lobby.Open)
-        {
             CloseLobby();
-        }
         else
-        {
             OpenLobby();
-        }
     }
 
     private void OpenLobby()
@@ -207,9 +196,7 @@ public partial class StartScreen : Control
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event.IsActionPressed(WeaveConstants.GamepadStart))
-        {
             OnStartButtonPressed();
-        }
     }
 
     private void OnQuitButtonPressed()
@@ -249,9 +236,7 @@ public partial class StartScreen : Control
         _playButton.ReleaseFocus();
 
         if (_buttonContainer.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
-        {
             return;
-        }
 
         _playButton.Text = "";
         _playButton.CustomMinimumSize = new Vector2(66, 66);
@@ -280,11 +265,16 @@ public partial class StartScreen : Control
             var lobbyPlayer = _lobbyPlayer.Instantiate<Control>();
             lobbyPlayer.Modulate = playerInfo.Color;
 
-            if (playerInfo.InputSource.LeftInputIcon() != null && playerInfo.InputSource.RightInputIcon() != null)
+            if (
+                playerInfo.InputSource.LeftInputIcon() != null
+                && playerInfo.InputSource.RightInputIcon() != null
+            )
             {
-                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/LeftBinding")
+                lobbyPlayer
+                    .GetNode<HBoxContainer>("HBoxContainer/LeftBinding")
                     .AddChild(playerInfo.InputSource.LeftInputIcon());
-                lobbyPlayer.GetNode<HBoxContainer>("HBoxContainer/RightBinding")
+                lobbyPlayer
+                    .GetNode<HBoxContainer>("HBoxContainer/RightBinding")
                     .AddChild(playerInfo.InputSource.RightInputIcon());
             }
             else
@@ -311,20 +301,17 @@ public partial class StartScreen : Control
         foreach (var keybindingTuple in KeyboardBindings.Keybindings)
         {
             var kb = new KeyboardInputSource(keybindingTuple);
-            if (!_lobby.PlayerInfos.Any(playerInfo =>
-                    playerInfo.InputSource.Equals(kb)))
+            if (!_lobby.PlayerInfos.Any(playerInfo => playerInfo.InputSource.Equals(kb)))
             {
                 _joinKeybindingContainer.AddChild(kb.LeftInputIcon());
-                _joinKeybindingContainer.AddChild(new Label() { Text = " + " });
+                _joinKeybindingContainer.AddChild(new Label { Text = " + " });
                 _joinKeybindingContainer.AddChild(kb.RightInputIcon());
                 break;
             }
         }
 
         if (_joinKeybindingContainer.GetChildCount() == 0)
-        {
-            _joinKeybindingContainer.AddChild(new Label() { Text = "-" });
-        }
+            _joinKeybindingContainer.AddChild(new Label { Text = "-" });
     }
 
     #region Keyboard
@@ -338,7 +325,9 @@ public partial class StartScreen : Control
                 && Input.IsKeyPressed(keybindingTuple.Item2);
 
             var kb = new KeyboardInputSource(keybindingTuple);
-            var alreadyExisting = _lobby.PlayerInfos.FirstOrDefault(c => c.InputSource.Equals(kb))?.InputSource;
+            var alreadyExisting = _lobby.PlayerInfos
+                .FirstOrDefault(c => c.InputSource.Equals(kb))
+                ?.InputSource;
 
             if (!isPressingBoth)
             {
@@ -347,9 +336,7 @@ public partial class StartScreen : Control
             }
 
             if (_pressingSince.TryGetValue(keybindingTuple, out var value) && value.Item2)
-            {
                 continue;
-            }
 
             if (alreadyExisting == null)
             {
@@ -358,16 +345,22 @@ public partial class StartScreen : Control
             }
             else
             {
-                if (!_pressingSince.ContainsKey(keybindingTuple) || _pressingSince[keybindingTuple].Item1 == null)
+                if (
+                    !_pressingSince.ContainsKey(keybindingTuple)
+                    || _pressingSince[keybindingTuple].Item1 == null
+                )
                 {
                     _pressingSince[keybindingTuple] = (DateTime.Now, false);
                     continue;
                 }
 
-                if (!(DateTime.Now - _pressingSince[keybindingTuple].Item1 >= TimeSpan.FromSeconds(0.5)))
-                {
+                if (
+                    !(
+                        DateTime.Now - _pressingSince[keybindingTuple].Item1
+                        >= TimeSpan.FromSeconds(0.5)
+                    )
+                )
                     continue;
-                }
 
                 _lobby.Leave(alreadyExisting);
 
@@ -384,19 +377,13 @@ public partial class StartScreen : Control
     {
         var deviceId = @event.Device;
         if (deviceId < 0)
-        {
             return;
-        }
 
         if (@event.IsActionPressed(WeaveConstants.GamepadJoinAction))
-        {
             _lobby.Join(new GamepadInputSource(deviceId));
-        }
 
         if (@event.IsActionPressed(WeaveConstants.GamepadLeaveAction))
-        {
             _lobby.Leave(new GamepadInputSource(deviceId));
-        }
     }
 
     #endregion Gamepad

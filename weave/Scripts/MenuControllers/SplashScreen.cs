@@ -8,27 +8,8 @@ namespace Weave.MenuControllers;
 [Scene("res://Menus/SplashScreen.tscn")]
 public partial class SplashScreen : Node2D
 {
-    [GetNode("FadeRect")]
-    private ColorRect _fadeRect;
-
-    [GetNode("SkipLabel")]
-    private RichTextLabel _skipLabel;
-
-    [GetNode("AnimationPlayer")]
-    private AnimationPlayer _animationPlayer;
-
-    [GetNode("AudioStreamPlayer")]
-    private AudioStreamPlayer _music;
-
-    /// <summary>
-    ///     Whether the scene is fading out.
-    /// </summary>
-    private bool _isFading;
-
-    /// <summary>
-    ///    Whether the player has pressed a key at least once, this shows the skip label and allows the player to skip the scene.
-    /// </summary>
-    private bool _hasPressed;
+    private const float MusicFinalPitch = 0.7f;
+    private readonly Color _fadeColor = new("1e1e1eff");
 
     /// <summary>
     ///     Whether the player is press the "skip" key.
@@ -36,8 +17,28 @@ public partial class SplashScreen : Node2D
     /// </summary>
     private bool _allowInputs;
 
-    private const float MusicFinalPitch = 0.7f;
-    private readonly Color _fadeColor = new("1e1e1eff");
+    [GetNode("AnimationPlayer")]
+    private AnimationPlayer _animationPlayer;
+
+    [GetNode("FadeRect")]
+    private ColorRect _fadeRect;
+
+    /// <summary>
+    ///     Whether the player has pressed a key at least once, this shows the skip label and allows the player to skip the
+    ///     scene.
+    /// </summary>
+    private bool _hasPressed;
+
+    /// <summary>
+    ///     Whether the scene is fading out.
+    /// </summary>
+    private bool _isFading;
+
+    [GetNode("AudioStreamPlayer")]
+    private AudioStreamPlayer _music;
+
+    [GetNode("SkipLabel")]
+    private RichTextLabel _skipLabel;
 
     public override void _Ready()
     {
@@ -51,28 +52,26 @@ public partial class SplashScreen : Node2D
     public override void _Process(double delta)
     {
         if (!_isFading)
-        {
             return;
-        }
 
         _fadeRect.Color = _fadeRect.Color.Lerp(_fadeColor, (float)delta * 1.5f);
-        _music.PitchScale = 1 - (_fadeRect.Color.A * MusicFinalPitch);
+        _music.PitchScale = 1 - _fadeRect.Color.A * MusicFinalPitch;
 
         if (_fadeRect.Color.A >= 0.99f)
-        {
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
-        }
     }
 
     public override void _Input(InputEvent @event)
     {
-        if (!_allowInputs) return;
+        if (!_allowInputs)
+            return;
 
         // Valid inputs: any key or any button on a gamepad
-        if (@event is not (InputEventKey { Pressed: true } or InputEventJoypadButton { Pressed: true }))
-        {
+        if (
+            @event
+            is not (InputEventKey { Pressed: true } or InputEventJoypadButton { Pressed: true })
+        )
             return;
-        }
 
         if (_hasPressed)
         {

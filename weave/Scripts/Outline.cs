@@ -14,10 +14,10 @@ public partial class Outline : Line2D
         var viewportHeight = GetViewportRect().Size.Y;
 
         ClearPoints();
-        AddPoint(new(-halfWidth, -halfWidth));
-        AddPoint(new(viewportWidth + halfWidth, -halfWidth));
-        AddPoint(new(viewportWidth + halfWidth, viewportHeight + halfWidth));
-        AddPoint(new(-halfWidth, viewportHeight + halfWidth));
+        AddPoint(new Vector2(-halfWidth, -halfWidth));
+        AddPoint(new Vector2(viewportWidth + halfWidth, -halfWidth));
+        AddPoint(new Vector2(viewportWidth + halfWidth, viewportHeight + halfWidth));
+        AddPoint(new Vector2(-halfWidth, viewportHeight + halfWidth));
         AddPoint(GetPointPosition(0) + new Vector2(0, -halfWidth));
     }
 }
