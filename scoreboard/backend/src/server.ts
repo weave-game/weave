@@ -60,7 +60,8 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
 };
 
 async function fetchAllScores(): Promise<Score[]> {
-  const connectionString = 'mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/';
+  // Secret
+  const connectionString = 'mongodb+srv://erik:77cCHE3lR02mXD4a@weave-db.zurbpnp.mongodb.net/';
   const client = new MongoClient(connectionString);
 
   try {

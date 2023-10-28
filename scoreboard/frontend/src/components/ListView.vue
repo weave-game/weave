@@ -16,7 +16,7 @@ type ScoresDTO = {
 };
 
 const scores = ref([] as Score[]);
-const fetchIntervalSeconds = 5;
+const fetchIntervalSeconds = 100;
 const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(

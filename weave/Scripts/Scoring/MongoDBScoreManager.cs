@@ -1,19 +1,26 @@
 using System;
 using MongoDB.Driver;
 using Godot;
+using Microsoft.Extensions.Configuration;
 
 namespace Weave.Scoring;
 
-public class MongoDBScoreManager : IScoreManager
+public sealed class MongoDBScoreManager : IScoreManager
 {
-    private const string ConnectionString = "mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/";
+    private const string DefaultConnectionString = "mongodb://localhost:27017";
     private readonly IMongoCollection<Score> _scores;
 
     public MongoDBScoreManager()
     {
+        var connectionString = GetConnectionString();
+
+        // Fallback to local mongo instance
+        if (string.IsNullOrWhiteSpace(connectionString))
+            connectionString = DefaultConnectionString;
+
         try
         {
-            var client = new MongoClient(ConnectionString);
+            var client = new MongoClient(connectionString);
             var database = client.GetDatabase("weave");
             _scores = database.GetCollection<Score>("scores");
         }
@@ -23,23 +30,24 @@ public class MongoDBScoreManager : IScoreManager
         }
     }
 
-    public int GetPoints(string id)
+    private static string GetConnectionString()
     {
-        throw new NotImplementedException();
+        // "mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/"
+        var config = new ConfigurationBuilder().AddUserSecrets<Main>().Build();
+        var connectionString = config["connectionstring"];
+        return connectionString;
     }
 
     public void Save(Score score)
     {
-        if (_scores != null)
-        {
-            var filter = Builders<Score>.Filter.Eq(s => s.Id, score.Id);
-            var options = new ReplaceOptions { IsUpsert = true };
-
-            _scores.ReplaceOne(filter, score, options);
-        }
-        else
+        if (_scores == null)
         {
             GD.Print("Unable to save score, no Mongo instance");
+            return;
         }
+
+        var filter = Builders<Score>.Filter.Eq(s => s.Id, score.Id);
+        var options = new ReplaceOptions { IsUpsert = true };
+        _scores.ReplaceOne(filter, score, options);
     }
 }
