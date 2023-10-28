@@ -5,6 +5,7 @@ import fs from "fs";
 import util from "util";
 import { ConfigManager } from "./config-manager";
 import { MongoClient } from 'mongodb';
+import 'dotenv/config'
 
 const app = express();
 const PORT = 3000;
@@ -60,7 +61,8 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
 };
 
 async function fetchAllScores(): Promise<Score[]> {
-  const connectionString = 'mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/';
+  // Secret
+  const connectionString = process.env.CONNECTION_STRING ?? 'mongodb://localhost:27017';
   const client = new MongoClient(connectionString);
 
   try {
