@@ -10,17 +10,12 @@ namespace Weave.InputSources;
 
 public sealed class Lobby
 {
-    #region GameSessionIdentifiers
-
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public int HighScore { get; set; }
-
-    #endregion GameSessionIdentifiers
+    public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
 
     public delegate void PlayerJoinedEventHandler(IInputSource source);
+
     public delegate void PlayerLeftEventHandler(IInputSource source);
-    public delegate void PlayerInfoUpdatedEventHandler(PlayerInfo playerInfo);
+
     private const int LobbyCodeLength = 4;
     private const string LobbyCodeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
@@ -57,9 +52,7 @@ public sealed class Lobby
     {
         var alreadyExists = _playerInfos.Any(input => input.InputSource.Equals(inputSource));
         if (alreadyExists)
-        {
             return;
-        }
 
         var playerInfo = new PlayerInfo { InputSource = inputSource };
 
@@ -80,11 +73,9 @@ public sealed class Lobby
         var rnd = new Random();
         var result = new char[length];
         for (var i = 0; i < length; i++)
-        {
             result[i] = allowedCharacters[rnd.Next(allowedCharacters.Length - 1)];
-        }
 
-        return new(result);
+        return new string(result);
     }
 
     private ImageTexture GenerateLobbyQrCode(string str)
@@ -95,13 +86,19 @@ public sealed class Lobby
     private void UpdatePlayerInfos()
     {
         var colorGenerator = new UniqueColorGenerator();
-        PlayerInfos.ForEach(
-            playerInfo =>
-            {
-                playerInfo.Color = colorGenerator.NewColor();
-                playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
-                PlayerInfoUpdatedListeners?.Invoke(playerInfo);
-            }
-        );
+        PlayerInfos.ForEach(playerInfo =>
+        {
+            playerInfo.Color = colorGenerator.NewColor();
+            playerInfo.Name = (_playerInfos.IndexOf(playerInfo) + 1).ToString();
+            PlayerInfoUpdatedListeners?.Invoke(playerInfo);
+        });
     }
+
+    #region GameSessionIdentifiers
+
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public int HighScore { get; set; }
+
+    #endregion GameSessionIdentifiers
 }

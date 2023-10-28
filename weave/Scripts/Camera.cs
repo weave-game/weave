@@ -26,8 +26,8 @@ public partial class Camera : Camera2D
 
     private void Reset()
     {
-        _desiredPosition = new(800, 450);
-        _desiredZoom = new(1, 1);
+        _desiredPosition = new Vector2(800, 450);
+        _desiredZoom = new Vector2(1, 1);
         _desiredRotation = 0;
     }
 
@@ -35,11 +35,12 @@ public partial class Camera : Camera2D
     {
         _desiredPosition = collisionPosition;
         _desiredRotation = 0.3f;
-        _desiredZoom = new(2f, 2f);
+        _desiredZoom = new Vector2(2f, 2f);
 
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(
-                3, () =>
+                3,
+                () =>
                 {
                     _lerpStrength = 0f;
                     Reset();

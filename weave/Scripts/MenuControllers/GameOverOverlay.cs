@@ -11,14 +11,16 @@ public partial class GameOverOverlay : CanvasLayer
     [GetNode("ExplosionPlayer")]
     private AudioStreamPlayer _explosionPlayer;
 
+    private IScoreManager _jsonScoreManager;
+
     [GetUniqueNode("MenuButton")]
     private Button _menuButton;
 
-    [GetUniqueNode("RetryButton")]
-    private Button _retryButton;
-
     [GetUniqueNode("NameLineEdit")]
     private LineEdit _nameLineEdit;
+
+    [GetUniqueNode("RetryButton")]
+    private Button _retryButton;
 
     [GetUniqueNode("SaveNameButton")]
     private Button _save;
@@ -27,14 +29,13 @@ public partial class GameOverOverlay : CanvasLayer
     private AnimationPlayer _savedPlayer;
 
     private IScoreManager _scoreManager;
-    private IScoreManager _jsonScoreManager;
     private Score _sessionScore;
 
     public override void _Ready()
     {
         this.GetNodes();
         _nameLineEdit.Text = GameConfig.Lobby.Name;
-        _scoreManager = new MongoDBScoreManager();
+        _scoreManager = new MongoDbScoreManager();
         _jsonScoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
@@ -69,13 +70,9 @@ public partial class GameOverOverlay : CanvasLayer
 
         // Session has a better score
         if (score.Points < GameConfig.Lobby.HighScore)
-        {
             score.Points = GameConfig.Lobby.HighScore;
-        }
         else
-        {
             GameConfig.Lobby.HighScore = score.Points;
-        }
 
         // Players have filled in a new name, update lobby name
         var newName = _nameLineEdit.Text;

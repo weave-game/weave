@@ -5,10 +5,9 @@ namespace Weave.InputSources;
 
 public sealed class KeyboardInputSource : IInputSource
 {
+    private readonly PackedScene _keyIcon = GD.Load<PackedScene>("res://Objects/KeyIcon.tscn");
     private readonly Key _left;
     private readonly Key _right;
-
-    private readonly PackedScene _keyIcon = GD.Load<PackedScene>("res://Objects/KeyIcon.tscn");
 
     public KeyboardInputSource((Key, Key) keybindings)
     {
@@ -31,14 +30,10 @@ public sealed class KeyboardInputSource : IInputSource
     public string LeftInputString()
     {
         if (_left.ToString().Contains("Key"))
-        {
             return _left.ToString()[3..];
-        }
 
         if (string.Equals(_left.ToString(), "left", StringComparison.InvariantCultureIgnoreCase))
-        {
             return "←";
-        }
 
         return _left.ToString();
     }
@@ -46,23 +41,19 @@ public sealed class KeyboardInputSource : IInputSource
     public string RightInputString()
     {
         if (_right.ToString().Contains("Key"))
-        {
             return _right.ToString()[3..];
-        }
 
-        if (string.Equals(_right.ToString(),"right", StringComparison.InvariantCultureIgnoreCase))
-        {
+        if (string.Equals(_right.ToString(), "right", StringComparison.InvariantCultureIgnoreCase))
             return "→";
-        }
 
         return _right.ToString();
     }
 
     public TextureRect LeftInputIcon()
     {
-            var leftKeyIcon = _keyIcon.Instantiate<TextureRect>();
-            leftKeyIcon.GetNode<Label>("Label").Text = LeftInputString();
-            return leftKeyIcon;
+        var leftKeyIcon = _keyIcon.Instantiate<TextureRect>();
+        leftKeyIcon.GetNode<Label>("Label").Text = LeftInputString();
+        return leftKeyIcon;
     }
 
     public TextureRect RightInputIcon()
@@ -75,9 +66,7 @@ public sealed class KeyboardInputSource : IInputSource
     public bool Equals(IInputSource other)
     {
         if (other is KeyboardInputSource keyboard)
-        {
             return keyboard._left == _left && keyboard._right == _right;
-        }
 
         return false;
     }

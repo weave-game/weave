@@ -8,6 +8,9 @@ namespace Weave;
 
 public partial class ScoreDisplay : CanvasLayer
 {
+    private const float PointsPerSeconds = 25;
+    private const float PointsPerRound = 500;
+
     [GetNode("CenterContainer/ScoreLabel/AnimationPlayer")]
     private AnimationPlayer _animationPlayer;
 
@@ -15,8 +18,6 @@ public partial class ScoreDisplay : CanvasLayer
     private int _playerCount;
     private double _points;
     private float _score;
-    private const float PointsPerSeconds = 25;
-    private const float PointsPerRound = 500;
 
     [GetNode("CenterContainer/ScoreLabel")]
     private Label _scoreLabel;
@@ -35,15 +36,15 @@ public partial class ScoreDisplay : CanvasLayer
         this.GetNodes();
 
         // Update UI periodically
-        AddChild(TimerFactory.StartedRepeating(0.01, () => _scoreLabel.Text = ReadableInteger(Score)));
+        AddChild(
+            TimerFactory.StartedRepeating(0.01, () => _scoreLabel.Text = ReadableInteger(Score))
+        );
     }
 
     public override void _Process(double delta)
     {
         if (!Enabled)
-        {
             return;
-        }
 
         _score += PointsPerSeconds * (float)delta;
         _timeSinceRoundStart += delta;
@@ -65,14 +66,15 @@ public partial class ScoreDisplay : CanvasLayer
     public void OnRoundComplete()
     {
         if (!Enabled)
-        {
             return;
-        }
 
         _finishedRounds++;
         _timeSinceRoundStart = 0;
 
-        _animationPlayer.Play("ScoreDisplayShine", customSpeed: 2f / WeaveConstants.CountdownLength);
+        _animationPlayer.Play(
+            "ScoreDisplayShine",
+            customSpeed: 2f / WeaveConstants.CountdownLength
+        );
 
         AddChild(
             TimerFactory.StartedSelfDestructingOneShot(

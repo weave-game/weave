@@ -9,8 +9,7 @@
     - [Gameplay](#gameplay)
   - [Development](#development)
     - [Setup Scoreboard (Environment Variables)](#setup-scoreboard-environment-variables)
-    - [Formatting](#formatting)
-      - [CLI](#cli)
+    - [Formatting (CSharpier)](#formatting-csharpier)
       - [Plugins](#plugins)
 
 ## About
@@ -50,29 +49,11 @@ Run the following commands in the `weave` directory:
 dotnet user-secrets set ConnectionString <mongo-db-dbconnection-string>
 ```
 
-### Formatting
+### Formatting (CSharpier)
 
-The project uses [EditorConfig](https://editorconfig.org/) and [Roslynator](https://github.com/dotnet/roslynator) to enforce code style. This allows formatting and analysis independent of IDE.
+Install: `dotnet tool install csharpier -g`
 
-#### CLI
-
-Install:
-
-```bash
-dotnet tool install -g roslynator.dotnet.cli
-```
-
-Analyze project (inside the weave directory):
-
-```bash
-roslynator analyze .\WeaveGame.sln
-```
-
-Fix and format project (inside the weave directory):
-
-```bash
-roslynator fix .\WeaveGame.sln --format
-```
+Run: `dotnet-csharpier .` inside the `weave` directory.
 
 #### Plugins
 

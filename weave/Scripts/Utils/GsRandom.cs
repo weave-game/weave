@@ -16,5 +16,8 @@ public static class GsRandom
     /// <returns>
     ///     True or false.
     /// </returns>
-    public static bool CoinToss() => s_random.Next(2) == 0;
+    public static bool CoinToss()
+    {
+        return s_random.Next(2) == 0;
+    }
 }

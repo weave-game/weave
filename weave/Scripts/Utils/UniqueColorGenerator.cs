@@ -35,15 +35,14 @@ public sealed class UniqueColorGenerator
         var random = new Random(1337);
 
         if (unusedColor == default)
-        {
             do
             {
-                unusedColor = new(
-                    (float)random.NextDouble(), (float)random.NextDouble(),
+                unusedColor = new Color(
+                    (float)random.NextDouble(),
+                    (float)random.NextDouble(),
                     (float)random.NextDouble()
                 );
             } while (_usedColors.Contains(unusedColor));
-        }
 
         _usedColors.Add(unusedColor);
         return unusedColor;

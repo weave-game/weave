@@ -13,9 +13,7 @@ public class JsonScoreManager : IScoreManager
     public JsonScoreManager(string filePath)
     {
         if (string.IsNullOrWhiteSpace(filePath))
-        {
             throw new ArgumentException("Value cannot be null or whitespace.", nameof(filePath));
-        }
 
         _filePath = filePath;
         _scores = LoadScoresFromFile();
@@ -30,9 +28,7 @@ public class JsonScoreManager : IScoreManager
     private IDictionary<string, Score> LoadScoresFromFile()
     {
         if (!File.Exists(_filePath))
-        {
             return new Dictionary<string, Score>();
-        }
 
         var json = File.ReadAllText(_filePath);
         return JsonSerializer.Deserialize<Dictionary<string, Score>>(json);

@@ -26,13 +26,12 @@ public static class EnumerableExtensions
     /// <param name="list"></param>
     /// <param name="condition"></param>
     /// <typeparam name="T">The type of the elements in the list</typeparam>
-    public static void RemoveWhere<T>(this IList<T> list, Func<T, bool> condition) where T : class
+    public static void RemoveWhere<T>(this IList<T> list, Func<T, bool> condition)
+        where T : class
     {
         var item = list.FirstOrDefault(condition);
         if (item != null)
-        {
             list.Remove(item);
-        }
     }
 
     /// <summary>
@@ -45,9 +44,7 @@ public static class EnumerableExtensions
     public static IList<T> Shuffled<T>(this IList<T> list)
     {
         if (list == null)
-        {
             throw new ArgumentNullException(nameof(list));
-        }
 
         return list.OrderBy(_ => s_random.Next()).ToList();
     }

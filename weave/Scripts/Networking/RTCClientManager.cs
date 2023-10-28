@@ -15,14 +15,23 @@ namespace Weave.Networking;
 public class RTCClientManager
 {
     public delegate void ClientJoinedEventHandler(WebInputSource source);
+
     public delegate void ClientLeftEventHandler(WebInputSource source);
+
     private const string ServerUrl = WeaveConstants.SignallingServerUrl;
-    private readonly IDictionary<string, RTCPeerConnection> _clientConnections = new Dictionary<string, RTCPeerConnection>();
-    private readonly IDictionary<string, WebInputSource> _clientSources = new Dictionary<string, WebInputSource>();
 
-    private readonly RTCConfiguration _connectionConfig = new() { iceServers = new() { new() { urls = WeaveConstants.StunServerUrl } } };
+    private readonly IDictionary<string, RTCPeerConnection> _clientConnections =
+        new Dictionary<string, RTCPeerConnection>();
 
-    public bool IsAcceptingInput { get; set; }
+    private readonly IDictionary<string, WebInputSource> _clientSources =
+        new Dictionary<string, WebInputSource>();
+
+    private readonly RTCConfiguration _connectionConfig =
+        new()
+        {
+            iceServers = new List<RTCIceServer> { new() { urls = WeaveConstants.StunServerUrl } }
+        };
+
     private readonly string _lobbyCode;
     private readonly ClientWebSocket _webSocket = new();
 
@@ -30,6 +39,8 @@ public class RTCClientManager
     {
         _lobbyCode = lobbyCode;
     }
+
+    public bool IsAcceptingInput { get; set; }
 
     public ClientJoinedEventHandler ClientJoinedListeners { get; set; }
     public ClientLeftEventHandler ClientLeftListeners { get; set; }
@@ -58,14 +69,15 @@ public class RTCClientManager
                 var answerString = JsonConvert.SerializeObject(msg.answer);
                 var peerConnection = _clientConnections[idString];
 
-                if (RTCSessionDescriptionInit.TryParse(answerString, out RTCSessionDescriptionInit answer))
-                {
+                if (
+                    RTCSessionDescriptionInit.TryParse(
+                        answerString,
+                        out RTCSessionDescriptionInit answer
+                    )
+                )
                     peerConnection.setRemoteDescription(answer);
-                }
                 else
-                {
                     GD.Print("Unable to parse answer");
-                }
             }
             else if (msg?.type == "ice-candidate")
             {
@@ -73,14 +85,15 @@ public class RTCClientManager
                 var candidateString = JsonConvert.SerializeObject(msg.candidate);
                 var peerConnection = _clientConnections[idString];
 
-                if (RTCIceCandidateInit.TryParse(candidateString, out RTCIceCandidateInit iceCandidate))
-                {
+                if (
+                    RTCIceCandidateInit.TryParse(
+                        candidateString,
+                        out RTCIceCandidateInit iceCandidate
+                    )
+                )
                     peerConnection.addIceCandidate(iceCandidate);
-                }
                 else
-                {
                     GD.Print("Unable to parse ice candidate");
-                }
             }
             else if (msg?.type == "client-connected")
             {
@@ -109,7 +122,11 @@ public class RTCClientManager
         if (_webSocket is not { State: WebSocketState.Open })
             return;
 
-        await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Normal closure", CancellationToken.None);
+        await _webSocket.CloseAsync(
+            WebSocketCloseStatus.NormalClosure,
+            "Normal closure",
+            CancellationToken.None
+        );
 
         foreach (var connection in _clientConnections.Values)
             connection.Close("");
@@ -124,8 +141,9 @@ public class RTCClientManager
         var dataChannel = await peerConnection.createDataChannel($"chat-{clientId}");
         dataChannel.onopen += () => HandlePlayerJoin(clientId);
         dataChannel.onclose += () => HandlePlayerLeave(clientId);
-        dataChannel.onmessage += (_, _, data) => HandlePlayerInput(clientId, data.GetStringFromUtf8());
-        dataChannel.onerror += (error) => GD.Print($"Data channel closed: {error}");
+        dataChannel.onmessage += (_, _, data) =>
+            HandlePlayerInput(clientId, data.GetStringFromUtf8());
+        dataChannel.onerror += error => GD.Print($"Data channel closed: {error}");
 
         peerConnection.onconnectionstatechange += state =>
         {
@@ -145,7 +163,13 @@ public class RTCClientManager
 
         peerConnection.onicecandidate += async candidate =>
         {
-            var iceMessage = new { type = "ice-candidate-host", candidate, clientId, lobbyCode = _lobbyCode };
+            var iceMessage = new
+            {
+                type = "ice-candidate-host",
+                candidate,
+                clientId,
+                lobbyCode = _lobbyCode
+            };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(iceMessage));
         };
 
@@ -157,20 +181,31 @@ public class RTCClientManager
         var offer = peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
 
-        var offerMessage = new { type = "offer", offer, clientId, lobbyCode = _lobbyCode };
+        var offerMessage = new
+        {
+            type = "offer",
+            offer,
+            clientId,
+            lobbyCode = _lobbyCode
+        };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(offerMessage));
     }
 
     private async Task ConnectWebSocketAsync()
     {
-        await _webSocket.ConnectAsync(new(ServerUrl), CancellationToken.None);
+        await _webSocket.ConnectAsync(new Uri(ServerUrl), CancellationToken.None);
         GD.Print($"WebSocket connection established to {ServerUrl}");
     }
 
     private async Task SendWebSocketMessageAsync(string message)
     {
         var msgBuffer = Encoding.UTF8.GetBytes(message);
-        await _webSocket.SendAsync(new(msgBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
+        await _webSocket.SendAsync(
+            new ArraySegment<byte>(msgBuffer),
+            WebSocketMessageType.Text,
+            true,
+            CancellationToken.None
+        );
     }
 
     private async Task<string> ReceiveWebSocketMessageAsync()
@@ -220,7 +255,13 @@ public class RTCClientManager
         IsAcceptingInput = true;
         foreach (var clientId in _clientConnections.Keys)
         {
-            var startMessage = new { type = "message", message = "start", clientId, lobbyCode = _lobbyCode };
+            var startMessage = new
+            {
+                type = "message",
+                message = "start",
+                clientId,
+                lobbyCode = _lobbyCode
+            };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(startMessage));
         }
     }
@@ -230,14 +271,26 @@ public class RTCClientManager
         IsAcceptingInput = false;
         foreach (var clientId in _clientConnections.Keys)
         {
-            var endMessage = new { type = "message", message = "end", clientId, lobbyCode = _lobbyCode };
+            var endMessage = new
+            {
+                type = "message",
+                message = "end",
+                clientId,
+                lobbyCode = _lobbyCode
+            };
             await SendWebSocketMessageAsync(JsonConvert.SerializeObject(endMessage));
         }
     }
 
     public async void NotifyChangePlayerColor(string clientId, string newColor)
     {
-        var colorMessage = new { type = "color-change", color = newColor, clientId, lobbyCode = _lobbyCode };
+        var colorMessage = new
+        {
+            type = "color-change",
+            color = newColor,
+            clientId,
+            lobbyCode = _lobbyCode
+        };
         await SendWebSocketMessageAsync(JsonConvert.SerializeObject(colorMessage));
     }
 }

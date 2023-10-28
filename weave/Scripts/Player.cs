@@ -73,10 +73,13 @@ public partial class Player : CharacterBody2D
         _playerName.Text = PlayerInfo.Name;
         _arrow.Modulate = PlayerInfo.Color;
 
-        Scale = new(0, 0);
+        Scale = new Vector2(0, 0);
         SetSize(2, 2);
         AddChild(
-            TimerFactory.StartedSelfDestructingOneShot(WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength, () => SetSize(1, 1))
+            TimerFactory.StartedSelfDestructingOneShot(
+                WeaveConstants.InitialCountdownLength - WeaveConstants.CountdownLength,
+                () => SetSize(1, 1)
+            )
         );
     }
 
@@ -87,9 +90,7 @@ public partial class Player : CharacterBody2D
             Scale = Scale.Lerp(_desiredScale, (float)delta * 4f);
 
             if (Mathf.Abs(Scale.DistanceTo(_desiredScale)) < 0.01f)
-            {
                 _hasReachedSize = true;
-            }
         }
 
         HandleIndicators();
@@ -105,27 +106,19 @@ public partial class Player : CharacterBody2D
     private void Move(double delta)
     {
         if (_isMoving)
-        {
             Translate(Vector2.Up.Rotated(Rotation).Normalized() * MovementSpeed * (float)delta);
-        }
     }
 
     private void Rotate(double delta)
     {
         if (!IsTurning)
-        {
             return;
-        }
 
         if (PlayerInfo.InputSource.IsTurningRight())
-        {
             RotationDegrees += TurnSpeed * (float)delta;
-        }
 
         if (PlayerInfo.InputSource.IsTurningLeft())
-        {
             RotationDegrees -= TurnSpeed * (float)delta;
-        }
     }
 
     private void HandleIndicators()
@@ -141,26 +134,28 @@ public partial class Player : CharacterBody2D
             Mathf.Min(GlobalPosition.Y, height - GlobalPosition.Y)
         );
 
-        _indicatorX.GlobalPosition = new(
-            ((Mathf.Round(GlobalPosition.X / width) + 1) % 2) * width,
+        _indicatorX.GlobalPosition = new Vector2(
+            (Mathf.Round(GlobalPosition.X / width) + 1) % 2 * width,
             GlobalPosition.Y
         );
 
-        _indicatorY.GlobalPosition = new(
+        _indicatorY.GlobalPosition = new Vector2(
             GlobalPosition.X,
-            ((Mathf.Round(GlobalPosition.Y / height) + 1) % 2) * height
+            (Mathf.Round(GlobalPosition.Y / height) + 1) % 2 * height
         );
 
-        var scaleX = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.X) / MinDistance), 2) * MaxScale;
-        var scaleY = Mathf.Pow(Mathf.Max(0, (MinDistance - distance.Y) / MinDistance), 2) * MaxScale;
+        var scaleX =
+            Mathf.Pow(Mathf.Max(0, (MinDistance - distance.X) / MinDistance), 2) * MaxScale;
+        var scaleY =
+            Mathf.Pow(Mathf.Max(0, (MinDistance - distance.Y) / MinDistance), 2) * MaxScale;
 
-        _indicatorX.GlobalScale = new(scaleX, scaleX);
-        _indicatorY.GlobalScale = new(scaleY, scaleY);
+        _indicatorX.GlobalScale = new Vector2(scaleX, scaleX);
+        _indicatorY.GlobalScale = new Vector2(scaleY, scaleY);
     }
 
     private void SetSize(int x, int y)
     {
-        _desiredScale = new(x, y);
+        _desiredScale = new Vector2(x, y);
         _hasReachedSize = false;
     }
 

@@ -96,9 +96,7 @@ public partial class Goal : Node2D
     public override void _Process(double delta)
     {
         if (!HasLock)
-        {
             return;
-        }
 
         _unlockDrawingRotation += 0.5f * (float)delta;
         QueueRedraw();
@@ -107,19 +105,13 @@ public partial class Goal : Node2D
     private void OnLockAreaBodyEntered(Node2D body)
     {
         if (!_locked)
-        {
             return;
-        }
 
         if (body is not Player player)
-        {
             return;
-        }
 
         if (player.PlayerInfo.Color == Color)
-        {
             return;
-        }
 
         _unlockParticles.Emitting = true;
         _locked = false;
@@ -133,9 +125,7 @@ public partial class Goal : Node2D
     public void SetPlayerName(string playerName)
     {
         if (_playerNameLabel != null)
-        {
             _playerNameLabel.Text = playerName;
-        }
 
         _playerName = playerName;
     }
@@ -143,19 +133,13 @@ public partial class Goal : Node2D
     private void OnBodyEntered(Node2D body)
     {
         if (_reached || _locked)
-        {
             return;
-        }
 
         if (body is not Player player)
-        {
             return;
-        }
 
         if (player.PlayerInfo.Color != Color)
-        {
             return;
-        }
 
         _reached = true;
         _goalSprite.Modulate = Colors.Black;
@@ -170,9 +154,7 @@ public partial class Goal : Node2D
         var unlockAreaCollisionShape = GetNode<CollisionShape2D>("UnlockArea/CollisionShape2D");
 
         if (unlockAreaCollisionShape.Shape is not CircleShape2D circleShape)
-        {
             throw new NodeNotFoundException("Unlock area collision shape is not a circle shape.");
-        }
 
         return circleShape.Radius;
     }
@@ -180,24 +162,28 @@ public partial class Goal : Node2D
     public override void _Draw()
     {
         if (!_locked)
-        {
             return;
-        }
 
         if (UnlockAreaColors == null || UnlockAreaColors.Count == 0)
-        {
             return;
-        }
 
         var center = new Vector2(0, 0);
         var totalColors = UnlockAreaColors.Count;
-        var arcAngle = (2 * (float)Math.PI) / totalColors;
+        var arcAngle = 2 * (float)Math.PI / totalColors;
 
         for (var i = 0; i < totalColors; i++)
         {
-            var startAngle = (i * arcAngle) + _unlockDrawingRotation;
-            var endAngle = ((i + 1) * arcAngle) + _unlockDrawingRotation;
-            DrawArc(center, _unlockAreaRadius - 8, startAngle, endAngle, 32, UnlockAreaColors[i], 8);
+            var startAngle = i * arcAngle + _unlockDrawingRotation;
+            var endAngle = (i + 1) * arcAngle + _unlockDrawingRotation;
+            DrawArc(
+                center,
+                _unlockAreaRadius - 8,
+                startAngle,
+                endAngle,
+                32,
+                UnlockAreaColors[i],
+                8
+            );
         }
     }
 }

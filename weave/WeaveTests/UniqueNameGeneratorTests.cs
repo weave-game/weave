@@ -31,16 +31,27 @@ public sealed class UniqueNameGeneratorTests
     [Fact]
     private void UsesBackupId()
     {
-        _testOutputHelper.WriteLine("Name generation logic has been changed, but cant be bothered to update this test");
+        _testOutputHelper.WriteLine(
+            "Name generation logic has been changed, but cant be bothered to update this test"
+        );
 
         var generator = new UniqueNameGenerator();
         const string Prefix = "prefix";
         const string Suffix = "suffix";
 
         var type = generator.GetType();
-        var backupIndexField = type.GetField("_backupIndex", BindingFlags.NonPublic | BindingFlags.Instance);
-        var prefixesProperty = type.GetProperty("Prefixes", BindingFlags.NonPublic | BindingFlags.Instance);
-        var suffixesProperty = type.GetProperty("Suffixes", BindingFlags.NonPublic | BindingFlags.Instance);
+        var backupIndexField = type.GetField(
+            "_backupIndex",
+            BindingFlags.NonPublic | BindingFlags.Instance
+        );
+        var prefixesProperty = type.GetProperty(
+            "Prefixes",
+            BindingFlags.NonPublic | BindingFlags.Instance
+        );
+        var suffixesProperty = type.GetProperty(
+            "Suffixes",
+            BindingFlags.NonPublic | BindingFlags.Instance
+        );
         var prefixes = (IEnumerable<string>)prefixesProperty?.GetValue(generator)!;
         var suffixes = (IEnumerable<string>)suffixesProperty?.GetValue(generator)!;
 
@@ -87,9 +98,7 @@ public sealed class UniqueNameGeneratorTests
         const int N = 300_000;
         var instance = new UniqueNameGenerator();
 
-        _testOutputHelper.WriteLine(
-            $"Generating {N} names..."
-        );
+        _testOutputHelper.WriteLine($"Generating {N} names...");
 
         var generatedNames = new List<string>();
         for (var i = 0; i < N; i++)
@@ -106,9 +115,7 @@ public sealed class UniqueNameGeneratorTests
             $"Found {nBackupIndex} names with backup index ({percentageBackupIndex}%)"
         );
 
-        _testOutputHelper.WriteLine(
-            $"Total without backup index: {N - nBackupIndex}"
-        );
+        _testOutputHelper.WriteLine($"Total without backup index: {N - nBackupIndex}");
 
         Assert.Equal(N, generatedNames.Count);
     }

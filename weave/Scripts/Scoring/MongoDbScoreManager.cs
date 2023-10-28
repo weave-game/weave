@@ -1,16 +1,16 @@
 using System;
-using MongoDB.Driver;
 using Godot;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 
 namespace Weave.Scoring;
 
-public sealed class MongoDBScoreManager : IScoreManager
+public sealed class MongoDbScoreManager : IScoreManager
 {
     private const string DefaultConnectionString = "mongodb://localhost:27017";
     private readonly IMongoCollection<Score> _scores;
 
-    public MongoDBScoreManager()
+    public MongoDbScoreManager()
     {
         var connectionString = GetConnectionString();
 
@@ -30,13 +30,6 @@ public sealed class MongoDBScoreManager : IScoreManager
         }
     }
 
-    private static string GetConnectionString()
-    {
-        var config = new ConfigurationBuilder().AddUserSecrets<Main>().Build();
-        var connectionString = config["ConnectionString"];
-        return connectionString;
-    }
-
     public void Save(Score score)
     {
         if (_scores == null)
@@ -48,5 +41,12 @@ public sealed class MongoDBScoreManager : IScoreManager
         var filter = Builders<Score>.Filter.Eq(s => s.Id, score.Id);
         var options = new ReplaceOptions { IsUpsert = true };
         _scores.ReplaceOne(filter, score, options);
+    }
+
+    private static string GetConnectionString()
+    {
+        var config = new ConfigurationBuilder().AddUserSecrets<Main>().Build();
+        var connectionString = config["ConnectionString"];
+        return connectionString;
     }
 }
