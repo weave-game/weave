@@ -22,7 +22,7 @@ public class Score
     /// <summary>
     ///     The unique id of the score.
     /// </summary>
-    public string Id { get; }
+    public string Id { get; set; }
 
     /// <summary>
     ///     The team name.
@@ -32,12 +32,12 @@ public class Score
     /// <summary>
     ///     How many players were in the game.
     /// </summary>
-    public int Players { get; }
+    public int Players { get; set; }
 
     /// <summary>
     ///     How many rounds were played.
     /// </summary>
-    public int Rounds { get; }
+    public int Rounds { get; set; }
 
     /// <summary>
     ///     The score.

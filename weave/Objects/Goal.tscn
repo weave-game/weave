@@ -8,7 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://bhtd4oj4j5dy8" path="res://Assets/SFX/ding2.mp3" id="5_spqf3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4mcuf"]
-radius = 12.0
+radius = 20.025
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_eviga"]
 radius = 44.0
@@ -20,8 +20,8 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 script = ExtResource("1_6mak8")
 
 [node name="GoalSprite" type="Sprite2D" parent="."]
-position = Vector2(-9.53674e-07, -9.53674e-07)
-scale = Vector2(0.0110156, 0.0110156)
+position = Vector2(0.107502, 0.107502)
+scale = Vector2(0.0194263, 0.0194263)
 texture = ExtResource("2_i56br")
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -30,6 +30,7 @@ texture = ExtResource("2_i56br")
 shape = SubResource("CircleShape2D_4mcuf")
 
 [node name="UnlockArea" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UnlockArea"]
 shape = SubResource("CircleShape2D_eviga")

@@ -16,7 +16,7 @@ type ScoresDTO = {
 };
 
 const scores = ref([] as Score[]);
-const fetchIntervalSeconds = 5;
+const fetchIntervalSeconds = 100;
 const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
@@ -108,7 +108,7 @@ onUnmounted(() => {
         <!-- Score -->
         <td class="text-end">
           <span class="my-mono">
-            {{ score.points.toLocaleString("sv-SE") }}
+            {{ score?.points?.toLocaleString("sv-SE") }}
           </span>
         </td>
 

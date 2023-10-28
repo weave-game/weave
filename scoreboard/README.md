@@ -9,6 +9,14 @@
 
 - NodeJS 18+
 
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+CONNECTION_STRING: <connection string to mongodb>
+```
+
 ## Start
 
 ### Windows
