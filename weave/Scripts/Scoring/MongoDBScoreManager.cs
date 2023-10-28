@@ -32,9 +32,8 @@ public sealed class MongoDBScoreManager : IScoreManager
 
     private static string GetConnectionString()
     {
-        // "mongodb+srv://erik:shyanne@weave-db.zurbpnp.mongodb.net/"
         var config = new ConfigurationBuilder().AddUserSecrets<Main>().Build();
-        var connectionString = config["connectionstring"];
+        var connectionString = config["ConnectionString"];
         return connectionString;
     }
 
