@@ -62,7 +62,7 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
 
 async function fetchAllScores(): Promise<Score[]> {
   // Secret
-  const connectionString = process.env.CONNECTION_STRING ?? '';
+  const connectionString = process.env.CONNECTION_STRING ?? 'mongodb://localhost:27017';
   const client = new MongoClient(connectionString);
 
   try {
