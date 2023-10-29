@@ -37,7 +37,7 @@ function clearHiddenScores() {
 function toggleL() {
   localStorage.setItem(
     "L",
-    localStorage.getItem("L") === "true" ? "false" : "true",
+    localStorage.getItem("L") === "true" ? "false" : "true"
   );
   window.location.reload();
 }
@@ -80,6 +80,8 @@ function toggleL() {
       <form @submit.prevent="toggleL">
         <button class="text-white">⚙️ Toggle L</button>
       </form>
+
+      <hr class="my-4" />
     </div>
   </div>
 </template>

@@ -1,11 +1,15 @@
+import { ConfigManager } from "../config-manager";
 import { Score } from "../models";
 import { ScoreRepository } from "./score-repository";
 import fs from "fs";
 import util from "util";
 
 export class JsonScoreRepository implements ScoreRepository {
-  async fetchAllScores(): Promise<Score[]> {
+  private configManager: ConfigManager = ConfigManager.getInstance();
+
+  public async fetchAllScores(): Promise<Score[]> {
     const readFile = util.promisify(fs.readFile);
+    const filePath = this.configManager.getFilePath();
 
     try {
       const data = await readFile(filePath, "utf8");

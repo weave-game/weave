@@ -1,13 +1,12 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
-
-import { ConfigManager } from "./config-manager";
 import "dotenv/config";
-import { Score, ScoreResponse } from "./models";
+import { ConfigManager } from "./config-manager";
+import { Score, ScoreOrigin, ScoreResponse } from "./models";
 import { JsonScoreRepository } from "./repository/json-score-repository";
-import { ScoreRepository } from "./repository/score-repository";
 import { MongoScoreRepository } from "./repository/mongo-score-repository";
+import { ScoreRepository } from "./repository/score-repository";
 
 const app = express();
 const PORT = 3000;
@@ -18,7 +17,7 @@ let cachedScores: Score[] = [];
 let lastSuccessfulReadTimestamp: string | null = null;
 
 // Config
-const configManager = new ConfigManager();
+const configManager = ConfigManager.getInstance();
 
 const jsonScoreRepository: ScoreRepository = new JsonScoreRepository();
 const mongoScoreRepository: ScoreRepository = new MongoScoreRepository();
@@ -28,9 +27,13 @@ async function fetchAllScores(): Promise<Score[]> {
 
   if (scoreOrigin === "mongo") {
     return mongoScoreRepository.fetchAllScores();
-  } else {
+  }
+
+  if (scoreOrigin === "json") {
     return jsonScoreRepository.fetchAllScores();
   }
+
+  return [];
 }
 
 /***************
@@ -50,11 +53,23 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
     };
   }
 
+  const scoreOrigin = configManager.getScoreOrigin();
+  let scoreOriginMessage: string = "Not configured";
+
+  if (scoreOrigin === "mongo") {
+    scoreOriginMessage = "MongoDB";
+  }
+
+  if (scoreOrigin === "json") {
+    scoreOriginMessage =
+      "JSON, reading from: '" + configManager.getFilePath() + "'";
+  }
+
   const response: ScoreResponse = {
     timestamp: lastSuccessfulReadTimestamp,
     scores: cachedScores,
     error: errorDetail,
-    scoreOrigin: configManager.getFilePath(),
+    scoreOrigin: scoreOriginMessage,
   };
 
   // Return new scores or cached scores
@@ -86,6 +101,11 @@ app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
 /*********
  * START *
  *********/
+
+// Default to JSON if not configured
+if (!configManager.getScoreOrigin()) {
+  configManager.setScoreOrigin(ScoreOrigin.Json);
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

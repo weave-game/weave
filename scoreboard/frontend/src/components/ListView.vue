@@ -20,7 +20,7 @@ const fetchIntervalSeconds = 100;
 const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
-  JSON.parse(localStorage.getItem("hiddenScores") || "[]"),
+  JSON.parse(localStorage.getItem("hiddenScores") || "[]")
 );
 const showL = ref(localStorage.getItem("L") === "true");
 
@@ -49,7 +49,7 @@ const toggleScoreVisibility = (name: string) => {
 
 const filter = (scores: Score[]) => {
   const visibleScores = scores.filter(
-    (score) => !hiddenScores.value.includes(score.id),
+    (score) => !hiddenScores.value.includes(score.id)
   );
   const sorted = visibleScores
     .sort((a, b) => b.points - a.points)
@@ -89,6 +89,13 @@ onUnmounted(() => {
 <template>
   <div class="text-neutral-700 font-bold">
     <p class="my-mono">Update in {{ countdown }}...</p>
+  </div>
+
+  <div v-if="scores.length === 0">
+    <div class="flex flex-row items-center justify-center align-middle my-32">
+      <img src="../assets/img/loading-cat.gif" alt="loading" />
+      <h3 class="text-3xl text-white my-mono ml-8">No scores</h3>
+    </div>
   </div>
 
   <table
