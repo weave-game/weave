@@ -22,7 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://c3838xwy2xvai" path="res://Assets/Icons/gamepad.svg" id="15_cbm4d"]
 [ext_resource type="Texture2D" uid="uid://1e8net23540b" path="res://Assets/Icons/phone.svg" id="18_qgjwh"]
 [ext_resource type="Texture2D" uid="uid://bk3mf6epvw46y" path="res://Assets/Icons/keyboard.svg" id="19_7atba"]
-[ext_resource type="PackedScene" path="res://UI/Credits.tscn" id="22_ku040"]
+[ext_resource type="PackedScene" uid="uid://cwckube55tv2b" path="res://UI/Credits.tscn" id="22_ku040"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_o1u1d"]
 font = ExtResource("9_05tpy")

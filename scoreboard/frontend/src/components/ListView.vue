@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue';
 
 type Score = {
   id: string;
@@ -15,55 +15,71 @@ type ScoresDTO = {
   };
 };
 
+/**
+ * Number of best scores to display. Not including "..." and the last score.
+ */
+const topScores = 2;
+
 const scores = ref([] as Score[]);
 const fetchIntervalSeconds = 100;
-const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
-  JSON.parse(localStorage.getItem("hiddenScores") || "[]")
+  JSON.parse(localStorage.getItem('hiddenScores') ?? '[]'),
 );
-const showL = ref(localStorage.getItem("L") === "true");
+const showL = ref(localStorage.getItem('L') === 'true');
 
 // Fetch scores from the server
 const fetchScores = async () => {
   try {
-    const response = await fetch("http://localhost:3000/scores");
+    const response = await fetch('http://localhost:3000/scores');
 
     if (!response.ok) {
-      throw new Error("Failed to fetch scores");
+      throw new Error('Failed to fetch scores');
     }
 
     const data: ScoresDTO = await response.json();
     scores.value = filter(data.scores);
   } catch (error) {
-    console.error("Error fetching scores:", error);
+    console.error('Error fetching scores:', error);
   }
 };
 
 const toggleScoreVisibility = (name: string) => {
-  if (window.confirm("Are you sure you want to hide this score?")) {
+  if (window.confirm('Are you sure you want to hide this score?')) {
     hiddenScores.value.push(name);
-    localStorage.setItem("hiddenScores", JSON.stringify(hiddenScores.value));
+    localStorage.setItem('hiddenScores', JSON.stringify(hiddenScores.value));
   }
 };
 
 const filter = (scores: Score[]) => {
-  const visibleScores = scores.filter(
-    (score) => !hiddenScores.value.includes(score.id)
-  );
-  const sorted = visibleScores
-    .sort((a, b) => b.points - a.points)
-    .slice(0, scoresToDisplay);
+  // Exclude hidden scores
+  const visibleScores = scores
+    .filter((score) => !hiddenScores.value.includes(score.id))
+    .sort((a, b) => b.points - a.points);
 
-  if (scores.length > scoresToDisplay) {
-    const fakeScore: Score = {
-      name: "...",
-    } as Score;
-
-    sorted.splice(sorted.length - 1, 0, fakeScore);
+  // All good 👌
+  if (visibleScores.length <= topScores || visibleScores.length === 0) {
+    return visibleScores;
   }
 
-  return sorted;
+  // Keep the best scores
+  const output = visibleScores.slice(0, topScores);
+
+  // Not all scores are displayed, add the worst score
+  const worstScore = visibleScores[visibleScores.length - 1];
+  output.push(worstScore);
+
+  // Even with the added worst score, not all scores are displayed, add fake "..."
+  if (output.length !== scores.length) {
+    const fakeScore: Score = {
+      name: '...',
+    } as Score;
+
+    // Insert at next last position
+    output.splice(output.length - 1, 0, fakeScore);
+  }
+
+  return output;
 };
 
 let fetchInterval: number;
@@ -91,14 +107,34 @@ onUnmounted(() => {
     <p class="my-mono">Update in {{ countdown }}...</p>
   </div>
 
-  <table class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800">
+  <div v-if="scores.length === 0">
+    <div class="flex flex-row items-center justify-center align-middle my-32">
+      <img src="../assets/img/loading-cat.gif" alt="loading" />
+      <h3 class="text-3xl text-white my-mono ml-8">No scores</h3>
+    </div>
+  </div>
+
+  <table
+    class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800"
+  >
     <tbody>
-      <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px" :class="{
-        'bg-neutral-800': index % 2 === 0,
-        'bg-neutral-900': index % 2 === 1,
-      }">
+      <tr
+        v-for="(score, index) in scores"
+        :key="score.name"
+        class="pt-32"
+        style="height: 80px"
+        :class="{
+          'bg-neutral-800': index % 2 === 0,
+          'bg-neutral-900': index % 2 === 1,
+        }"
+      >
         <!-- Position -->
-        <td class="pl-8">{{ index + 1 }}.</td>
+        <td class="pl-8">
+          <!-- Last position -->
+          <span v-if="scores.length === index + 1"> {{ scores.length }}. </span>
+          <span v-else-if="score.name === '...'"> {{ '...' }}</span>
+          <span v-else> {{ index + 1 }}. </span>
+        </td>
 
         <!-- Team name -->
         <td>
@@ -108,14 +144,24 @@ onUnmounted(() => {
         <!-- Score -->
         <td class="text-end">
           <span class="my-mono">
-            {{ score?.points?.toLocaleString("sv-SE") }}
+            {{ score?.points?.toLocaleString('sv-SE') }}
           </span>
         </td>
 
         <!-- Possible images -->
         <td>
-          <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7" />
-          <img v-if="showL && index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7" />
+          <img
+            v-if="index === 0"
+            src="../assets/img/crown.png"
+            alt="crown"
+            class="crown ml-7"
+          />
+          <img
+            v-if="showL && index + 1 === scores.length"
+            src="../assets/img/l.gif"
+            alt="crown"
+            class="crown ml-7"
+          />
         </td>
 
         <!-- Hide button -->
