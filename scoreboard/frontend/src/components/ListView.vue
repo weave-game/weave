@@ -131,11 +131,9 @@ onUnmounted(() => {
         <!-- Position -->
         <td class="pl-8">
           <!-- Last position -->
-          <span v-if="scores.length === index + 1">
-            {{ scores.length }}
-          </span>
-
-          <span v-if="true"> {{ index + 1 }}. </span>
+          <span v-if="scores.length === index + 1"> {{ scores.length }}. </span>
+          <span v-else-if="score.name === '...'"> {{ "..." }}</span>
+          <span v-else> {{ index + 1 }}. </span>
         </td>
 
         <!-- Team name -->
