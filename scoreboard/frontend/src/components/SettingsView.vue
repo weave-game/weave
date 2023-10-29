@@ -35,10 +35,12 @@ function clearHiddenScores() {
 }
 
 function toggleL() {
-  localStorage.setItem("L", localStorage.getItem("L") === "true" ? "false" : "true");
+  localStorage.setItem(
+    "L",
+    localStorage.getItem("L") === "true" ? "false" : "true",
+  );
   window.location.reload();
 }
-
 </script>
 
 <template>
@@ -47,32 +49,37 @@ function toggleL() {
       {{ showSettings ? "Hide" : "Show" }} settings
     </button>
 
-
     <div v-show="showSettings">
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <p class="text-white my-mono">Current file path: {{ filePath }}</p>
 
       <br />
 
       <form @submit.prevent="updateFilePath">
-        <label for="file-path" class="text-white my-mono">Enter file path:</label>
-        <input type="text" id="file-path" v-model="newFilePath" class="my-mono mx-3" />
+        <label for="file-path" class="text-white my-mono"
+          >Enter file path:</label
+        >
+        <input
+          type="text"
+          id="file-path"
+          v-model="newFilePath"
+          class="my-mono mx-3"
+        />
         <button type="submit" class="text-white my-mono">⚙️ Save</button>
       </form>
 
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <form @submit.prevent="clearHiddenScores">
         <button class="text-white">⚙️ Unhide all scores</button>
       </form>
 
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <form @submit.prevent="toggleL">
         <button class="text-white">⚙️ Toggle L</button>
       </form>
-
     </div>
   </div>
 </template>

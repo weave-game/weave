@@ -20,7 +20,7 @@ const fetchIntervalSeconds = 100;
 const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
-  JSON.parse(localStorage.getItem("hiddenScores") || "[]")
+  JSON.parse(localStorage.getItem("hiddenScores") || "[]"),
 );
 const showL = ref(localStorage.getItem("L") === "true");
 
@@ -49,7 +49,7 @@ const toggleScoreVisibility = (name: string) => {
 
 const filter = (scores: Score[]) => {
   const visibleScores = scores.filter(
-    (score) => !hiddenScores.value.includes(score.id)
+    (score) => !hiddenScores.value.includes(score.id),
   );
   const sorted = visibleScores
     .sort((a, b) => b.points - a.points)
@@ -91,12 +91,20 @@ onUnmounted(() => {
     <p class="my-mono">Update in {{ countdown }}...</p>
   </div>
 
-  <table class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800">
+  <table
+    class="text-white w-full text-3xl font-black my-16 border-solid border-2 border-neutral-800"
+  >
     <tbody>
-      <tr v-for="(score, index) in scores" :key="score.name" class="pt-32" style="height: 80px" :class="{
-        'bg-neutral-800': index % 2 === 0,
-        'bg-neutral-900': index % 2 === 1,
-      }">
+      <tr
+        v-for="(score, index) in scores"
+        :key="score.name"
+        class="pt-32"
+        style="height: 80px"
+        :class="{
+          'bg-neutral-800': index % 2 === 0,
+          'bg-neutral-900': index % 2 === 1,
+        }"
+      >
         <!-- Position -->
         <td class="pl-8">{{ index + 1 }}.</td>
 
@@ -114,8 +122,18 @@ onUnmounted(() => {
 
         <!-- Possible images -->
         <td>
-          <img v-if="index === 0" src="../assets/img/crown.png" alt="crown" class="crown ml-7" />
-          <img v-if="showL && index + 1 === scores.length" src="../assets/img/l.gif" alt="crown" class="crown ml-7" />
+          <img
+            v-if="index === 0"
+            src="../assets/img/crown.png"
+            alt="crown"
+            class="crown ml-7"
+          />
+          <img
+            v-if="showL && index + 1 === scores.length"
+            src="../assets/img/l.gif"
+            alt="crown"
+            class="crown ml-7"
+          />
         </td>
 
         <!-- Hide button -->

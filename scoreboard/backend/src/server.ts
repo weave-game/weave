@@ -4,8 +4,8 @@ import express, { Request, Response } from "express";
 import fs from "fs";
 import util from "util";
 import { ConfigManager } from "./config-manager";
-import { MongoClient } from 'mongodb';
-import 'dotenv/config'
+import { MongoClient } from "mongodb";
+import "dotenv/config";
 
 const app = express();
 const PORT = 3000;
@@ -62,26 +62,27 @@ const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
 
 async function fetchAllScores(): Promise<Score[]> {
   // Secret
-  const connectionString = process.env.CONNECTION_STRING ?? 'mongodb://localhost:27017';
+  const connectionString =
+    process.env.CONNECTION_STRING ?? "mongodb://localhost:27017";
   const client = new MongoClient(connectionString);
 
   try {
     await client.connect();
-    const database = client.db('weave');
-    const collection = database.collection<ScoreNew>('scores');
+    const database = client.db("weave");
+    const collection = database.collection<ScoreNew>("scores");
 
     const rawScores = await collection.find({}).toArray();
-    const scores: Score[] = rawScores.map(score => {
+    const scores: Score[] = rawScores.map((score) => {
       return {
         id: score.Id,
         name: score.Name,
-        points: score.Points
+        points: score.Points,
       };
     });
-    return scores
+    return scores;
   } catch (error) {
-    console.error('Error fetching scores:', error);
-    return []
+    console.error("Error fetching scores:", error);
+    return [];
   } finally {
     await client.close();
   }
@@ -92,7 +93,7 @@ async function fetchAllScores(): Promise<Score[]> {
  ***************/
 
 app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
-  let errorDetail = {}
+  let errorDetail = {};
 
   try {
     const scores = await fetchAllScores();

@@ -16,14 +16,14 @@ export class ConfigManager {
   public setFilePath(newFilePath: string): void {
     fs.writeFileSync(
       this.configFile,
-      JSON.stringify({ filePath: newFilePath })
+      JSON.stringify({ filePath: newFilePath }),
     );
   }
 
   private makeConfigFile(): void {
     fs.writeFileSync(
       this.configFile,
-      JSON.stringify({ filePath: "placeholder" })
+      JSON.stringify({ filePath: "placeholder" }),
     );
   }
 }
