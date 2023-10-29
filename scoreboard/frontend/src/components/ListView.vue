@@ -15,12 +15,16 @@ type ScoresDTO = {
   };
 };
 
+/**
+ * Number of best scores to display. Not including "..." and the last score.
+ */
+const topScores = 2;
+
 const scores = ref([] as Score[]);
 const fetchIntervalSeconds = 100;
-const scoresToDisplay = 10;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
-  JSON.parse(localStorage.getItem("hiddenScores") || "[]")
+  JSON.parse(localStorage.getItem("hiddenScores") ?? "[]")
 );
 const showL = ref(localStorage.getItem("L") === "true");
 
@@ -48,22 +52,34 @@ const toggleScoreVisibility = (name: string) => {
 };
 
 const filter = (scores: Score[]) => {
-  const visibleScores = scores.filter(
-    (score) => !hiddenScores.value.includes(score.id)
-  );
-  const sorted = visibleScores
-    .sort((a, b) => b.points - a.points)
-    .slice(0, scoresToDisplay);
+  // Exclude hidden scores
+  const visibleScores = scores
+    .filter((score) => !hiddenScores.value.includes(score.id))
+    .sort((a, b) => b.points - a.points);
 
-  if (scores.length > scoresToDisplay) {
+  // All good 👌
+  if (visibleScores.length <= topScores || visibleScores.length === 0) {
+    return visibleScores;
+  }
+
+  // Keep the best scores
+  const output = visibleScores.slice(0, topScores);
+
+  // Not all scores are displayed, add the worst score
+  const worstScore = visibleScores[visibleScores.length - 1];
+  output.push(worstScore);
+
+  // Even with the added worst score, not all scores are displayed, add fake "..."
+  if (output.length !== scores.length) {
     const fakeScore: Score = {
       name: "...",
     } as Score;
 
-    sorted.splice(sorted.length - 1, 0, fakeScore);
+    // Insert at next last position
+    output.splice(output.length - 1, 0, fakeScore);
   }
 
-  return sorted;
+  return output;
 };
 
 let fetchInterval: number;
@@ -113,7 +129,14 @@ onUnmounted(() => {
         }"
       >
         <!-- Position -->
-        <td class="pl-8">{{ index + 1 }}.</td>
+        <td class="pl-8">
+          <!-- Last position -->
+          <span v-if="scores.length === index + 1">
+            {{ scores.length }}
+          </span>
+
+          <span v-if="true"> {{ index + 1 }}. </span>
+        </td>
 
         <!-- Team name -->
         <td>

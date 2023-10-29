@@ -4,7 +4,6 @@ import { MongoClient } from "mongodb";
 
 export class MongoScoreRepository implements ScoreRepository {
   async fetchAllScores(): Promise<Score[]> {
-    // Secret
     const connectionString =
       process.env.CONNECTION_STRING ?? "mongodb://localhost:27017";
     const client = new MongoClient(connectionString);
