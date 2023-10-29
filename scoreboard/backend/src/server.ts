@@ -1,12 +1,12 @@
-import bodyParser from "body-parser";
-import cors from "cors";
-import express, { Request, Response } from "express";
-import "dotenv/config";
-import { ConfigManager } from "./config-manager";
-import { Score, ScoreOrigin, ScoreResponse } from "./models";
-import { JsonScoreRepository } from "./repository/json-score-repository";
-import { MongoScoreRepository } from "./repository/mongo-score-repository";
-import { ScoreRepository } from "./repository/score-repository";
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
+import 'dotenv/config';
+import { ConfigManager } from './config-manager';
+import { Score, ScoreOrigin, ScoreResponse } from './models';
+import { JsonScoreRepository } from './repository/json-score-repository';
+import { MongoScoreRepository } from './repository/mongo-score-repository';
+import { ScoreRepository } from './repository/score-repository';
 
 const app = express();
 const PORT = 3000;
@@ -25,11 +25,11 @@ const mongoScoreRepository: ScoreRepository = new MongoScoreRepository();
 async function fetchAllScores(): Promise<Score[]> {
   const scoreOrigin = configManager.getScoreOrigin();
 
-  if (scoreOrigin === "mongo") {
+  if (scoreOrigin === 'mongo') {
     return mongoScoreRepository.fetchAllScores();
   }
 
-  if (scoreOrigin === "json") {
+  if (scoreOrigin === 'json') {
     return jsonScoreRepository.fetchAllScores();
   }
 
@@ -40,7 +40,7 @@ async function fetchAllScores(): Promise<Score[]> {
  * CONTROLLERS *
  ***************/
 
-app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
+app.get('/scores', async (_: Request, res: Response) /* NOSONAR */ => {
   let errorDetail = {};
 
   try {
@@ -49,18 +49,18 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
     lastSuccessfulReadTimestamp = new Date().toISOString();
   } catch (error) {
     errorDetail = {
-      message: "Failed syncing with the CSV file. Using cached scores.",
+      message: 'Failed syncing with the CSV file. Using cached scores.',
     };
   }
 
   const scoreOrigin = configManager.getScoreOrigin();
-  let scoreOriginMessage: string = "Not configured";
+  let scoreOriginMessage: string = 'Not configured';
 
-  if (scoreOrigin === "mongo") {
-    scoreOriginMessage = "MongoDB";
+  if (scoreOrigin === 'mongo') {
+    scoreOriginMessage = 'MongoDB';
   }
 
-  if (scoreOrigin === "json") {
+  if (scoreOrigin === 'json') {
     scoreOriginMessage =
       "JSON, reading from: '" + configManager.getFilePath() + "'";
   }
@@ -76,16 +76,16 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
   res.json(response);
 });
 
-app.get("/settings/file-path", (_: Request, res: Response) => {
+app.get('/settings/file-path', (_: Request, res: Response) => {
   res.json({
     filePath: configManager.getFilePath(),
   });
 });
 
-app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
+app.put('/settings/file-path', jsonParser, (req: Request, res: Response) => {
   const newFilePath = req.body.filePath;
 
-  if (typeof newFilePath === "string") {
+  if (typeof newFilePath === 'string') {
     configManager.setFilePath(newFilePath);
 
     res.json({
@@ -93,7 +93,7 @@ app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
     });
   } else {
     res.status(400).json({
-      message: "File path must be a string",
+      message: 'File path must be a string',
     });
   }
 });

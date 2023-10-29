@@ -1,8 +1,8 @@
-import { ConfigManager } from "../config-manager";
-import { Score } from "../models";
-import { ScoreRepository } from "./score-repository";
-import fs from "fs";
-import util from "util";
+import { ConfigManager } from '../config-manager';
+import { Score } from '../models';
+import { ScoreRepository } from './score-repository';
+import fs from 'fs';
+import util from 'util';
 
 export class JsonScoreRepository implements ScoreRepository {
   private configManager: ConfigManager = ConfigManager.getInstance();
@@ -12,7 +12,7 @@ export class JsonScoreRepository implements ScoreRepository {
     const filePath = this.configManager.getFilePath();
 
     try {
-      const data = await readFile(filePath, "utf8");
+      const data = await readFile(filePath, 'utf8');
       const jsonData = JSON.parse(data);
       const scores: Score[] = [];
 

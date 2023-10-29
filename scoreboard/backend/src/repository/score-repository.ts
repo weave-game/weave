@@ -1,4 +1,4 @@
-import { Score } from "../models";
+import { Score } from '../models';
 
 export interface ScoreRepository {
   /**

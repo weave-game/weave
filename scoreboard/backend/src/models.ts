@@ -30,6 +30,6 @@ export interface ScoreResponse {
 }
 
 export enum ScoreOrigin {
-  Mongo = "mongo",
-  Json = "json",
+  Mongo = 'mongo',
+  Json = 'json',
 }

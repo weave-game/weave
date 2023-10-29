@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from 'vue';
 
 type Score = {
   id: string;
@@ -24,30 +24,30 @@ const scores = ref([] as Score[]);
 const fetchIntervalSeconds = 100;
 const countdown = ref(fetchIntervalSeconds);
 const hiddenScores = ref<string[]>(
-  JSON.parse(localStorage.getItem("hiddenScores") ?? "[]")
+  JSON.parse(localStorage.getItem('hiddenScores') ?? '[]'),
 );
-const showL = ref(localStorage.getItem("L") === "true");
+const showL = ref(localStorage.getItem('L') === 'true');
 
 // Fetch scores from the server
 const fetchScores = async () => {
   try {
-    const response = await fetch("http://localhost:3000/scores");
+    const response = await fetch('http://localhost:3000/scores');
 
     if (!response.ok) {
-      throw new Error("Failed to fetch scores");
+      throw new Error('Failed to fetch scores');
     }
 
     const data: ScoresDTO = await response.json();
     scores.value = filter(data.scores);
   } catch (error) {
-    console.error("Error fetching scores:", error);
+    console.error('Error fetching scores:', error);
   }
 };
 
 const toggleScoreVisibility = (name: string) => {
-  if (window.confirm("Are you sure you want to hide this score?")) {
+  if (window.confirm('Are you sure you want to hide this score?')) {
     hiddenScores.value.push(name);
-    localStorage.setItem("hiddenScores", JSON.stringify(hiddenScores.value));
+    localStorage.setItem('hiddenScores', JSON.stringify(hiddenScores.value));
   }
 };
 
@@ -72,7 +72,7 @@ const filter = (scores: Score[]) => {
   // Even with the added worst score, not all scores are displayed, add fake "..."
   if (output.length !== scores.length) {
     const fakeScore: Score = {
-      name: "...",
+      name: '...',
     } as Score;
 
     // Insert at next last position
@@ -132,7 +132,7 @@ onUnmounted(() => {
         <td class="pl-8">
           <!-- Last position -->
           <span v-if="scores.length === index + 1"> {{ scores.length }}. </span>
-          <span v-else-if="score.name === '...'"> {{ "..." }}</span>
+          <span v-else-if="score.name === '...'"> {{ '...' }}</span>
           <span v-else> {{ index + 1 }}. </span>
         </td>
 
@@ -144,7 +144,7 @@ onUnmounted(() => {
         <!-- Score -->
         <td class="text-end">
           <span class="my-mono">
-            {{ score?.points?.toLocaleString("sv-SE") }}
+            {{ score?.points?.toLocaleString('sv-SE') }}
           </span>
         </td>
 

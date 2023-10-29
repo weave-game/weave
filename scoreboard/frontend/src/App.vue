@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ListView from "./components/ListView.vue";
-import SettingsView from "./components/SettingsView.vue";
+import ListView from './components/ListView.vue';
+import SettingsView from './components/SettingsView.vue';
 </script>
 
 <template>

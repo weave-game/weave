@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from 'fs';
 
 /**
  * `ConfigManager` is responsible for managing a configuration file named "config.json".
@@ -6,7 +6,7 @@ import fs from "fs";
  */
 export class ConfigManager {
   private static instance: ConfigManager | null = null;
-  private readonly configFile = "config.json";
+  private readonly configFile = 'config.json';
 
   private constructor() {}
 
@@ -24,7 +24,7 @@ export class ConfigManager {
    * @returns {string} - The file path from the configuration or an empty string if not found.
    */
   public getFilePath(): string {
-    return this.getConfigValue("filePath") ?? "";
+    return this.getConfigValue('filePath') ?? '';
   }
 
   /**
@@ -33,7 +33,7 @@ export class ConfigManager {
    * @param {string} newFilePath - The new file path to be set.
    */
   public setFilePath(newFilePath: string): void {
-    this.setConfigValue("filePath", newFilePath);
+    this.setConfigValue('filePath', newFilePath);
   }
 
   /**
@@ -42,7 +42,7 @@ export class ConfigManager {
    * @returns {string | null} - The score origin from the configuration or null if not found.
    */
   public getScoreOrigin() {
-    return this.getConfigValue("scoreOrigin");
+    return this.getConfigValue('scoreOrigin');
   }
 
   /**
@@ -51,7 +51,7 @@ export class ConfigManager {
    * @param {string} newScoreOrigin - The new score origin to be set.
    */
   public setScoreOrigin(newScoreOrigin: string): void {
-    this.setConfigValue("scoreOrigin", newScoreOrigin);
+    this.setConfigValue('scoreOrigin', newScoreOrigin);
   }
 
   /****************
@@ -76,7 +76,7 @@ export class ConfigManager {
       this.makeConfigFile();
     }
 
-    const configData = fs.readFileSync(this.configFile, "utf8");
+    const configData = fs.readFileSync(this.configFile, 'utf8');
     const config = JSON.parse(configData);
 
     try {
@@ -97,7 +97,7 @@ export class ConfigManager {
       this.makeConfigFile();
     }
 
-    const configData = fs.readFileSync(this.configFile, "utf8");
+    const configData = fs.readFileSync(this.configFile, 'utf8');
     const config = JSON.parse(configData);
 
     config[key] = value;
