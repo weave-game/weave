@@ -4,26 +4,54 @@ export class ConfigManager {
   private readonly configFile = "config.json";
 
   public getFilePath(): string {
+    return this.getConfigValue("filePath") ?? "";
+  }
+
+  public setFilePath(newFilePath: string): void {
+    this.setConfigValue("filePath", newFilePath);
+  }
+
+  public getScoreOrigin() {
+    this.getConfigValue("scoreOrigin");
+  }
+
+  public setScoreOrigin(newScoreOrigin: string): void {
+    this.setConfigValue("scoreOrigin", newScoreOrigin);
+  }
+
+  /****************
+   * COMMON LOGIC *
+   ****************/
+
+  private makeConfigFile(): void {
+    fs.writeFileSync(this.configFile, JSON.stringify({}));
+  }
+
+  private getConfigValue(key: string): string | null {
     if (!fs.existsSync(this.configFile)) {
       this.makeConfigFile();
     }
 
     const configData = fs.readFileSync(this.configFile, "utf8");
     const config = JSON.parse(configData);
-    return config.filePath;
+
+    try {
+      return config[key];
+    } catch (error) {
+      return null;
+    }
   }
 
-  public setFilePath(newFilePath: string): void {
-    fs.writeFileSync(
-      this.configFile,
-      JSON.stringify({ filePath: newFilePath }),
-    );
-  }
+  private setConfigValue(key: string, value: string): void {
+    if (!fs.existsSync(this.configFile)) {
+      this.makeConfigFile();
+    }
 
-  private makeConfigFile(): void {
-    fs.writeFileSync(
-      this.configFile,
-      JSON.stringify({ filePath: "placeholder" }),
-    );
+    const configData = fs.readFileSync(this.configFile, "utf8");
+    const config = JSON.parse(configData);
+
+    config[key] = value;
+
+    fs.writeFileSync(this.configFile, JSON.stringify(config));
   }
 }
