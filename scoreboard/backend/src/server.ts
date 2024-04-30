@@ -1,98 +1,47 @@
-import bodyParser from "body-parser";
-import cors from "cors";
-import express, { Request, Response } from "express";
-import fs from "fs";
-import util from "util";
-import { ConfigManager } from "./config-manager";
-import { MongoClient } from 'mongodb';
-import 'dotenv/config'
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
+import 'dotenv/config';
+import { ConfigManager } from './config-manager';
+import { Score, ScoreOrigin, ScoreResponse } from './models';
+import { JsonScoreRepository } from './repository/json-score-repository';
+import { MongoScoreRepository } from './repository/mongo-score-repository';
+import { ScoreRepository } from './repository/score-repository';
 
 const app = express();
 const PORT = 3000;
 app.use(cors());
-
-type Score = {
-  id: string;
-  name: string;
-  points: number;
-};
-
-interface ScoreNew {
-  Id: string;
-  Name: string;
-  Players: number;
-  Rounds: number;
-  Points: number;
-}
 
 const jsonParser = bodyParser.json();
 let cachedScores: Score[] = [];
 let lastSuccessfulReadTimestamp: string | null = null;
 
 // Config
-const configManager = new ConfigManager();
+const configManager = ConfigManager.getInstance();
 
-/**
- * Reads scores from a JSON file and returns an array of Score objects.
- * @returns A promise that resolves with an array of Score objects.
- */
-const readScoresFromFile = async (filePath: string): Promise<Score[]> => {
-  const readFile = util.promisify(fs.readFile);
-
-  try {
-    const data = await readFile(filePath, "utf8");
-    const jsonData = JSON.parse(data);
-    const scores: Score[] = [];
-
-    for (const key in jsonData) {
-      const team = jsonData[key];
-      scores.push({
-        id: team.Id,
-        name: team.Name,
-        points: team.Points,
-      });
-    }
-
-    return scores;
-  } catch (error) {
-    console.error(error);
-    throw new Error(`Error reading JSON file`);
-  }
-};
+const jsonScoreRepository: ScoreRepository = new JsonScoreRepository();
+const mongoScoreRepository: ScoreRepository = new MongoScoreRepository();
 
 async function fetchAllScores(): Promise<Score[]> {
-  // Secret
-  const connectionString = process.env.CONNECTION_STRING ?? 'mongodb://localhost:27017';
-  const client = new MongoClient(connectionString);
+  const scoreOrigin = configManager.getScoreOrigin();
 
-  try {
-    await client.connect();
-    const database = client.db('weave');
-    const collection = database.collection<ScoreNew>('scores');
-
-    const rawScores = await collection.find({}).toArray();
-    const scores: Score[] = rawScores.map(score => {
-      return {
-        id: score.Id,
-        name: score.Name,
-        points: score.Points
-      };
-    });
-    return scores
-  } catch (error) {
-    console.error('Error fetching scores:', error);
-    return []
-  } finally {
-    await client.close();
+  if (scoreOrigin === 'mongo') {
+    return mongoScoreRepository.fetchAllScores();
   }
+
+  if (scoreOrigin === 'json') {
+    return jsonScoreRepository.fetchAllScores();
+  }
+
+  return [];
 }
 
 /***************
  * CONTROLLERS *
  ***************/
 
-app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
-  let errorDetail = {}
+app.get('/scores', async (_: Request, res: Response) /* NOSONAR */ => {
+  let errorDetail = {};
 
   try {
     const scores = await fetchAllScores();
@@ -100,29 +49,43 @@ app.get("/scores", async (_: Request, res: Response) /* NOSONAR */ => {
     lastSuccessfulReadTimestamp = new Date().toISOString();
   } catch (error) {
     errorDetail = {
-      message: "Failed syncing with the CSV file. Using cached scores.",
+      message: 'Failed syncing with the CSV file. Using cached scores.',
     };
   }
 
-  // Return new scores or cached scores
-  res.json({
+  const scoreOrigin = configManager.getScoreOrigin();
+  let scoreOriginMessage: string = 'Not configured';
+
+  if (scoreOrigin === 'mongo') {
+    scoreOriginMessage = 'MongoDB';
+  }
+
+  if (scoreOrigin === 'json') {
+    scoreOriginMessage =
+      "JSON, reading from: '" + configManager.getFilePath() + "'";
+  }
+
+  const response: ScoreResponse = {
     timestamp: lastSuccessfulReadTimestamp,
     scores: cachedScores,
     error: errorDetail,
-    filePath: configManager.getFilePath(),
-  });
+    scoreOrigin: scoreOriginMessage,
+  };
+
+  // Return new scores or cached scores
+  res.json(response);
 });
 
-app.get("/settings/file-path", (_: Request, res: Response) => {
+app.get('/settings/file-path', (_: Request, res: Response) => {
   res.json({
     filePath: configManager.getFilePath(),
   });
 });
 
-app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
+app.put('/settings/file-path', jsonParser, (req: Request, res: Response) => {
   const newFilePath = req.body.filePath;
 
-  if (typeof newFilePath === "string") {
+  if (typeof newFilePath === 'string') {
     configManager.setFilePath(newFilePath);
 
     res.json({
@@ -130,7 +93,7 @@ app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
     });
   } else {
     res.status(400).json({
-      message: "File path must be a string",
+      message: 'File path must be a string',
     });
   }
 });
@@ -138,6 +101,11 @@ app.put("/settings/file-path", jsonParser, (req: Request, res: Response) => {
 /*********
  * START *
  *********/
+
+// Default to JSON if not configured
+if (!configManager.getScoreOrigin()) {
+  configManager.setScoreOrigin(ScoreOrigin.Json);
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

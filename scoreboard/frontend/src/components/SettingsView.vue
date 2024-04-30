@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import axios from "axios";
+import { ref } from 'vue';
+import axios from 'axios';
 
-const filePath = ref("");
-const newFilePath = ref("");
+const filePath = ref('');
+const newFilePath = ref('');
 const showSettings = ref(false);
 
 axios
-  .get("http://localhost:3000/settings/file-path")
+  .get('http://localhost:3000/settings/file-path')
   .then((response) => {
     filePath.value = response.data.filePath;
   })
@@ -17,12 +17,12 @@ axios
 
 function updateFilePath() {
   axios
-    .put("http://localhost:3000/settings/file-path", {
+    .put('http://localhost:3000/settings/file-path', {
       filePath: newFilePath.value,
     })
     .then((response) => {
       filePath.value = response.data.filePath;
-      newFilePath.value = "";
+      newFilePath.value = '';
     })
     .catch((error) => {
       console.log(error);
@@ -30,49 +30,58 @@ function updateFilePath() {
 }
 
 function clearHiddenScores() {
-  localStorage.removeItem("hiddenScores");
+  localStorage.removeItem('hiddenScores');
   window.location.reload();
 }
 
 function toggleL() {
-  localStorage.setItem("L", localStorage.getItem("L") === "true" ? "false" : "true");
+  localStorage.setItem(
+    'L',
+    localStorage.getItem('L') === 'true' ? 'false' : 'true',
+  );
   window.location.reload();
 }
-
 </script>
 
 <template>
   <div class="my-32">
     <button @click="showSettings = !showSettings" class="text-white my-mono">
-      {{ showSettings ? "Hide" : "Show" }} settings
+      {{ showSettings ? 'Hide' : 'Show' }} settings
     </button>
 
-
     <div v-show="showSettings">
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <p class="text-white my-mono">Current file path: {{ filePath }}</p>
 
       <br />
 
       <form @submit.prevent="updateFilePath">
-        <label for="file-path" class="text-white my-mono">Enter file path:</label>
-        <input type="text" id="file-path" v-model="newFilePath" class="my-mono mx-3" />
+        <label for="file-path" class="text-white my-mono"
+          >Enter file path:</label
+        >
+        <input
+          type="text"
+          id="file-path"
+          v-model="newFilePath"
+          class="my-mono mx-3"
+        />
         <button type="submit" class="text-white my-mono">⚙️ Save</button>
       </form>
 
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <form @submit.prevent="clearHiddenScores">
         <button class="text-white">⚙️ Unhide all scores</button>
       </form>
 
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <form @submit.prevent="toggleL">
         <button class="text-white">⚙️ Toggle L</button>
       </form>
 
+      <hr class="my-4" />
     </div>
   </div>
 </template>
