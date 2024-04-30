@@ -35,7 +35,6 @@ public partial class GameOverOverlay : CanvasLayer
     {
         this.GetNodes();
         _nameLineEdit.Text = GameConfig.Lobby.Name;
-        _scoreManager = new MongoDbScoreManager();
         _jsonScoreManager = new JsonScoreManager(WeaveConstants.ScoreLogFileJsonPath);
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
@@ -83,7 +82,6 @@ public partial class GameOverOverlay : CanvasLayer
             _nameLineEdit.Text = newName;
         }
 
-        _scoreManager.Save(score);
         _jsonScoreManager.Save(score);
         _savedPlayer.Play("hide");
         _savedPlayer.Play("saved");

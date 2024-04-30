@@ -12,7 +12,7 @@ config_version=5
 
 config/name="weave"
 run/main_scene="res://Menus/StartScreen.tscn"
-config/features=PackedStringArray("4.1", "C#", "Forward Plus")
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/image="res://Assets/logo-small.png"
 boot_splash/fullsize=false
 config/icon="res://icon.svg"

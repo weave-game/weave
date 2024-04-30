@@ -18,7 +18,7 @@ public static class GameConfig
 
     public static bool HasLocks(int nPlayers)
     {
-        return false;
+        return true;
     }
 
     /// <summary>
