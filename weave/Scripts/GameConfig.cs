@@ -1,5 +1,4 @@
 using Weave.InputSources;
-using Weave.Networking;
 
 namespace Weave;
 
@@ -14,11 +13,15 @@ public static class GameConfig
     /// </summary>
     public static Lobby Lobby { get; set; }
 
-    public static RTCClientManager MultiplayerManager { get; set; }
-
     public static bool HasLocks(int nPlayers)
     {
-        return true;
+        return nPlayers switch
+        {
+            1 => false,
+            2 => true,
+            3 => true,
+            _ => false
+        };
     }
 
     /// <summary>
