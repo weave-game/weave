@@ -16,12 +16,7 @@ public sealed class Lobby
 
     public delegate void PlayerLeftEventHandler(IInputSource source);
 
-    private const int LobbyCodeLength = 4;
-    private const string LobbyCodeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private const string LobbyQrCodePath = WeaveConstants.WeaveFrontendUrl;
-
     private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
-    private readonly IQrCodeGenerator _qrCodeGenerator;
 
     /// <summary>
     ///     Note: Lobby is reset on start screen, so its one "session"
@@ -30,9 +25,6 @@ public sealed class Lobby
     {
         Id = Guid.NewGuid().ToString();
         Name = UniqueNameGenerator.Instance.New();
-        _qrCodeGenerator = new GdQrCodeGenerator();
-        LobbyCode = GenerateLobbyCode(LobbyCodeCharacters, LobbyCodeLength);
-        LobbyQrCode = GenerateLobbyQrCode($"{LobbyQrCodePath}/{LobbyCode}");
     }
 
     public PlayerJoinedEventHandler PlayerJoinedListeners { get; set; }
@@ -66,21 +58,6 @@ public sealed class Lobby
         _playerInfos.RemoveWhere(info => info.InputSource.Equals(inputSource));
         UpdatePlayerInfos();
         PlayerLeftListeners?.Invoke(inputSource);
-    }
-
-    private static string GenerateLobbyCode(string allowedCharacters, int length)
-    {
-        var rnd = new Random();
-        var result = new char[length];
-        for (var i = 0; i < length; i++)
-            result[i] = allowedCharacters[rnd.Next(allowedCharacters.Length - 1)];
-
-        return new string(result);
-    }
-
-    private ImageTexture GenerateLobbyQrCode(string str)
-    {
-        return _qrCodeGenerator.GenerateQrCodeFromString(str);
     }
 
     private void UpdatePlayerInfos()

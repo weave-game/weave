@@ -45,7 +45,6 @@ public partial class Main : Node2D
     private Grid _grid;
     private int _height;
     private Lobby _lobby = new();
-    private RTCClientManager _multiplayerManager;
     private Timer _playerDelayTimer;
 
     /// <summary>
@@ -73,8 +72,6 @@ public partial class Main : Node2D
     {
         this.GetNodes();
         _lobby = GameConfig.Lobby;
-        _multiplayerManager = GameConfig.MultiplayerManager;
-        _multiplayerManager.NotifyStartGameAsync();
 
         // Fallback to <- and -> if there are no keybindings
         if (_lobby.PlayerInfos.Count == 0)
@@ -211,7 +208,6 @@ public partial class Main : Node2D
         _camera.OnGameOver(collisionPosition);
         _gameOverOverlay.DisplayGameOver();
         _audioStreamPlayer.PitchScale = 0.5f;
-        GameConfig.MultiplayerManager.NotifyEndGameAsync();
 
         // Log score
         var score = new Score(

@@ -39,10 +39,7 @@ public partial class GameOverOverlay : CanvasLayer
 
         _retryButton.Pressed += () => GetTree().ChangeSceneToFile(SceneGetter.GetPath<Main>());
         _menuButton.Pressed += () =>
-        {
-            GameConfig.MultiplayerManager.StopClientAsync();
             GetTree().ChangeSceneToFile(SceneGetter.GetPath<StartScreen>());
-        };
         _save.Pressed += () => SaveScore(_sessionScore);
 
         // On game over, set process mode to idle to stop game, but keep overlays clickable

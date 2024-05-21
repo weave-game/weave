@@ -5,6 +5,7 @@ using MongoDB.Driver;
 
 namespace Weave.Scoring;
 
+[Obsolete("MongoDB is currently not supported")]
 public sealed class MongoDbScoreManager : IScoreManager
 {
     private const string DefaultConnectionString = "mongodb://localhost:27017";
@@ -12,6 +13,7 @@ public sealed class MongoDbScoreManager : IScoreManager
 
     public MongoDbScoreManager()
     {
+        throw new ObsoleteException("MongoDB is currently not supported");
         var connectionString = GetConnectionString();
 
         // Fallback to local mongo instance
