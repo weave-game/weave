@@ -15,6 +15,7 @@ dest_files=["res://.godot/imported/OpenSans-Bold.ttf-294e681dca889c4a134373b0f19
 Rendering=null
 antialiasing=1
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48
