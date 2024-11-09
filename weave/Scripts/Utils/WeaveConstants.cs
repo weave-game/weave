@@ -44,14 +44,4 @@ public static class WeaveConstants
     public const string ObstacleGroup = "obstacle";
 
     #endregion Groups
-
-    #region URLs
-
-    public const string SignallingServerUrl =
-        "wss://weave-signalling-server-30235e6a17df.herokuapp.com/";
-
-    public const string StunServerUrl = "stun:stun.l.google.com:19302";
-    public const string WeaveFrontendUrl = "https://weave-front-3ca0f45187f2.herokuapp.com";
-
-    #endregion URLs
 }

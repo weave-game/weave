@@ -15,8 +15,8 @@
 [ext_resource type="AudioStream" uid="uid://ccog5qwbsdqj0" path="res://Assets/Music/beginning.mp3" id="10_4fvpc"]
 [ext_resource type="Texture2D" uid="uid://dflt1o6xnuj43" path="res://Assets/Icons/xbox_a_color.png" id="10_5vk3m"]
 [ext_resource type="PackedScene" uid="uid://y8csparp0kpv" path="res://Objects/Glowifier.tscn" id="10_hkd0d"]
-[ext_resource type="Texture2D" uid="uid://b6b5kx1y0jixr" path="res://icon.svg" id="10_u77xs"]
 [ext_resource type="Texture2D" uid="uid://dux5pkucoqowh" path="res://Assets/Icons/playstation_x.png" id="11_1smo4"]
+[ext_resource type="Texture2D" uid="uid://b57hie8c33uj2" path="res://Assets/qr_template.png" id="11_hqwdq"]
 [ext_resource type="Texture2D" uid="uid://dapmmvse55j0f" path="res://Assets/Icons/xbox_b_color.png" id="12_424qn"]
 [ext_resource type="Texture2D" uid="uid://sammsul5fox8" path="res://Assets/Icons/playstation_circle.png" id="13_c7tif"]
 [ext_resource type="Texture2D" uid="uid://c3838xwy2xvai" path="res://Assets/Icons/gamepad.svg" id="15_cbm4d"]
@@ -30,7 +30,7 @@ font_size = 24
 font_color = Color(1, 0.333333, 0.333333, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j55x4"]
-bg_color = Color(0, 0, 0, 0.431373)
+bg_color = Color(0, 0, 0, 0.670588)
 
 [sub_resource type="Curve2D" id="Curve2D_eky13"]
 _data = {
@@ -273,115 +273,11 @@ text = "START GAME"
 
 [node name="Instructions" type="Panel" parent="UI"]
 visible = false
-offset_left = 1152.0
+offset_left = 1112.0
 offset_top = 1.0
 offset_right = 1600.0
 offset_bottom = 900.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_j55x4")
-
-[node name="Controller" type="Control" parent="UI/Instructions"]
-anchors_preset = 0
-offset_left = 61.0
-offset_top = 102.0
-offset_right = 61.0
-offset_bottom = 102.0
-
-[node name="Join2" type="RichTextLabel" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 79.0
-offset_top = 64.0
-offset_right = 177.0
-offset_bottom = 101.0
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-bbcode_enabled = true
-text = "[b]JOIN:"
-
-[node name="A" type="TextureRect" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 175.0
-offset_top = 64.0
-offset_right = 207.0
-offset_bottom = 96.0
-texture = ExtResource("10_5vk3m")
-expand_mode = 1
-
-[node name="slash" type="RichTextLabel" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 189.0
-offset_top = 64.0
-offset_right = 254.0
-offset_bottom = 103.0
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-bbcode_enabled = true
-text = "[center] [b] / [/b] [/center]"
-
-[node name="X" type="TextureRect" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 232.0
-offset_top = 64.0
-offset_right = 264.0
-offset_bottom = 96.0
-texture = ExtResource("11_1smo4")
-expand_mode = 1
-
-[node name="B" type="TextureRect" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 175.0
-offset_top = 128.0
-offset_right = 207.0
-offset_bottom = 160.0
-texture = ExtResource("12_424qn")
-expand_mode = 1
-
-[node name="slash2" type="RichTextLabel" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 189.0
-offset_top = 128.0
-offset_right = 254.0
-offset_bottom = 167.0
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-bbcode_enabled = true
-text = "[center] [b] / [/b] [/center]"
-
-[node name="O" type="TextureRect" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 232.0
-offset_top = 128.0
-offset_right = 264.0
-offset_bottom = 160.0
-texture = ExtResource("13_c7tif")
-expand_mode = 1
-
-[node name="Leave2" type="RichTextLabel" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = 78.0
-offset_top = 128.0
-offset_right = 176.0
-offset_bottom = 165.0
-theme_override_font_sizes/normal_font_size = 24
-theme_override_font_sizes/bold_font_size = 24
-bbcode_enabled = true
-text = "[b]LEAVE:"
-
-[node name="Icon" type="TextureRect" parent="UI/Instructions/Controller"]
-layout_mode = 0
-offset_left = -21.0
-offset_top = 90.0
-offset_right = 43.0
-offset_bottom = 154.0
-scale = Vector2(0.986297, 1)
-texture = ExtResource("15_cbm4d")
-
-[node name="HSeparator" type="HSeparator" parent="UI/Instructions"]
-layout_mode = 0
-offset_left = 123.0
-offset_top = 330.0
-offset_right = 387.0
-offset_bottom = 334.0
-theme = ExtResource("4_8y3os")
 
 [node name="Web" type="Control" parent="UI/Instructions"]
 anchors_preset = 0
@@ -391,32 +287,34 @@ offset_right = 101.0
 offset_bottom = 72.0
 
 [node name="QRCodeTexture" type="TextureRect" parent="UI/Instructions/Web"]
+visible = false
 texture_filter = 1
 layout_mode = 0
-offset_left = 194.0
-offset_top = 344.0
-offset_right = 322.0
-offset_bottom = 472.0
-texture = ExtResource("10_u77xs")
+offset_left = 246.0
+offset_top = 652.0
+offset_right = 316.0
+offset_bottom = 722.0
+texture = ExtResource("11_hqwdq")
 expand_mode = 1
 
 [node name="LobbyCodeLabel" type="RichTextLabel" parent="UI/Instructions/Web"]
 layout_mode = 0
-offset_left = 211.0
-offset_top = 475.0
-offset_right = 301.0
-offset_bottom = 499.0
+offset_left = 62.0
+offset_top = 676.0
+offset_right = 311.0
+offset_bottom = 700.0
 theme_override_fonts/normal_font = ExtResource("9_joc22")
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "[center][b]abc123"
+text = "[left][b]currently disabled"
 
 [node name="Scan" type="RichTextLabel" parent="UI/Instructions/Web"]
+visible = false
 layout_mode = 0
-offset_left = 79.0
-offset_top = 404.0
-offset_right = 157.0
-offset_bottom = 444.0
+offset_left = 59.0
+offset_top = 729.0
+offset_right = 137.0
+offset_bottom = 769.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_y = 0
 theme_override_constants/shadow_offset_x = 0
@@ -428,18 +326,122 @@ text = "[b]SCAN"
 
 [node name="Icon" type="TextureRect" parent="UI/Instructions/Web"]
 layout_mode = 0
-offset_left = -20.0
-offset_top = 392.0
-offset_right = 44.0
-offset_bottom = 456.0
+offset_left = -29.0
+offset_top = 655.0
+offset_right = 35.0
+offset_bottom = 719.0
 texture = ExtResource("18_qgjwh")
+
+[node name="HSeparator" type="HSeparator" parent="UI/Instructions"]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 322.0
+offset_right = 389.0
+offset_bottom = 326.0
+theme = ExtResource("4_8y3os")
+
+[node name="Controller" type="Control" parent="UI/Instructions"]
+anchors_preset = 0
+offset_left = 61.0
+offset_top = 102.0
+offset_right = 61.0
+offset_bottom = 102.0
+
+[node name="Join2" type="RichTextLabel" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 58.0
+offset_right = 168.0
+offset_bottom = 95.0
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[b]JOIN:"
+
+[node name="A" type="TextureRect" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 58.0
+offset_right = 198.0
+offset_bottom = 90.0
+texture = ExtResource("10_5vk3m")
+expand_mode = 1
+
+[node name="slash" type="RichTextLabel" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 58.0
+offset_right = 245.0
+offset_bottom = 97.0
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[center] [b] / [/b] [/center]"
+
+[node name="X" type="TextureRect" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 58.0
+offset_right = 255.0
+offset_bottom = 90.0
+texture = ExtResource("11_1smo4")
+expand_mode = 1
+
+[node name="B" type="TextureRect" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 122.0
+offset_right = 198.0
+offset_bottom = 154.0
+texture = ExtResource("12_424qn")
+expand_mode = 1
+
+[node name="slash2" type="RichTextLabel" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 122.0
+offset_right = 245.0
+offset_bottom = 161.0
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[center] [b] / [/b] [/center]"
+
+[node name="O" type="TextureRect" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 122.0
+offset_right = 255.0
+offset_bottom = 154.0
+texture = ExtResource("13_c7tif")
+expand_mode = 1
+
+[node name="Leave2" type="RichTextLabel" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 122.0
+offset_right = 167.0
+offset_bottom = 159.0
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[b]LEAVE:"
+
+[node name="Icon" type="TextureRect" parent="UI/Instructions/Controller"]
+layout_mode = 0
+offset_left = -27.0
+offset_top = 78.0
+offset_right = 37.0
+offset_bottom = 142.0
+scale = Vector2(0.986297, 1)
+texture = ExtResource("15_cbm4d")
 
 [node name="HSeparator2" type="HSeparator" parent="UI/Instructions"]
 layout_mode = 0
 offset_left = 123.0
-offset_top = 568.0
+offset_top = 599.0
 offset_right = 387.0
-offset_bottom = 572.0
+offset_bottom = 603.0
 theme = ExtResource("4_8y3os")
 
 [node name="Keyboard" type="Control" parent="UI/Instructions"]
@@ -451,10 +453,10 @@ offset_bottom = 679.0
 
 [node name="Join" type="RichTextLabel" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = -25.0
-offset_right = 351.0
-offset_bottom = 51.0
+offset_left = 40.0
+offset_top = -251.0
+offset_right = 335.0
+offset_bottom = -175.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
@@ -462,10 +464,10 @@ text = "[b]JOIN: [/b] PRESS"
 
 [node name="Leave" type="RichTextLabel" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 86.0
-offset_right = 351.0
-offset_bottom = 128.0
+offset_left = 40.0
+offset_top = -140.0
+offset_right = 335.0
+offset_bottom = -98.0
 theme_override_font_sizes/normal_font_size = 24
 theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
@@ -473,18 +475,18 @@ text = "[b]LEAVE: [/b]HOLD YOUR KEYS"
 
 [node name="Icon" type="TextureRect" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
-offset_left = -42.0
-offset_top = 9.0
-offset_right = 22.0
-offset_bottom = 73.0
+offset_left = -57.0
+offset_top = -194.0
+offset_right = 7.0
+offset_bottom = -130.0
 texture = ExtResource("19_7atba")
 
 [node name="JoinKeybinding" type="HBoxContainer" parent="UI/Instructions/Keyboard"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 9.0
-offset_right = 343.0
-offset_bottom = 47.0
+offset_left = 40.0
+offset_top = -204.0
+offset_right = 327.0
+offset_bottom = -166.0
 
 [node name="FireflyLayer" type="CanvasLayer" parent="."]
 layer = -2

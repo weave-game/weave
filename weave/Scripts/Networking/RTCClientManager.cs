@@ -8,17 +8,17 @@ using Godot;
 using Newtonsoft.Json;
 using SIPSorcery.Net;
 using Weave.InputSources;
-using Weave.Utils;
 
 namespace Weave.Networking;
 
+[Obsolete("WebRTC is currently not supported")]
 public class RTCClientManager
 {
     public delegate void ClientJoinedEventHandler(WebInputSource source);
 
     public delegate void ClientLeftEventHandler(WebInputSource source);
 
-    private const string ServerUrl = WeaveConstants.SignallingServerUrl;
+    private const string ServerUrl = "URL";
 
     private readonly IDictionary<string, RTCPeerConnection> _clientConnections =
         new Dictionary<string, RTCPeerConnection>();
@@ -27,16 +27,14 @@ public class RTCClientManager
         new Dictionary<string, WebInputSource>();
 
     private readonly RTCConfiguration _connectionConfig =
-        new()
-        {
-            iceServers = new List<RTCIceServer> { new() { urls = WeaveConstants.StunServerUrl } }
-        };
+        new() { iceServers = new List<RTCIceServer> { new() { urls = "URL" } } };
 
     private readonly string _lobbyCode;
     private readonly ClientWebSocket _webSocket = new();
 
     public RTCClientManager(string lobbyCode)
     {
+        throw new ObsoleteException("WebRTC is currently not supported");
         _lobbyCode = lobbyCode;
     }
 
