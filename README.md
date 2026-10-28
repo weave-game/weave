@@ -7,6 +7,7 @@
 - [weave 🧵🕹️ (Game) ](#weave-️-game-)
   - [About](#about)
     - [Gameplay](#gameplay)
+  - [Web version](#web-version)
   - [Development](#development)
     - [Setup Scoreboard (Environment Variables)](#setup-scoreboard-environment-variables)
     - [Formatting (CSharpier)](#formatting-csharpier)
@@ -38,6 +39,10 @@ A game made in the Game Development Project course at Chalmers/GU.
 ### Gameplay
 
 [![Video](https://img.youtube.com/vi/Fw0T2zQHsvo/maxresdefault.jpg)](https://youtu.be/Fw0T2zQHsvo?si=y7i0zsi_a19gQXTo)
+
+## Web version
+
+[`web/`](web) is a port of the game to the browser, for local multiplayer on one keyboard. See [web/README.md](web/README.md).
 
 ## Development
 

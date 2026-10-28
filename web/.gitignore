@@ -1,0 +1,4 @@
+node_modules
+dist
+# Assembled by scripts/assets.mjs
+public
